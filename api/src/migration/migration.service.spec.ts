@@ -1,5 +1,5 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2026 Hexastack. All rights reserved.
  *
  * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
@@ -7,6 +7,7 @@
  */
 
 import fs from 'fs';
+import path from 'path';
 
 import { HttpService } from '@nestjs/axios';
 import { ModuleRef } from '@nestjs/core';
@@ -98,7 +99,7 @@ describe('MigrationService', () => {
       service.create('v2.2.0');
 
       const expectedFilePath = expect.stringMatching(
-        /\/migrations\/\d+-v-2-2-0.migration.ts$/,
+        /[/\\]migrations[/\\]\d+-v-2-2-0\.migration\.ts$/,
       );
       expect(fs.writeFileSync).toHaveBeenCalledWith(
         expectedFilePath,
@@ -438,16 +439,18 @@ describe('MigrationService', () => {
       down: jest.fn(),
     };
 
+    const mockMigrationDir = path.normalize('/migrations');
     jest
       .spyOn(service, 'migrationFilePath', 'get')
-      .mockReturnValue('/migrations');
+      .mockReturnValue(mockMigrationDir);
     jest.spyOn(service['logger'], 'error').mockImplementation();
     jest.mock(
-      `/migrations/1234567890-v-2-1-9.migration.js`,
+      path.join(
+        path.normalize('/migrations'),
+        '1234567890-v-2-1-9.migration.js',
+      ),
       () => mockMigration,
-      {
-        virtual: true,
-      },
+      { virtual: true },
     );
 
     const result = await (service as any).loadMigrationFile(version);
