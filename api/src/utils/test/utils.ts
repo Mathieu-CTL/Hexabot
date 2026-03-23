@@ -1,5 +1,5 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2026 Hexastack. All rights reserved.
  *
  * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
@@ -11,6 +11,7 @@ import { ModuleMetadata, Provider } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { ModelDefinition, MongooseModule } from "@nestjs/mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
+import { PinoLogger } from "nestjs-pino";
 
 import { LoggerService } from "@/logger/logger.service";
 
@@ -211,6 +212,19 @@ const getModels = (models: TModel[]): ModelDefinition[] =>
 const defaultProviders = [
   LoggerService,
   EventEmitter2,
+  {
+    provide: PinoLogger,
+    useValue: {
+      log: jest.fn(),
+      info: jest.fn(),
+      error: jest.fn(),
+      warn: jest.fn(),
+      debug: jest.fn(),
+      trace: jest.fn(),
+      fatal: jest.fn(),
+      setContext: jest.fn(),
+    },
+  },
   {
     provide: CACHE_MANAGER,
     useValue: {
