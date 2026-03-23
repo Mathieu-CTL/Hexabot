@@ -10,7 +10,7 @@ import {
   registerDecorator,
   ValidationArguments,
   ValidationOptions,
-} from 'class-validator';
+} from "class-validator";
 
 export function IsLessThanDate(
   property: string,

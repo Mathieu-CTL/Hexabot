@@ -6,42 +6,42 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { JwtModule, JwtService } from '@nestjs/jwt';
-import { ISendMailOptions } from '@nestjs-modules/mailer';
-import { SentMessageInfo } from 'nodemailer';
+import { JwtModule, JwtService } from "@nestjs/jwt";
+import { ISendMailOptions } from "@nestjs-modules/mailer";
+import { SentMessageInfo } from "nodemailer";
 
-import { I18nService } from '@/i18n/services/i18n.service';
-import { MailerService } from '@/mailer/mailer.service';
-import { IGNORED_TEST_FIELDS } from '@/utils/test/constants';
+import { I18nService } from "@/i18n/services/i18n.service";
+import { MailerService } from "@/mailer/mailer.service";
+import { IGNORED_TEST_FIELDS } from "@/utils/test/constants";
 import {
   installInvitationFixtures,
   invitationsFixtures,
-} from '@/utils/test/fixtures/invitation';
-import { installLanguageFixtures } from '@/utils/test/fixtures/language';
+} from "@/utils/test/fixtures/invitation";
+import { installLanguageFixtures } from "@/utils/test/fixtures/language";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { InvitationCreateDto } from '../dto/invitation.dto';
-import { InvitationRepository } from '../repositories/invitation.repository';
-import { RoleRepository } from '../repositories/role.repository';
+import { InvitationCreateDto } from "../dto/invitation.dto";
+import { InvitationRepository } from "../repositories/invitation.repository";
+import { RoleRepository } from "../repositories/role.repository";
 
-import { InvitationService } from './invitation.service';
+import { InvitationService } from "./invitation.service";
 
-describe('InvitationService', () => {
+describe("InvitationService", () => {
   let invitationService: InvitationService;
   let roleRepository: RoleRepository;
   let invitationRepository: InvitationRepository;
   let jwtService: JwtService;
   let mailerService: MailerService;
-  const IGNORED_FIELDS = ['iat', 'exp', 'token', ...IGNORED_TEST_FIELDS];
+  const IGNORED_FIELDS = ["iat", "exp", "token", ...IGNORED_TEST_FIELDS];
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      models: ['PermissionModel'],
-      autoInjectFrom: ['providers'],
+      models: ["PermissionModel"],
+      autoInjectFrom: ["providers"],
       imports: [
         rootMongooseTestModule(async () => {
           await installLanguageFixtures();
@@ -63,7 +63,7 @@ describe('InvitationService', () => {
           useValue: {
             sendMail: jest.fn(
               (_options: ISendMailOptions): Promise<SentMessageInfo> =>
-                Promise.resolve('Mail sent successfully'),
+                Promise.resolve("Mail sent successfully"),
             ),
           },
         },
@@ -88,8 +88,8 @@ describe('InvitationService', () => {
 
   afterEach(jest.clearAllMocks);
 
-  describe('sign', () => {
-    it('should sign a jwt', async () => {
+  describe("sign", () => {
+    it("should sign a jwt", async () => {
       const test = invitationsFixtures[0];
       const jwt = await invitationService.sign(test);
       const decodedJwt = await jwtService.decode(jwt, { json: true });
@@ -100,7 +100,7 @@ describe('InvitationService', () => {
       ).toBeDefined();
     });
 
-    it('should verify a jwt', async () => {
+    it("should verify a jwt", async () => {
       const jwt = jwtService.sign(
         invitationsFixtures[0],
         invitationService.jwtSignOptions,
@@ -113,17 +113,17 @@ describe('InvitationService', () => {
     });
   });
 
-  describe('create', () => {
-    it('should create a valid invitation with a hashed token', async () => {
-      jest.spyOn(mailerService, 'sendMail');
-      jest.spyOn(invitationService, 'sign');
+  describe("create", () => {
+    it("should create a valid invitation with a hashed token", async () => {
+      jest.spyOn(mailerService, "sendMail");
+      jest.spyOn(invitationService, "sign");
       const role = await roleRepository.findOne({});
       const newInvitation: InvitationCreateDto = {
-        email: 'test@testland.tst',
+        email: "test@testland.tst",
         roles: [role!.id.toString()],
       };
 
-      jest.spyOn(invitationRepository, 'create');
+      jest.spyOn(invitationRepository, "create");
       const result = await invitationService.create(newInvitation);
       const decodedJwt = await invitationService.verify(result.token);
 
@@ -138,9 +138,9 @@ describe('InvitationService', () => {
     });
   });
 
-  describe('updateOne', () => {
-    it('should throw an error', async () => {
-      jest.spyOn(invitationService, 'updateOne');
+  describe("updateOne", () => {
+    it("should throw an error", async () => {
+      jest.spyOn(invitationService, "updateOne");
       await expect(invitationService.updateOne()).rejects.toThrow();
     });
   });

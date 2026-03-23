@@ -6,21 +6,21 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-import { InvitationModel, Invitation } from '@/user/schemas/invitation.schema';
-import { hash } from '@/user/utilities/hash';
+import { InvitationModel, Invitation } from "@/user/schemas/invitation.schema";
+import { hash } from "@/user/utilities/hash";
 
-import { getFixturesWithDefaultValues } from '../defaultValues';
-import { TFixtures } from '../types';
+import { getFixturesWithDefaultValues } from "../defaultValues";
+import { TFixtures } from "../types";
 
-import { installRoleFixtures } from './role';
+import { installRoleFixtures } from "./role";
 
 const invitations: TFixtures<Invitation>[] = [
   {
-    email: 'email@test.com',
-    roles: ['0'],
-    token: hash('testtoken'),
+    email: "email@test.com",
+    roles: ["0"],
+    token: hash("testtoken"),
   },
 ];
 

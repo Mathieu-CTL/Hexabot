@@ -6,20 +6,20 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { existsSync, mkdirSync } from 'fs';
+import { existsSync, mkdirSync } from "fs";
 
-import { Module, OnApplicationBootstrap } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { PassportModule } from '@nestjs/passport';
+import { Module, OnApplicationBootstrap } from "@nestjs/common";
+import { MongooseModule } from "@nestjs/mongoose";
+import { PassportModule } from "@nestjs/passport";
 
-import { AppInstance } from '@/app.instance';
-import { config } from '@/config';
-import { UserModule } from '@/user/user.module';
+import { AppInstance } from "@/app.instance";
+import { config } from "@/config";
+import { UserModule } from "@/user/user.module";
 
-import { AttachmentController } from './controllers/attachment.controller';
-import { AttachmentRepository } from './repositories/attachment.repository';
-import { AttachmentModel } from './schemas/attachment.schema';
-import { AttachmentService } from './services/attachment.service';
+import { AttachmentController } from "./controllers/attachment.controller";
+import { AttachmentRepository } from "./repositories/attachment.repository";
+import { AttachmentModel } from "./schemas/attachment.schema";
+import { AttachmentService } from "./services/attachment.service";
 
 @Module({
   imports: [

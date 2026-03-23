@@ -16,25 +16,25 @@ import {
   Param,
   Post,
   Query,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
-import { BaseController } from '@/utils/generics/base-controller';
-import { PopulatePipe } from '@/utils/pipes/populate.pipe';
-import { SearchFilterPipe } from '@/utils/pipes/search-filter.pipe';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { BaseController } from "@/utils/generics/base-controller";
+import { PopulatePipe } from "@/utils/pipes/populate.pipe";
+import { SearchFilterPipe } from "@/utils/pipes/search-filter.pipe";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
-import { PermissionCreateDto } from '../dto/permission.dto';
+import { PermissionCreateDto } from "../dto/permission.dto";
 import {
   Permission,
   PermissionFull,
   PermissionPopulate,
   PermissionStub,
-} from '../schemas/permission.schema';
-import { ModelService } from '../services/model.service';
-import { PermissionService } from '../services/permission.service';
-import { RoleService } from '../services/role.service';
+} from "../schemas/permission.schema";
+import { ModelService } from "../services/model.service";
+import { PermissionService } from "../services/permission.service";
+import { RoleService } from "../services/role.service";
 
-@Controller('permission')
+@Controller("permission")
 export class PermissionController extends BaseController<
   Permission,
   PermissionStub,
@@ -63,7 +63,7 @@ export class PermissionController extends BaseController<
     populate: string[],
     @Query(
       new SearchFilterPipe<Permission>({
-        allowedFields: ['model', 'role'],
+        allowedFields: ["model", "role"],
       }),
     )
     filters: TFilterQuery<Permission>,
@@ -88,12 +88,12 @@ export class PermissionController extends BaseController<
   async create(@Body() permission: PermissionCreateDto) {
     const role = await this.roleService.findOne(permission.role);
     if (!role) {
-      throw new NotFoundException('Unable to find role');
+      throw new NotFoundException("Unable to find role");
     }
     const model = await this.modelService.findOne(permission.model);
 
     if (!model) {
-      throw new NotFoundException('Unable to find model');
+      throw new NotFoundException("Unable to find model");
     }
 
     return await this.permissionService.create(permission);
@@ -110,9 +110,9 @@ export class PermissionController extends BaseController<
    * @returns The result of the deletion operation.
    */
 
-  @Delete(':id')
+  @Delete(":id")
   @HttpCode(204)
-  async deleteOne(@Param('id') id: string) {
+  async deleteOne(@Param("id") id: string) {
     const result = await this.permissionService.deleteOne(id);
     if (result.deletedCount === 0) {
       this.logger.warn(`Unable to delete Permission by id ${id}`);

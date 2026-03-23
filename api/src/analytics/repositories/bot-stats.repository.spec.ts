@@ -6,30 +6,30 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { getModelToken } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { getModelToken } from "@nestjs/mongoose";
+import { Model } from "mongoose";
 
 import {
   botstatsFixtures,
   installBotStatsFixtures,
-} from '@/utils/test/fixtures/botstats';
+} from "@/utils/test/fixtures/botstats";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { BotStats, BotStatsType } from '../schemas/bot-stats.schema';
+import { BotStats, BotStatsType } from "../schemas/bot-stats.schema";
 
-import { BotStatsRepository } from './bot-stats.repository';
+import { BotStatsRepository } from "./bot-stats.repository";
 
-describe('BotStatsRepository', () => {
+describe("BotStatsRepository", () => {
   let botStatsRepository: BotStatsRepository;
   let botStatsModel: Model<BotStats>;
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['providers'],
+      autoInjectFrom: ["providers"],
       imports: [rootMongooseTestModule(installBotStatsFixtures)],
       providers: [BotStatsRepository],
     });
@@ -43,11 +43,11 @@ describe('BotStatsRepository', () => {
 
   afterEach(jest.clearAllMocks);
 
-  describe('findMessages', () => {
-    it('should return messages', async () => {
-      jest.spyOn(botStatsModel, 'find');
-      const from = new Date('2023-11-01T23:00:00.000Z');
-      const to = new Date('2023-11-07T23:00:00.000Z');
+  describe("findMessages", () => {
+    it("should return messages", async () => {
+      jest.spyOn(botStatsModel, "find");
+      const from = new Date("2023-11-01T23:00:00.000Z");
+      const to = new Date("2023-11-07T23:00:00.000Z");
       const types = [
         BotStatsType.all_messages,
         BotStatsType.incoming,
@@ -71,10 +71,10 @@ describe('BotStatsRepository', () => {
       );
     });
 
-    it('should return messages of a specific period', async () => {
-      jest.spyOn(botStatsModel, 'find');
-      const from = new Date('2023-11-01T23:00:00.000Z');
-      const to = new Date('2023-11-03T23:00:00.000Z');
+    it("should return messages of a specific period", async () => {
+      jest.spyOn(botStatsModel, "find");
+      const from = new Date("2023-11-01T23:00:00.000Z");
+      const to = new Date("2023-11-03T23:00:00.000Z");
       const types = [
         BotStatsType.all_messages,
         BotStatsType.incoming,
@@ -96,10 +96,10 @@ describe('BotStatsRepository', () => {
       expect(result).toEqualPayload([botstatsFixtures[0]]);
     });
 
-    it('should return conversation statistics', async () => {
-      jest.spyOn(botStatsModel, 'find');
-      const from = new Date('2023-11-01T23:00:00.000Z');
-      const to = new Date('2023-11-07T23:00:00.000Z');
+    it("should return conversation statistics", async () => {
+      jest.spyOn(botStatsModel, "find");
+      const from = new Date("2023-11-01T23:00:00.000Z");
+      const to = new Date("2023-11-07T23:00:00.000Z");
       const result = await botStatsRepository.findMessages(from, to, [
         BotStatsType.new_conversations,
         BotStatsType.existing_conversations,
@@ -118,10 +118,10 @@ describe('BotStatsRepository', () => {
       expect(result).toEqualPayload([botstatsFixtures[3]]);
     });
 
-    it('should return audiance statistics', async () => {
-      jest.spyOn(botStatsModel, 'find');
-      const from = new Date('2023-11-01T23:00:00.000Z');
-      const to = new Date('2023-11-07T23:00:00.000Z');
+    it("should return audiance statistics", async () => {
+      jest.spyOn(botStatsModel, "find");
+      const from = new Date("2023-11-01T23:00:00.000Z");
+      const to = new Date("2023-11-07T23:00:00.000Z");
       const result = await botStatsRepository.findMessages(from, to, [
         BotStatsType.new_users,
         BotStatsType.returning_users,
@@ -142,10 +142,10 @@ describe('BotStatsRepository', () => {
       expect(result).toEqualPayload([botstatsFixtures[1]]);
     });
 
-    it('should return statistics of a given type', async () => {
-      jest.spyOn(botStatsModel, 'find');
-      const from = new Date('2023-11-01T23:00:00.000Z');
-      const to = new Date('2023-11-07T23:00:00.000Z');
+    it("should return statistics of a given type", async () => {
+      jest.spyOn(botStatsModel, "find");
+      const from = new Date("2023-11-01T23:00:00.000Z");
+      const to = new Date("2023-11-07T23:00:00.000Z");
       const result = await botStatsRepository.findMessages(from, to, [
         BotStatsType.incoming,
       ]);
@@ -161,18 +161,18 @@ describe('BotStatsRepository', () => {
     });
   });
 
-  describe('findPopularBlocks', () => {
-    it('should return popular blocks', async () => {
-      jest.spyOn(botStatsModel, 'aggregate');
-      const from = new Date('2023-11-01T22:00:00.000Z');
-      const to = new Date('2023-11-07T23:00:00.000Z');
+  describe("findPopularBlocks", () => {
+    it("should return popular blocks", async () => {
+      jest.spyOn(botStatsModel, "aggregate");
+      const from = new Date("2023-11-01T22:00:00.000Z");
+      const to = new Date("2023-11-07T23:00:00.000Z");
       const result = await botStatsRepository.findPopularBlocks(from, to);
 
       expect(botStatsModel.aggregate).toHaveBeenCalled();
 
       expect(result).toEqual([
         {
-          id: 'Global Fallback',
+          id: "Global Fallback",
           value: 68,
         },
       ]);

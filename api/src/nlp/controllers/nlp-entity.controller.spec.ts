@@ -11,30 +11,30 @@ import {
   ConflictException,
   MethodNotAllowedException,
   NotFoundException,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
-import { IGNORED_TEST_FIELDS } from '@/utils/test/constants';
-import { nlpEntityFixtures } from '@/utils/test/fixtures/nlpentity';
+import { IGNORED_TEST_FIELDS } from "@/utils/test/constants";
+import { nlpEntityFixtures } from "@/utils/test/fixtures/nlpentity";
 import {
   installNlpValueFixtures,
   nlpValueFixtures,
-} from '@/utils/test/fixtures/nlpvalue';
-import { getPageQuery } from '@/utils/test/pagination';
+} from "@/utils/test/fixtures/nlpvalue";
+import { getPageQuery } from "@/utils/test/pagination";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { TFixtures } from '@/utils/test/types';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { TFixtures } from "@/utils/test/types";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { NlpEntityCreateDto, NlpEntityUpdateDto } from '../dto/nlp-entity.dto';
-import { NlpEntity, NlpEntityFull } from '../schemas/nlp-entity.schema';
-import { NlpEntityService } from '../services/nlp-entity.service';
-import { NlpValueService } from '../services/nlp-value.service';
+import { NlpEntityCreateDto, NlpEntityUpdateDto } from "../dto/nlp-entity.dto";
+import { NlpEntity, NlpEntityFull } from "../schemas/nlp-entity.schema";
+import { NlpEntityService } from "../services/nlp-entity.service";
+import { NlpValueService } from "../services/nlp-value.service";
 
-import { NlpEntityController } from './nlp-entity.controller';
+import { NlpEntityController } from "./nlp-entity.controller";
 
-describe('NlpEntityController', () => {
+describe("NlpEntityController", () => {
   let nlpEntityController: NlpEntityController;
   let nlpValueService: NlpValueService;
   let nlpEntityService: NlpEntityService;
@@ -43,7 +43,7 @@ describe('NlpEntityController', () => {
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['controllers'],
+      autoInjectFrom: ["controllers"],
       controllers: [NlpEntityController],
       imports: [rootMongooseTestModule(installNlpValueFixtures)],
     });
@@ -55,13 +55,13 @@ describe('NlpEntityController', () => {
     intentEntityId =
       (
         await nlpEntityService.findOne({
-          name: 'intent',
+          name: "intent",
         })
       )?.id || null;
     buitInEntityId =
       (
         await nlpEntityService.findOne({
-          name: 'built_in',
+          name: "built_in",
         })
       )?.id || null;
   });
@@ -70,12 +70,12 @@ describe('NlpEntityController', () => {
 
   afterEach(jest.clearAllMocks);
 
-  describe('findPage', () => {
-    it('should find nlp entities,and foreach nlp entity, populate the corresponding values', async () => {
-      const pageQuery = getPageQuery<NlpEntity>({ sort: ['name', 'desc'] });
+  describe("findPage", () => {
+    it("should find nlp entities,and foreach nlp entity, populate the corresponding values", async () => {
+      const pageQuery = getPageQuery<NlpEntity>({ sort: ["name", "desc"] });
       const result = await nlpEntityController.findPage(
         pageQuery,
-        ['values'],
+        ["values"],
         {},
       );
       const entitiesWithValues = nlpEntityFixtures.reduce(
@@ -84,7 +84,7 @@ describe('NlpEntityController', () => {
             ...curr,
             values: nlpValueFixtures.filter(
               ({ entity }) => parseInt(entity!) === index,
-            ) as NlpEntityFull['values'],
+            ) as NlpEntityFull["values"],
             lookups: curr.lookups!,
             builtin: curr.builtin!,
             weight: curr.weight!,
@@ -103,15 +103,15 @@ describe('NlpEntityController', () => {
           }
           return 0;
         }),
-        [...IGNORED_TEST_FIELDS, 'entity'],
+        [...IGNORED_TEST_FIELDS, "entity"],
       );
     });
 
-    it('should find nlp entities', async () => {
-      const pageQuery = getPageQuery<NlpEntity>({ sort: ['name', 'desc'] });
+    it("should find nlp entities", async () => {
+      const pageQuery = getPageQuery<NlpEntity>({ sort: ["name", "desc"] });
       const result = await nlpEntityController.findPage(
         pageQuery,
-        ['invalidCriteria'],
+        ["invalidCriteria"],
         {},
       );
       expect(result).toEqualPayload(
@@ -128,19 +128,19 @@ describe('NlpEntityController', () => {
     });
   });
 
-  describe('count', () => {
-    it('should count the nlp entities', async () => {
+  describe("count", () => {
+    it("should count the nlp entities", async () => {
       const result = await nlpEntityController.filterCount();
       const count = nlpEntityFixtures.length;
       expect(result).toEqual({ count });
     });
   });
 
-  describe('create', () => {
-    it('should create nlp entity', async () => {
+  describe("create", () => {
+    it("should create nlp entity", async () => {
       const sentimentEntity: NlpEntityCreateDto = {
-        name: 'sentiment',
-        lookups: ['trait'],
+        name: "sentiment",
+        lookups: ["trait"],
         builtin: false,
         weight: 1,
       };
@@ -149,42 +149,42 @@ describe('NlpEntityController', () => {
     });
   });
 
-  describe('deleteOne', () => {
-    it('should delete a nlp entity', async () => {
+  describe("deleteOne", () => {
+    it("should delete a nlp entity", async () => {
       const result = await nlpEntityController.deleteOne(intentEntityId!);
       expect(result.deletedCount).toEqual(1);
     });
 
-    it('should throw exception when nlp entity id not found', async () => {
+    it("should throw exception when nlp entity id not found", async () => {
       await expect(
         nlpEntityController.deleteOne(intentEntityId!),
       ).rejects.toThrow(NotFoundException);
     });
 
-    it('should throw exception when nlp entity is builtin', async () => {
+    it("should throw exception when nlp entity is builtin", async () => {
       await expect(
         nlpEntityController.deleteOne(buitInEntityId!),
       ).rejects.toThrow(MethodNotAllowedException);
     });
   });
 
-  describe('findOne', () => {
-    it('should find a nlp entity', async () => {
+  describe("findOne", () => {
+    it("should find a nlp entity", async () => {
       const firstNameEntity = await nlpEntityService.findOne({
-        name: 'firstname',
+        name: "firstname",
       });
       const result = await nlpEntityController.findOne(firstNameEntity!.id, []);
 
       expect(result).toEqualPayload(
-        nlpEntityFixtures.find(({ name }) => name === 'firstname')!,
+        nlpEntityFixtures.find(({ name }) => name === "firstname")!,
       );
     });
 
-    it('should find a nlp entity, and populate its values', async () => {
+    it("should find a nlp entity, and populate its values", async () => {
       const firstNameEntity = await nlpEntityService.findOne({
-        name: 'firstname',
+        name: "firstname",
       });
-      const firstNameValues = await nlpValueService.findOne({ value: 'jhon' });
+      const firstNameValues = await nlpValueService.findOne({ value: "jhon" });
       const firstNameWithValues: NlpEntityFull = {
         ...firstNameEntity,
         values: firstNameValues ? [firstNameValues] : [],
@@ -197,27 +197,27 @@ describe('NlpEntityController', () => {
         weight: firstNameEntity!.weight,
       };
       const result = await nlpEntityController.findOne(firstNameEntity!.id, [
-        'values',
+        "values",
       ]);
       expect(result).toEqualPayload(firstNameWithValues);
     });
 
-    it('should throw NotFoundException when Id does not exist', async () => {
+    it("should throw NotFoundException when Id does not exist", async () => {
       await expect(
-        nlpEntityController.findOne(intentEntityId!, ['values']),
+        nlpEntityController.findOne(intentEntityId!, ["values"]),
       ).rejects.toThrow(NotFoundException);
     });
   });
 
-  describe('updateOne', () => {
-    it('should update a nlp entity', async () => {
+  describe("updateOne", () => {
+    it("should update a nlp entity", async () => {
       const firstNameEntity = await nlpEntityService.findOne({
-        name: 'firstname',
+        name: "firstname",
       });
       const updatedNlpEntity: NlpEntityCreateDto = {
-        name: 'updated',
-        doc: '',
-        lookups: ['trait'],
+        name: "updated",
+        doc: "",
+        lookups: ["trait"],
         builtin: false,
         weight: 1,
       };
@@ -228,11 +228,11 @@ describe('NlpEntityController', () => {
       expect(result).toEqualPayload(updatedNlpEntity);
     });
 
-    it('should throw exception when nlp entity id not found', async () => {
+    it("should throw exception when nlp entity id not found", async () => {
       const updateNlpEntity: NlpEntityCreateDto = {
-        name: 'updated',
-        doc: '',
-        lookups: ['trait'],
+        name: "updated",
+        doc: "",
+        lookups: ["trait"],
         builtin: false,
       };
       await expect(
@@ -240,12 +240,12 @@ describe('NlpEntityController', () => {
       ).rejects.toThrow(NotFoundException);
     });
 
-    it('should update weight if entity is builtin and weight is provided', async () => {
+    it("should update weight if entity is builtin and weight is provided", async () => {
       const updatedNlpEntity: NlpEntityUpdateDto = {
         weight: 4,
       };
-      const findOneSpy = jest.spyOn(nlpEntityService, 'findOne');
-      const updateWeightSpy = jest.spyOn(nlpEntityService, 'updateWeight');
+      const findOneSpy = jest.spyOn(nlpEntityService, "findOne");
+      const updateWeightSpy = jest.spyOn(nlpEntityService, "updateWeight");
 
       const result = await nlpEntityController.updateOne(
         buitInEntityId!,
@@ -260,18 +260,18 @@ describe('NlpEntityController', () => {
       expect(result.weight).toBe(updatedNlpEntity.weight);
     });
 
-    it('should throw an exception if entity is builtin but weight not provided', async () => {
+    it("should throw an exception if entity is builtin but weight not provided", async () => {
       await expect(
         nlpEntityController.updateOne(buitInEntityId!, {
-          name: 'updated',
-          doc: '',
-          lookups: ['trait'],
+          name: "updated",
+          doc: "",
+          lookups: ["trait"],
           builtin: false,
         } as any),
       ).rejects.toThrow(ConflictException);
     });
 
-    it('should update only the weight of the builtin entity', async () => {
+    it("should update only the weight of the builtin entity", async () => {
       const updatedNlpEntity: NlpEntityUpdateDto = {
         weight: 8,
       };
@@ -288,23 +288,23 @@ describe('NlpEntityController', () => {
       expect(result.weight).toBe(updatedNlpEntity.weight);
 
       Object.entries(originalEntity!).forEach(([key, value]) => {
-        if (key !== 'weight' && key !== 'updatedAt') {
+        if (key !== "weight" && key !== "updatedAt") {
           expect(result[key as keyof typeof result]).toEqual(value);
         }
       });
     });
   });
-  describe('deleteMany', () => {
-    it('should delete multiple nlp entities', async () => {
+  describe("deleteMany", () => {
+    it("should delete multiple nlp entities", async () => {
       const entitiesToDelete = [
         (
           await nlpEntityService.findOne({
-            name: 'sentiment',
+            name: "sentiment",
           })
         )?.id,
         (
           await nlpEntityService.findOne({
-            name: 'updated',
+            name: "updated",
           })
         )?.id,
       ] as string[];
@@ -318,16 +318,16 @@ describe('NlpEntityController', () => {
       expect(remainingEntities.length).toBe(0);
     });
 
-    it('should throw BadRequestException when no IDs are provided', async () => {
+    it("should throw BadRequestException when no IDs are provided", async () => {
       await expect(nlpEntityController.deleteMany([])).rejects.toThrow(
         BadRequestException,
       );
     });
 
-    it('should throw NotFoundException when provided IDs do not exist', async () => {
+    it("should throw NotFoundException when provided IDs do not exist", async () => {
       const nonExistentIds = [
-        '614c1b2f58f4f04c876d6b8d',
-        '614c1b2f58f4f04c876d6b8e',
+        "614c1b2f58f4f04c876d6b8d",
+        "614c1b2f58f4f04c876d6b8e",
       ];
 
       await expect(

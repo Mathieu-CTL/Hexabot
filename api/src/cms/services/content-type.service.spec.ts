@@ -6,21 +6,21 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { BlockService } from '@/chat/services/block.service';
-import { I18nService } from '@/i18n/services/i18n.service';
-import { installContentFixtures } from '@/utils/test/fixtures/content';
+import { BlockService } from "@/chat/services/block.service";
+import { I18nService } from "@/i18n/services/i18n.service";
+import { installContentFixtures } from "@/utils/test/fixtures/content";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { ContentTypeRepository } from '../repositories/content-type.repository';
+import { ContentTypeRepository } from "../repositories/content-type.repository";
 
-import { ContentTypeService } from './content-type.service';
-import { ContentService } from './content.service';
+import { ContentTypeService } from "./content-type.service";
+import { ContentService } from "./content.service";
 
-describe('ContentTypeService', () => {
+describe("ContentTypeService", () => {
   let contentTypeService: ContentTypeService;
   let contentService: ContentService;
   let contentTypeRepository: ContentTypeRepository;
@@ -28,7 +28,7 @@ describe('ContentTypeService', () => {
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['providers'],
+      autoInjectFrom: ["providers"],
       imports: [rootMongooseTestModule(installContentFixtures)],
       providers: [
         ContentTypeService,
@@ -53,14 +53,14 @@ describe('ContentTypeService', () => {
 
   afterEach(jest.clearAllMocks);
 
-  describe('deleteOne', () => {
-    it('should delete a content type and its related contents', async () => {
+  describe("deleteOne", () => {
+    it("should delete a content type and its related contents", async () => {
       const deleteContentTypeSpy = jest.spyOn(
         contentTypeRepository,
-        'deleteOne',
+        "deleteOne",
       );
-      jest.spyOn(blockService, 'findOne').mockResolvedValueOnce(null);
-      const contentType = await contentTypeService.findOne({ name: 'Product' });
+      jest.spyOn(blockService, "findOne").mockResolvedValueOnce(null);
+      const contentType = await contentTypeService.findOne({ name: "Product" });
 
       const result = await contentTypeService.deleteCascadeOne(contentType!.id);
       expect(deleteContentTypeSpy).toHaveBeenCalledWith(contentType!.id);

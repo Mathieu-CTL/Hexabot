@@ -6,15 +6,15 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { csrfSync } from 'csrf-sync';
-import { Request } from 'express';
+import { csrfSync } from "csrf-sync";
+import { Request } from "express";
 
-import { config } from '.';
+import { config } from ".";
 
 export const csrf = csrfSync({
-  ignoredMethods: ['GET', 'HEAD', 'OPTIONS'],
+  ignoredMethods: ["GET", "HEAD", "OPTIONS"],
   getTokenFromRequest: (req: Request) =>
-    (req.headers['x-csrf-token'] as string) ??
+    (req.headers["x-csrf-token"] as string) ??
     (req.body?._csrf as string) ??
     (req.query?._csrf as string) ??
     undefined,

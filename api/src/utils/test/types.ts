@@ -6,7 +6,7 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { BaseSchema } from '../generics/base-schema';
+import { BaseSchema } from "../generics/base-schema";
 
 export type TOptionalPropertyOf<T> = Exclude<
   {
@@ -17,12 +17,12 @@ export type TOptionalPropertyOf<T> = Exclude<
 
 //fixtures types
 export type TFixtures<T> = Omit<T, keyof BaseSchema> & {
-  createdAt?: BaseSchema['createdAt'];
+  createdAt?: BaseSchema["createdAt"];
 };
 
 export type TFixturesDefaultValues<T, S = TFixtures<T>> = {
   [key in TOptionalPropertyOf<S>]?: S[key];
-} & { createdAt?: BaseSchema['createdAt'] };
+} & { createdAt?: BaseSchema["createdAt"] };
 
 export type TOptionalPropertyFrom<O extends object, O1 extends object> = Pick<
   O1,

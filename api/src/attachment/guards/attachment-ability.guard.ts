@@ -6,7 +6,7 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Url } from 'url';
+import { Url } from "url";
 
 import {
   BadRequestException,
@@ -14,23 +14,23 @@ import {
   ExecutionContext,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { Request } from 'express';
-import { Types } from 'mongoose';
-import qs from 'qs';
+} from "@nestjs/common";
+import { Request } from "express";
+import { Types } from "mongoose";
+import qs from "qs";
 
-import { User } from '@/user/schemas/user.schema';
-import { ModelService } from '@/user/services/model.service';
-import { PermissionService } from '@/user/services/permission.service';
-import { Action } from '@/user/types/action.type';
-import { TModel } from '@/user/types/model.type';
+import { User } from "@/user/schemas/user.schema";
+import { ModelService } from "@/user/services/model.service";
+import { PermissionService } from "@/user/services/permission.service";
+import { Action } from "@/user/types/action.type";
+import { TModel } from "@/user/types/model.type";
 
-import { AttachmentService } from '../services/attachment.service';
-import { AttachmentResourceRef } from '../types';
+import { AttachmentService } from "../services/attachment.service";
+import { AttachmentResourceRef } from "../types";
 import {
   isAttachmentResourceRef,
   isAttachmentResourceRefArray,
-} from '../utilities';
+} from "../utilities";
 
 @Injectable()
 export class AttachmentGuard implements CanActivate {
@@ -47,66 +47,66 @@ export class AttachmentGuard implements CanActivate {
     // Read attachments by ref
     [Action.READ]: {
       [AttachmentResourceRef.SettingAttachment]: [
-        ['setting', Action.READ],
-        ['attachment', Action.READ],
+        ["setting", Action.READ],
+        ["attachment", Action.READ],
       ],
-      [AttachmentResourceRef.UserAvatar]: [['user', Action.READ]],
+      [AttachmentResourceRef.UserAvatar]: [["user", Action.READ]],
       [AttachmentResourceRef.BlockAttachment]: [
-        ['block', Action.READ],
-        ['attachment', Action.READ],
+        ["block", Action.READ],
+        ["attachment", Action.READ],
       ],
       [AttachmentResourceRef.ContentAttachment]: [
-        ['content', Action.READ],
-        ['attachment', Action.READ],
+        ["content", Action.READ],
+        ["attachment", Action.READ],
       ],
-      [AttachmentResourceRef.SubscriberAvatar]: [['subscriber', Action.READ]],
+      [AttachmentResourceRef.SubscriberAvatar]: [["subscriber", Action.READ]],
       [AttachmentResourceRef.MessageAttachment]: [
-        ['message', Action.READ],
-        ['attachment', Action.READ],
+        ["message", Action.READ],
+        ["attachment", Action.READ],
       ],
     },
     // Create attachments by ref
     [Action.CREATE]: {
       [AttachmentResourceRef.SettingAttachment]: [
-        ['setting', Action.UPDATE],
-        ['attachment', Action.CREATE],
+        ["setting", Action.UPDATE],
+        ["attachment", Action.CREATE],
       ],
       [AttachmentResourceRef.UserAvatar]: [
         // Not authorized, done via /user/:id/edit endpoint
       ],
       [AttachmentResourceRef.BlockAttachment]: [
-        ['block', Action.UPDATE],
-        ['attachment', Action.CREATE],
+        ["block", Action.UPDATE],
+        ["attachment", Action.CREATE],
       ],
       [AttachmentResourceRef.ContentAttachment]: [
-        ['content', Action.UPDATE],
-        ['attachment', Action.CREATE],
+        ["content", Action.UPDATE],
+        ["attachment", Action.CREATE],
       ],
       [AttachmentResourceRef.SubscriberAvatar]: [
         // Not authorized, done programmatically by the channel
       ],
       [AttachmentResourceRef.MessageAttachment]: [
         // Unless we're in case of a handover, done programmatically by the channel
-        ['message', Action.CREATE],
-        ['attachment', Action.CREATE],
+        ["message", Action.CREATE],
+        ["attachment", Action.CREATE],
       ],
     },
     // Delete attachments by ref
     [Action.DELETE]: {
       [AttachmentResourceRef.SettingAttachment]: [
-        ['setting', Action.UPDATE],
-        ['attachment', Action.DELETE],
+        ["setting", Action.UPDATE],
+        ["attachment", Action.DELETE],
       ],
       [AttachmentResourceRef.UserAvatar]: [
         // Not authorized
       ],
       [AttachmentResourceRef.BlockAttachment]: [
-        ['block', Action.UPDATE],
-        ['attachment', Action.DELETE],
+        ["block", Action.UPDATE],
+        ["attachment", Action.DELETE],
       ],
       [AttachmentResourceRef.ContentAttachment]: [
-        ['content', Action.UPDATE],
-        ['attachment', Action.DELETE],
+        ["content", Action.UPDATE],
+        ["attachment", Action.DELETE],
       ],
       [AttachmentResourceRef.SubscriberAvatar]: [
         // Not authorized, done programmatically by the channel
@@ -172,11 +172,11 @@ export class AttachmentGuard implements CanActivate {
     resourceRef: AttachmentResourceRef,
   ): Promise<boolean> {
     if (!action) {
-      throw new TypeError('Invalid action');
+      throw new TypeError("Invalid action");
     }
 
     if (!resourceRef) {
-      throw new TypeError('Invalid resource ref');
+      throw new TypeError("Invalid resource ref");
     }
 
     const permissions = this.permissionMap[action][resourceRef];
@@ -209,12 +209,12 @@ export class AttachmentGuard implements CanActivate {
 
     switch (method) {
       // count(), find() and findOne() endpoints
-      case 'GET': {
-        if (params && 'id' in params && Types.ObjectId.isValid(params.id)) {
+      case "GET": {
+        if (params && "id" in params && Types.ObjectId.isValid(params.id)) {
           const attachment = await this.attachmentService.findOne(params.id);
 
           if (!attachment) {
-            throw new NotFoundException('Attachment not found!');
+            throw new NotFoundException("Attachment not found!");
           }
 
           return await this.isAuthorized(
@@ -226,7 +226,7 @@ export class AttachmentGuard implements CanActivate {
           const { resourceRef = [] } = query.where as qs.ParsedQs;
 
           if (!isAttachmentResourceRefArray(resourceRef)) {
-            throw new BadRequestException('Invalid resource ref');
+            throw new BadRequestException("Invalid resource ref");
           }
 
           return (
@@ -235,25 +235,25 @@ export class AttachmentGuard implements CanActivate {
             )
           ).every(Boolean);
         } else {
-          throw new BadRequestException('Invalid params');
+          throw new BadRequestException("Invalid params");
         }
       }
       // upload() endpoint
-      case 'POST': {
-        const { resourceRef = '' } = query;
+      case "POST": {
+        const { resourceRef = "" } = query;
         if (!isAttachmentResourceRef(resourceRef)) {
-          throw new BadRequestException('Invalid resource ref');
+          throw new BadRequestException("Invalid resource ref");
         }
 
         return await this.isAuthorized(Action.CREATE, user, resourceRef);
       }
       // deleteOne() endpoint
-      case 'DELETE': {
-        if (params && 'id' in params && Types.ObjectId.isValid(params.id)) {
+      case "DELETE": {
+        if (params && "id" in params && Types.ObjectId.isValid(params.id)) {
           const attachment = await this.attachmentService.findOne(params.id);
 
           if (!attachment) {
-            throw new NotFoundException('Invalid attachment ID');
+            throw new NotFoundException("Invalid attachment ID");
           }
 
           return await this.isAuthorized(
@@ -262,11 +262,11 @@ export class AttachmentGuard implements CanActivate {
             attachment.resourceRef,
           );
         } else {
-          throw new BadRequestException('Invalid params');
+          throw new BadRequestException("Invalid params");
         }
       }
       default:
-        throw new BadRequestException('Invalid operation');
+        throw new BadRequestException("Invalid operation");
     }
   }
 }

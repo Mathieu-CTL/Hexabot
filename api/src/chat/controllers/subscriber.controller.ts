@@ -15,27 +15,27 @@ import {
   Patch,
   Query,
   StreamableFile,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
-import { AttachmentService } from '@/attachment/services/attachment.service';
-import { BaseController } from '@/utils/generics/base-controller';
-import { generateInitialsAvatar } from '@/utils/helpers/avatar';
-import { PageQueryDto } from '@/utils/pagination/pagination-query.dto';
-import { PageQueryPipe } from '@/utils/pagination/pagination-query.pipe';
-import { PopulatePipe } from '@/utils/pipes/populate.pipe';
-import { SearchFilterPipe } from '@/utils/pipes/search-filter.pipe';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { AttachmentService } from "@/attachment/services/attachment.service";
+import { BaseController } from "@/utils/generics/base-controller";
+import { generateInitialsAvatar } from "@/utils/helpers/avatar";
+import { PageQueryDto } from "@/utils/pagination/pagination-query.dto";
+import { PageQueryPipe } from "@/utils/pagination/pagination-query.pipe";
+import { PopulatePipe } from "@/utils/pipes/populate.pipe";
+import { SearchFilterPipe } from "@/utils/pipes/search-filter.pipe";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
-import { SubscriberUpdateDto } from '../dto/subscriber.dto';
+import { SubscriberUpdateDto } from "../dto/subscriber.dto";
 import {
   Subscriber,
   SubscriberFull,
   SubscriberPopulate,
   SubscriberStub,
-} from '../schemas/subscriber.schema';
-import { SubscriberService } from '../services/subscriber.service';
+} from "../schemas/subscriber.schema";
+import { SubscriberService } from "../services/subscriber.service";
 
-@Controller('subscriber')
+@Controller("subscriber")
 export class SubscriberController extends BaseController<
   Subscriber,
   SubscriberStub,
@@ -67,11 +67,11 @@ export class SubscriberController extends BaseController<
       new SearchFilterPipe<Subscriber>({
         // TODO : Check if the field email should be added to Subscriber schema
         allowedFields: [
-          'first_name',
-          'last_name',
-          'assignedTo',
-          'labels',
-          'channel.name',
+          "first_name",
+          "last_name",
+          "assignedTo",
+          "labels",
+          "channel.name",
         ],
       }),
     )
@@ -88,16 +88,16 @@ export class SubscriberController extends BaseController<
    * @param filters - Optional search filters to apply on the Subscriber model.
    * @returns A promise containing the count of subscribers matching the filters.
    */
-  @Get('count')
+  @Get("count")
   async filterCount(
     @Query(
       new SearchFilterPipe<Subscriber>({
         allowedFields: [
-          'first_name',
-          'last_name',
-          'assignedTo',
-          'labels',
-          'channel.name',
+          "first_name",
+          "last_name",
+          "assignedTo",
+          "labels",
+          "channel.name",
         ],
       }),
     )
@@ -114,9 +114,9 @@ export class SubscriberController extends BaseController<
    * @param populate - An optional list of related fields to populate in the response.
    * @returns The subscriber document, populated if requested.
    */
-  @Get(':id')
+  @Get(":id")
   async findOne(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Query(PopulatePipe)
     populate: string[],
   ) {
@@ -137,9 +137,9 @@ export class SubscriberController extends BaseController<
    * @param id - The unique identifier of the subscriber whose profile picture is to be retrieved.
    * @returns A streamable file containing the avatar image.
    */
-  @Get(':id/profile_pic')
+  @Get(":id/profile_pic")
   async getAvatar(
-    @Param('id') id: string,
+    @Param("id") id: string,
   ): Promise<StreamableFile | undefined> {
     const subscriber = await this.subscriberService.findOneAndPopulate(id);
 
@@ -149,22 +149,22 @@ export class SubscriberController extends BaseController<
 
     try {
       if (!subscriber.avatar) {
-        throw new Error('User has no avatar');
+        throw new Error("User has no avatar");
       }
 
       return await this.attachmentService.download(subscriber.avatar);
     } catch (err) {
       this.logger.verbose(
-        'Subscriber has no avatar, generating initials avatar ...',
+        "Subscriber has no avatar, generating initials avatar ...",
         err,
       );
       return await generateInitialsAvatar(subscriber);
     }
   }
 
-  @Patch(':id')
+  @Patch(":id")
   async updateOne(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body() subscriberUpdate: SubscriberUpdateDto,
   ) {
     return await this.subscriberService.updateOne(id, subscriberUpdate);

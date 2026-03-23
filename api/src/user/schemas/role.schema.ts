@@ -6,20 +6,20 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Exclude, Type } from 'class-transformer';
+import { ModelDefinition, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Exclude, Type } from "class-transformer";
 
-import { BaseSchema } from '@/utils/generics/base-schema';
-import { LifecycleHookManager } from '@/utils/generics/lifecycle-hook-manager';
+import { BaseSchema } from "@/utils/generics/base-schema";
+import { LifecycleHookManager } from "@/utils/generics/lifecycle-hook-manager";
 import {
   TFilterPopulateFields,
   THydratedDocument,
-} from '@/utils/types/filter.types';
+} from "@/utils/types/filter.types";
 
-import { Permission } from './permission.schema';
-import { User } from './user.schema';
+import { Permission } from "./permission.schema";
+import { User } from "./user.schema";
 
-export type TRole = 'admin' | 'public';
+export type TRole = "admin" | "public";
 
 @Schema({ timestamps: true })
 export class RoleStub extends BaseSchema {
@@ -59,20 +59,20 @@ export const RoleModel: ModelDefinition = LifecycleHookManager.attach({
   schema: SchemaFactory.createForClass(RoleStub),
 });
 
-RoleModel.schema.virtual('permissions', {
-  ref: 'Permission',
-  localField: '_id',
-  foreignField: 'role',
+RoleModel.schema.virtual("permissions", {
+  ref: "Permission",
+  localField: "_id",
+  foreignField: "role",
 });
 
-RoleModel.schema.virtual('users', {
-  ref: 'User',
-  localField: '_id',
-  foreignField: 'roles',
+RoleModel.schema.virtual("users", {
+  ref: "User",
+  localField: "_id",
+  foreignField: "roles",
 });
 
 export default RoleModel.schema;
 
 export type RolePopulate = keyof TFilterPopulateFields<Role, RoleStub>;
 
-export const ROLE_POPULATE: RolePopulate[] = ['permissions', 'users'];
+export const ROLE_POPULATE: RolePopulate[] = ["permissions", "users"];

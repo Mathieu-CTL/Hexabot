@@ -6,22 +6,22 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Socket } from 'socket.io-client';
+import { Socket } from "socket.io-client";
 
-import { IOIncomingMessage } from '../pipes/io-message.pipe';
+import { IOIncomingMessage } from "../pipes/io-message.pipe";
 
 type SocketEventMetadata = {
   path: string;
   method: (payload: IOIncomingMessage, client: Socket) => Promise<any>;
   propertyKey: string | symbol;
   socketMethod:
-    | 'get'
-    | 'post'
-    | 'put'
-    | 'patch'
-    | 'delete'
-    | 'options'
-    | 'head';
+    | "get"
+    | "post"
+    | "put"
+    | "patch"
+    | "delete"
+    | "options"
+    | "head";
 };
 
 export class SocketEventMetadataStorage {
@@ -29,8 +29,8 @@ export class SocketEventMetadataStorage {
 
   static addEventMetadata(
     target: object,
-    propertyKey: SocketEventMetadata['propertyKey'],
-    metadata: Omit<SocketEventMetadata, 'propertyKey'>,
+    propertyKey: SocketEventMetadata["propertyKey"],
+    metadata: Omit<SocketEventMetadata, "propertyKey">,
   ) {
     const key = target.constructor.name;
     if (!this.metadata.has(key)) {

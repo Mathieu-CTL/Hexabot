@@ -6,115 +6,115 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-import { ContentTypeCreateDto } from '@/cms/dto/contentType.dto';
+import { ContentTypeCreateDto } from "@/cms/dto/contentType.dto";
 import {
   ContentType,
   ContentTypeModel,
-} from '@/cms/schemas/content-type.schema';
-import { FieldType } from '@/setting/schemas/types';
+} from "@/cms/schemas/content-type.schema";
+import { FieldType } from "@/setting/schemas/types";
 
-import { getFixturesWithDefaultValues } from '../defaultValues';
-import { FixturesTypeBuilder } from '../types';
+import { getFixturesWithDefaultValues } from "../defaultValues";
+import { FixturesTypeBuilder } from "../types";
 
 type TContentTypeFixtures = FixturesTypeBuilder<
   ContentType,
   ContentTypeCreateDto
 >;
 
-export const contentTypeDefaultValues: TContentTypeFixtures['defaultValues'] = {
+export const contentTypeDefaultValues: TContentTypeFixtures["defaultValues"] = {
   fields: [
     {
-      name: 'title',
-      label: 'Title',
+      name: "title",
+      label: "Title",
       type: FieldType.text,
     },
     {
-      name: 'status',
-      label: 'Status',
+      name: "status",
+      label: "Status",
       type: FieldType.checkbox,
     },
   ],
 };
 
-const contentTypes: TContentTypeFixtures['values'][] = [
+const contentTypes: TContentTypeFixtures["values"][] = [
   {
-    name: 'Product',
+    name: "Product",
     fields: [
       {
-        name: 'title',
-        label: 'Title',
+        name: "title",
+        label: "Title",
         type: FieldType.text,
       },
       {
-        name: 'status',
-        label: 'Status',
+        name: "status",
+        label: "Status",
         type: FieldType.checkbox,
       },
       {
-        name: 'description',
-        label: 'Description',
+        name: "description",
+        label: "Description",
         type: FieldType.text,
       },
       {
-        name: 'image',
-        label: 'Image',
+        name: "image",
+        label: "Image",
         type: FieldType.file,
       },
       {
-        name: 'subtitle',
-        label: 'Subtitle',
-        type: FieldType.file,
-      },
-    ],
-  },
-  {
-    name: 'Restaurant',
-    fields: [
-      {
-        name: 'title',
-        label: 'Title',
-        type: FieldType.text,
-      },
-      {
-        name: 'status',
-        label: 'Status',
-        type: FieldType.checkbox,
-      },
-      {
-        name: 'address',
-        label: 'Address',
-        type: FieldType.text,
-      },
-      {
-        name: 'image',
-        label: 'Image',
+        name: "subtitle",
+        label: "Subtitle",
         type: FieldType.file,
       },
     ],
   },
   {
-    name: 'Store',
+    name: "Restaurant",
     fields: [
       {
-        name: 'title',
-        label: 'Title',
+        name: "title",
+        label: "Title",
         type: FieldType.text,
       },
       {
-        name: 'status',
-        label: 'Status',
+        name: "status",
+        label: "Status",
         type: FieldType.checkbox,
       },
       {
-        name: 'address',
-        label: 'Address',
+        name: "address",
+        label: "Address",
         type: FieldType.text,
       },
       {
-        name: 'image',
-        label: 'Image',
+        name: "image",
+        label: "Image",
+        type: FieldType.file,
+      },
+    ],
+  },
+  {
+    name: "Store",
+    fields: [
+      {
+        name: "title",
+        label: "Title",
+        type: FieldType.text,
+      },
+      {
+        name: "status",
+        label: "Status",
+        type: FieldType.checkbox,
+      },
+      {
+        name: "address",
+        label: "Address",
+        type: FieldType.text,
+      },
+      {
+        name: "image",
+        label: "Image",
         type: FieldType.file,
       },
     ],
@@ -122,7 +122,7 @@ const contentTypes: TContentTypeFixtures['values'][] = [
 ];
 
 export const contentTypeFixtures = getFixturesWithDefaultValues<
-  TContentTypeFixtures['values']
+  TContentTypeFixtures["values"]
 >({
   fixtures: contentTypes,
   defaultValues: contentTypeDefaultValues,

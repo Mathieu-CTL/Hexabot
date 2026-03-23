@@ -12,41 +12,41 @@ import {
   Injectable,
   LogLevel,
   Scope,
-} from '@nestjs/common';
-import { INQUIRER } from '@nestjs/core';
+} from "@nestjs/common";
+import { INQUIRER } from "@nestjs/core";
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class LoggerService extends ConsoleLogger {
   constructor(@Inject(INQUIRER) private parentClass: object) {
     super(parentClass.constructor.name, {
-      logLevels: process.env.NODE_ENV?.includes('dev')
-        ? ['log', 'debug', 'error', 'verbose', 'fatal', 'warn']
-        : ['log', 'warn', 'error'],
+      logLevels: process.env.NODE_ENV?.includes("dev")
+        ? ["log", "debug", "error", "verbose", "fatal", "warn"]
+        : ["log", "warn", "error"],
     });
   }
 
   log(message: string, ...args: any[]) {
-    this.logArguments('log', message, args);
+    this.logArguments("log", message, args);
   }
 
   error(message: string, ...args: any[]) {
-    this.logArguments('error', message, args);
+    this.logArguments("error", message, args);
   }
 
   warn(message: string, ...args: any[]) {
-    this.logArguments('warn', message, args);
+    this.logArguments("warn", message, args);
   }
 
   debug(message: string, ...args: any[]) {
-    this.logArguments('debug', message, args);
+    this.logArguments("debug", message, args);
   }
 
   verbose(message: string, ...args: any[]) {
-    this.logArguments('verbose', message, args);
+    this.logArguments("verbose", message, args);
   }
 
   fatal(message: string, ...args: any[]) {
-    this.logArguments('fatal', message, args);
+    this.logArguments("fatal", message, args);
   }
 
   private logArguments(type: LogLevel, message: string, args: any[]) {

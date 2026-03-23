@@ -22,44 +22,44 @@ import {
   UnauthorizedException,
   UploadedFile,
   UseInterceptors,
-} from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { Request } from 'express';
-import { diskStorage, memoryStorage } from 'multer';
+} from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { Request } from "express";
+import { diskStorage, memoryStorage } from "multer";
 
-import { AttachmentService } from '@/attachment/services/attachment.service';
+import { AttachmentService } from "@/attachment/services/attachment.service";
 import {
   AttachmentAccess,
   AttachmentCreatedByRef,
   AttachmentResourceRef,
-} from '@/attachment/types';
-import { config } from '@/config';
-import { Roles } from '@/utils/decorators/roles.decorator';
-import { BaseController } from '@/utils/generics/base-controller';
-import { generateInitialsAvatar, getBotAvatar } from '@/utils/helpers/avatar';
-import { PageQueryDto } from '@/utils/pagination/pagination-query.dto';
-import { PageQueryPipe } from '@/utils/pagination/pagination-query.pipe';
-import { PopulatePipe } from '@/utils/pipes/populate.pipe';
-import { SearchFilterPipe } from '@/utils/pipes/search-filter.pipe';
-import { TFilterQuery } from '@/utils/types/filter.types';
+} from "@/attachment/types";
+import { config } from "@/config";
+import { Roles } from "@/utils/decorators/roles.decorator";
+import { BaseController } from "@/utils/generics/base-controller";
+import { generateInitialsAvatar, getBotAvatar } from "@/utils/helpers/avatar";
+import { PageQueryDto } from "@/utils/pagination/pagination-query.dto";
+import { PageQueryPipe } from "@/utils/pagination/pagination-query.pipe";
+import { PopulatePipe } from "@/utils/pipes/populate.pipe";
+import { SearchFilterPipe } from "@/utils/pipes/search-filter.pipe";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
-import { InvitationCreateDto } from '../dto/invitation.dto';
+import { InvitationCreateDto } from "../dto/invitation.dto";
 import {
   UserCreateDto,
   UserEditProfileDto,
   UserRequestResetDto,
   UserResetPasswordDto,
   UserUpdateStateAndRolesDto,
-} from '../dto/user.dto';
-import { User, UserFull, UserPopulate, UserStub } from '../schemas/user.schema';
-import { InvitationService } from '../services/invitation.service';
-import { PasswordResetService } from '../services/passwordReset.service';
-import { PermissionService } from '../services/permission.service';
-import { RoleService } from '../services/role.service';
-import { UserService } from '../services/user.service';
-import { ValidateAccountService } from '../services/validate-account.service';
+} from "../dto/user.dto";
+import { User, UserFull, UserPopulate, UserStub } from "../schemas/user.schema";
+import { InvitationService } from "../services/invitation.service";
+import { PasswordResetService } from "../services/passwordReset.service";
+import { PermissionService } from "../services/permission.service";
+import { RoleService } from "../services/role.service";
+import { UserService } from "../services/user.service";
+import { ValidateAccountService } from "../services/validate-account.service";
 
-@Controller('user')
+@Controller("user")
 export class ReadOnlyUserController extends BaseController<
   User,
   UserStub,
@@ -83,9 +83,9 @@ export class ReadOnlyUserController extends BaseController<
    *
    * @returns A promise that resolves to the bot's avatar URL.
    */
-  @Roles('public')
-  @Get('bot/profile_pic')
-  async getBotAvatar(@Query('color') color: string) {
+  @Roles("public")
+  @Get("bot/profile_pic")
+  async getBotAvatar(@Query("color") color: string) {
     return await getBotAvatar(color);
   }
 
@@ -96,8 +96,8 @@ export class ReadOnlyUserController extends BaseController<
    *
    * @returns A promise that resolves to the user's avatar or an avatar generated from initials if not found.
    */
-  @Get(':id/profile_pic')
-  async getAvatar(@Param('id') id: string) {
+  @Get(":id/profile_pic")
+  async getAvatar(@Param("id") id: string) {
     const user = await this.userService.findOneAndPopulate(id);
     if (!user) {
       throw new NotFoundException(`user with ID ${id} not found`);
@@ -105,13 +105,13 @@ export class ReadOnlyUserController extends BaseController<
 
     try {
       if (!user.avatar) {
-        throw new Error('User has no avatar');
+        throw new Error("User has no avatar");
       }
 
       return await this.attachmentService.download(user.avatar);
     } catch (err) {
       this.logger.verbose(
-        'User has no avatar, generating initials avatar ...',
+        "User has no avatar, generating initials avatar ...",
         err,
       );
       return await generateInitialsAvatar(user);
@@ -125,10 +125,10 @@ export class ReadOnlyUserController extends BaseController<
    *
    * @returns A promise that resolves to the user's roles and associated permissions.
    */
-  @Roles('public')
-  @Get('permissions/:id?')
+  @Roles("public")
+  @Get("permissions/:id?")
   async permissions(@Req() req: Request) {
-    if (!req.user || !('id' in req.user && req.user.id)) {
+    if (!req.user || !("id" in req.user && req.user.id)) {
       throw new UnauthorizedException();
     }
 
@@ -171,7 +171,7 @@ export class ReadOnlyUserController extends BaseController<
     populate: string[],
     @Query(
       new SearchFilterPipe<User>({
-        allowedFields: ['first_name', 'last_name'],
+        allowedFields: ["first_name", "last_name"],
       }),
     )
     filters: TFilterQuery<User>,
@@ -186,11 +186,11 @@ export class ReadOnlyUserController extends BaseController<
    *
    * @returns A promise that resolves to the count of filtered users.
    */
-  @Get('count')
+  @Get("count")
   async filterCount(
     @Query(
       new SearchFilterPipe<User>({
-        allowedFields: ['first_name', 'last_name'],
+        allowedFields: ["first_name", "last_name"],
       }),
     )
     filters?: TFilterQuery<User>,
@@ -206,9 +206,9 @@ export class ReadOnlyUserController extends BaseController<
    *
    * @returns A promise that resolves to the user document.
    */
-  @Get(':id')
+  @Get(":id")
   async findOne(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Query(PopulatePipe)
     populate: string[],
   ) {
@@ -224,7 +224,7 @@ export class ReadOnlyUserController extends BaseController<
   }
 }
 
-@Controller('user')
+@Controller("user")
 export class ReadWriteUserController extends ReadOnlyUserController {
   /**
    * Creates a new user.
@@ -261,12 +261,12 @@ export class ReadWriteUserController extends ReadOnlyUserController {
    */
 
   @UseInterceptors(
-    FileInterceptor('avatar', {
+    FileInterceptor("avatar", {
       limits: {
         fileSize: config.parameters.maxUploadSize,
       },
       storage: (() => {
-        if (config.parameters.storageMode === 'memory') {
+        if (config.parameters.storageMode === "memory") {
           return memoryStorage();
         } else {
           return diskStorage({});
@@ -274,14 +274,14 @@ export class ReadWriteUserController extends ReadOnlyUserController {
       })(),
     }),
   )
-  @Patch('edit/:id')
+  @Patch("edit/:id")
   async updateOne(
     @Req() req: Request,
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body() userUpdate: UserEditProfileDto,
     @UploadedFile() avatarFile?: Express.Multer.File,
   ) {
-    if (!(req.user && 'id' in req.user && req.user.id) || req.user.id !== id) {
+    if (!(req.user && "id" in req.user && req.user.id) || req.user.id !== id) {
       throw new ForbiddenException();
     }
 
@@ -323,9 +323,9 @@ export class ReadWriteUserController extends ReadOnlyUserController {
    * @returns The updated user data.
    */
 
-  @Patch(':id')
+  @Patch(":id")
   async updateStateAndRoles(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body() body: UserUpdateStateAndRolesDto,
     @Req() req: Request,
   ) {
@@ -333,10 +333,10 @@ export class ReadWriteUserController extends ReadOnlyUserController {
     const newRoles = body.roles;
     const { id: adminRoleId } =
       (await this.roleService.findOne({
-        name: 'admin',
+        name: "admin",
       })) || {};
     if (id === req.session.passport?.user?.id && body.state === false) {
-      throw new ForbiddenException('Your account state is protected');
+      throw new ForbiddenException("Your account state is protected");
     }
     if (
       adminRoleId &&
@@ -344,7 +344,7 @@ export class ReadWriteUserController extends ReadOnlyUserController {
       oldRoles?.includes(adminRoleId) &&
       !newRoles?.includes(adminRoleId)
     ) {
-      throw new ForbiddenException('Admin privileges are protected');
+      throw new ForbiddenException("Admin privileges are protected");
     }
     const result = await this.userService.updateOne(id, body);
     if (!result) {
@@ -365,9 +365,9 @@ export class ReadWriteUserController extends ReadOnlyUserController {
    * @returns Nothing (HTTP 204 on success).
    */
 
-  @Delete(':id')
+  @Delete(":id")
   @HttpCode(204)
-  async deleteOne(@Param('id') id: string) {
+  async deleteOne(@Param("id") id: string) {
     const result = await this.userService.deleteOne(id);
     if (result.deletedCount === 0) {
       this.logger.warn(`Unable to delete User by id ${id}`);
@@ -387,7 +387,7 @@ export class ReadWriteUserController extends ReadOnlyUserController {
    * @returns The created invitation record.
    */
 
-  @Post('invite')
+  @Post("invite")
   async invite(@Body() invitationCreateDto: InvitationCreateDto) {
     return await this.invitationService.create(invitationCreateDto);
   }
@@ -403,8 +403,8 @@ export class ReadWriteUserController extends ReadOnlyUserController {
    *
    * @returns A success message indicating the reset request has been processed.
    */
-  @Roles('public')
-  @Post('reset')
+  @Roles("public")
+  @Post("reset")
   async requestReset(@Body() body: UserRequestResetDto) {
     return await this.passwordResetService.requestReset(body);
   }
@@ -420,11 +420,11 @@ export class ReadWriteUserController extends ReadOnlyUserController {
    *
    * @returns A success message indicating the password has been reset.
    */
-  @Roles('public')
-  @Post('reset/:token')
+  @Roles("public")
+  @Post("reset/:token")
   async reset(
     @Body() body: UserResetPasswordDto,
-    @Param('token') token: string,
+    @Param("token") token: string,
   ) {
     return await this.passwordResetService.reset(body, token);
   }
@@ -439,8 +439,8 @@ export class ReadWriteUserController extends ReadOnlyUserController {
    *
    * @returns A success message indicating the account has been confirmed.
    */
-  @Roles('public')
-  @Post('confirm')
+  @Roles("public")
+  @Post("confirm")
   async confirmAccount(@Body() body: { token: string }) {
     return await this.validateAccountService.confirmAccount(body);
   }

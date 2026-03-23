@@ -18,26 +18,26 @@ import {
   Patch,
   Post,
   Query,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
-import { BaseController } from '@/utils/generics/base-controller';
-import { DeleteResult } from '@/utils/generics/base-repository';
-import { PageQueryDto } from '@/utils/pagination/pagination-query.dto';
-import { PageQueryPipe } from '@/utils/pagination/pagination-query.pipe';
-import { PopulatePipe } from '@/utils/pipes/populate.pipe';
-import { SearchFilterPipe } from '@/utils/pipes/search-filter.pipe';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { BaseController } from "@/utils/generics/base-controller";
+import { DeleteResult } from "@/utils/generics/base-repository";
+import { PageQueryDto } from "@/utils/pagination/pagination-query.dto";
+import { PageQueryPipe } from "@/utils/pagination/pagination-query.pipe";
+import { PopulatePipe } from "@/utils/pipes/populate.pipe";
+import { SearchFilterPipe } from "@/utils/pipes/search-filter.pipe";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
-import { LabelCreateDto, LabelUpdateDto } from '../dto/label.dto';
+import { LabelCreateDto, LabelUpdateDto } from "../dto/label.dto";
 import {
   Label,
   LabelFull,
   LabelPopulate,
   LabelStub,
-} from '../schemas/label.schema';
-import { LabelService } from '../services/label.service';
+} from "../schemas/label.schema";
+import { LabelService } from "../services/label.service";
 
-@Controller('label')
+@Controller("label")
 export class LabelController extends BaseController<
   Label,
   LabelStub,
@@ -53,7 +53,7 @@ export class LabelController extends BaseController<
     @Query(PageQueryPipe) pageQuery: PageQueryDto<Label>,
     @Query(PopulatePipe)
     populate: string[],
-    @Query(new SearchFilterPipe<Label>({ allowedFields: ['name', 'title'] }))
+    @Query(new SearchFilterPipe<Label>({ allowedFields: ["name", "title"] }))
     filters: TFilterQuery<Label>,
   ) {
     return this.canPopulate(populate)
@@ -65,11 +65,11 @@ export class LabelController extends BaseController<
    * Counts the filtered number of labels.
    * @returns A promise that resolves to an object representing the filtered number of labels.
    */
-  @Get('count')
+  @Get("count")
   async filterCount(
     @Query(
       new SearchFilterPipe<Label>({
-        allowedFields: ['name', 'title'],
+        allowedFields: ["name", "title"],
       }),
     )
     filters?: TFilterQuery<Label>,
@@ -77,9 +77,9 @@ export class LabelController extends BaseController<
     return await this.count(filters);
   }
 
-  @Get(':id')
+  @Get(":id")
   async findOne(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Query(PopulatePipe)
     populate: string[],
   ) {
@@ -98,17 +98,17 @@ export class LabelController extends BaseController<
     return await this.labelService.create(label);
   }
 
-  @Patch(':id')
+  @Patch(":id")
   async updateOne(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body() labelUpdate: LabelUpdateDto,
   ) {
     return await this.labelService.updateOne(id, labelUpdate);
   }
 
-  @Delete(':id')
+  @Delete(":id")
   @HttpCode(204)
-  async deleteOne(@Param('id') id: string) {
+  async deleteOne(@Param("id") id: string) {
     const result = await this.labelService.deleteOne(id);
     if (result.deletedCount === 0) {
       this.logger.warn(`Unable to delete Label by id ${id}`);
@@ -122,11 +122,11 @@ export class LabelController extends BaseController<
    * @param ids - IDs of Labels to be deleted.
    * @returns A Promise that resolves to the deletion result.
    */
-  @Delete('')
+  @Delete("")
   @HttpCode(204)
-  async deleteMany(@Body('ids') ids?: string[]): Promise<DeleteResult> {
+  async deleteMany(@Body("ids") ids?: string[]): Promise<DeleteResult> {
     if (!ids?.length) {
-      throw new BadRequestException('No IDs provided for deletion.');
+      throw new BadRequestException("No IDs provided for deletion.");
     }
     const deleteResult = await this.labelService.deleteMany({
       _id: { $in: ids },
@@ -134,7 +134,7 @@ export class LabelController extends BaseController<
 
     if (deleteResult.deletedCount === 0) {
       this.logger.warn(`Unable to delete Labels with provided IDs: ${ids}`);
-      throw new NotFoundException('Labels with provided IDs not found');
+      throw new NotFoundException("Labels with provided IDs not found");
     }
 
     this.logger.log(`Successfully deleted Labels with IDs: ${ids}`);

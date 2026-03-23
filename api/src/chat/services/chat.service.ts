@@ -6,27 +6,27 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
-import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { Injectable } from "@nestjs/common";
+import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
 
-import { BotStatsType } from '@/analytics/schemas/bot-stats.schema';
-import EventWrapper from '@/channel/lib/EventWrapper';
-import { config } from '@/config';
-import { HelperService } from '@/helper/helper.service';
-import { HelperType } from '@/helper/types';
-import { LanguageService } from '@/i18n/services/language.service';
-import { LoggerService } from '@/logger/logger.service';
-import { WebsocketGateway } from '@/websocket/websocket.gateway';
+import { BotStatsType } from "@/analytics/schemas/bot-stats.schema";
+import EventWrapper from "@/channel/lib/EventWrapper";
+import { config } from "@/config";
+import { HelperService } from "@/helper/helper.service";
+import { HelperType } from "@/helper/types";
+import { LanguageService } from "@/i18n/services/language.service";
+import { LoggerService } from "@/logger/logger.service";
+import { WebsocketGateway } from "@/websocket/websocket.gateway";
 
-import { MessageCreateDto } from '../dto/message.dto';
-import { Conversation } from '../schemas/conversation.schema';
-import { SubscriberDocument } from '../schemas/subscriber.schema';
-import { OutgoingMessage } from '../schemas/types/message';
+import { MessageCreateDto } from "../dto/message.dto";
+import { Conversation } from "../schemas/conversation.schema";
+import { SubscriberDocument } from "../schemas/subscriber.schema";
+import { OutgoingMessage } from "../schemas/types/message";
 
-import { BotService } from './bot.service';
-import { ConversationService } from './conversation.service';
-import { MessageService } from './message.service';
-import { SubscriberService } from './subscriber.service';
+import { BotService } from "./bot.service";
+import { ConversationService } from "./conversation.service";
+import { MessageService } from "./message.service";
+import { SubscriberService } from "./subscriber.service";
 
 @Injectable()
 export class ChatService {
@@ -47,13 +47,13 @@ export class ChatService {
    *
    * @param convo - The conversation to end
    */
-  @OnEvent('hook:conversation:end')
+  @OnEvent("hook:conversation:end")
   async handleEndConversation(convo: Conversation) {
     try {
       await this.conversationService.end(convo);
-      this.logger.debug('Conversation has ended successfully.', convo.id);
+      this.logger.debug("Conversation has ended successfully.", convo.id);
     } catch (err) {
-      this.logger.error('Unable to end conversation !', convo.id);
+      this.logger.error("Unable to end conversation !", convo.id);
     }
   }
 
@@ -62,13 +62,13 @@ export class ChatService {
    *
    * @param convoId - The conversation ID
    */
-  @OnEvent('hook:conversation:close')
+  @OnEvent("hook:conversation:close")
   async handleCloseConversation(convoId: string) {
     try {
       await this.conversationService.deleteOne(convoId);
-      this.logger.debug('Conversation is closed successfully.', convoId);
+      this.logger.debug("Conversation is closed successfully.", convoId);
     } catch (err) {
-      this.logger.error('Unable to close conversation.', err);
+      this.logger.error("Unable to close conversation.", err);
     }
   }
 
@@ -77,7 +77,7 @@ export class ChatService {
    *
    * @param sentMessage - The message that has been sent
    */
-  @OnEvent('hook:chatbot:sent', { promisify: true })
+  @OnEvent("hook:chatbot:sent", { promisify: true })
   async handleSentMessage(sentMessage: MessageCreateDto) {
     if (sentMessage.mid) {
       try {
@@ -88,9 +88,9 @@ export class ChatService {
           sentMessage,
         );
         this.websocketGateway.broadcastMessageSent(message as OutgoingMessage);
-        this.logger.debug('Message has been logged.', sentMessage.mid);
+        this.logger.debug("Message has been logged.", sentMessage.mid);
       } catch (err) {
-        this.logger.error('Unable to log sent message.', err);
+        this.logger.error("Unable to log sent message.", err);
       }
     }
   }
@@ -100,14 +100,14 @@ export class ChatService {
    *
    * @param event - The received event
    */
-  @OnEvent('hook:chatbot:received')
+  @OnEvent("hook:chatbot:received")
   async handleReceivedMessage(event: EventWrapper<any, any>) {
-    let messageId = '';
-    this.logger.debug('Received message', event);
+    let messageId = "";
+    this.logger.debug("Received message", event);
     try {
       messageId = event.getId();
     } catch (err) {
-      this.logger.warn('Failed to get the event id', messageId);
+      this.logger.warn("Failed to get the event id", messageId);
     }
     const subscriber = event.getSender();
     const received: MessageCreateDto = {
@@ -117,29 +117,29 @@ export class ChatService {
       delivery: true,
       read: true,
     };
-    this.logger.debug('Logging message', received);
+    this.logger.debug("Logging message", received);
     try {
       const msg = await this.messageService.create(received);
       const populatedMsg = await this.messageService.findOneAndPopulate(msg.id);
 
       if (!populatedMsg) {
-        this.logger.warn('Unable to find populated message.', event);
+        this.logger.warn("Unable to find populated message.", event);
         throw new Error(`Unable to find Message by ID ${msg.id} not found`);
       }
 
       this.websocketGateway.broadcastMessageReceived(populatedMsg, subscriber);
       this.eventEmitter.emit(
-        'hook:stats:entry',
+        "hook:stats:entry",
         BotStatsType.incoming,
-        'Incoming',
+        "Incoming",
       );
       this.eventEmitter.emit(
-        'hook:stats:entry',
+        "hook:stats:entry",
         BotStatsType.all_messages,
-        'All Messages',
+        "All Messages",
       );
     } catch (err) {
-      this.logger.error('Unable to log received message.', err, event);
+      this.logger.error("Unable to log received message.", err, event);
     }
   }
 
@@ -148,7 +148,7 @@ export class ChatService {
    *
    * @param event - The received event
    */
-  @OnEvent('hook:chatbot:delivery')
+  @OnEvent("hook:chatbot:delivery")
   async handleMessageDelivery(event: EventWrapper<any, any>) {
     if (config.chatbot.messages.track_delivery) {
       const subscriber = event.getSender();
@@ -163,7 +163,7 @@ export class ChatService {
           subscriber,
         );
       } catch (err) {
-        this.logger.error('Unable to mark message as delivered.', err);
+        this.logger.error("Unable to mark message as delivered.", err);
       }
     }
   }
@@ -173,7 +173,7 @@ export class ChatService {
    *
    * @param event - The received event
    */
-  @OnEvent('hook:chatbot:read')
+  @OnEvent("hook:chatbot:read")
   async handleMessageRead(event: EventWrapper<any, any>) {
     if (config.chatbot.messages.track_read) {
       const subscriber = event.getSender();
@@ -197,7 +197,7 @@ export class ChatService {
           subscriber,
         );
       } catch (err) {
-        this.logger.error('Unable to mark message as read.', err);
+        this.logger.error("Unable to mark message as read.", err);
       }
     }
   }
@@ -207,9 +207,9 @@ export class ChatService {
    *
    * @param event - The received event
    */
-  @OnEvent('hook:chatbot:echo')
+  @OnEvent("hook:chatbot:echo")
   async handleEchoMessage(event: EventWrapper<any, any>) {
-    this.logger.verbose('Message echo received', event._adapter.raw);
+    this.logger.verbose("Message echo received", event._adapter.raw);
     const foreignId = event.getRecipientForeignId();
 
     if (foreignId) {
@@ -230,10 +230,10 @@ export class ChatService {
           read: false,
         };
 
-        this.eventEmitter.emit('hook:chatbot:sent', sentMessage);
-        this.eventEmitter.emit('hook:stats:entry', 'echo', 'Echo');
+        this.eventEmitter.emit("hook:chatbot:sent", sentMessage);
+        this.eventEmitter.emit("hook:stats:entry", "echo", "Echo");
       } catch (err) {
-        this.logger.error('Unable to log echo message', err, event);
+        this.logger.error("Unable to log echo message", err, event);
       }
     }
   }
@@ -243,9 +243,9 @@ export class ChatService {
    *
    * @param event - The received event
    */
-  @OnEvent('hook:chatbot:message')
+  @OnEvent("hook:chatbot:message")
   async handleNewMessage(event: EventWrapper<any, any>) {
-    this.logger.debug('New message received', event._adapter.raw);
+    this.logger.debug("New message received", event._adapter.raw);
 
     const foreignId = event.getSenderForeignId();
     const handler = event.getHandler();
@@ -261,7 +261,7 @@ export class ChatService {
         subscriber = await this.subscriberService.create(subscriberData);
 
         if (!subscriber) {
-          throw new Error('Unable to create a new subscriber');
+          throw new Error("Unable to create a new subscriber");
         }
 
         // Retrieve and store the subscriber avatar
@@ -285,7 +285,7 @@ export class ChatService {
       }
       event.setSender(subscriber);
       // Exec lastvisit hook
-      this.eventEmitter.emit('hook:user:lastvisit', subscriber);
+      this.eventEmitter.emit("hook:user:lastvisit", subscriber);
 
       this.websocketGateway.broadcastSubscriberUpdate(subscriber);
 
@@ -300,16 +300,16 @@ export class ChatService {
       await this.enrichEventWithNLU(event);
 
       // Trigger message received event
-      this.eventEmitter.emit('hook:chatbot:received', event);
+      this.eventEmitter.emit("hook:chatbot:received", event);
 
       if (subscriber?.assignedTo) {
-        this.logger.debug('Conversation taken over', subscriber.assignedTo);
+        this.logger.debug("Conversation taken over", subscriber.assignedTo);
         return;
       }
 
       this.botService.handleMessageEvent(event);
     } catch (err) {
-      this.logger.error('Error handling new message', err);
+      this.logger.error("Error handling new message", err);
     }
   }
 
@@ -332,7 +332,7 @@ export class ChatService {
       if (nlp) {
         const languages = await this.languageService.getLanguages();
         const spokenLanguage = nlp.entities.find(
-          (e) => e.entity === 'language',
+          (e) => e.entity === "language",
         );
         if (spokenLanguage && spokenLanguage.value in languages) {
           const profile = event.getSender();
@@ -352,7 +352,7 @@ export class ChatService {
 
       event.setNLP(nlp);
     } catch (err) {
-      this.logger.error('Unable to perform NLP parse', err);
+      this.logger.error("Unable to perform NLP parse", err);
     }
   }
 
@@ -361,7 +361,7 @@ export class ChatService {
    *
    * @param subscriber - The end user (subscriber)
    */
-  @OnEvent('hook:subscriber:postCreate')
+  @OnEvent("hook:subscriber:postCreate")
   async onSubscriberCreate({ _id }: SubscriberDocument) {
     const subscriber = await this.subscriberService.findOne(_id);
     if (subscriber) {
@@ -374,7 +374,7 @@ export class ChatService {
    *
    * @param subscriber - The end user (subscriber)
    */
-  @OnEvent('hook:subscriber:postUpdate')
+  @OnEvent("hook:subscriber:postUpdate")
   async onSubscriberUpdate({ _id }: SubscriberDocument) {
     const subscriber = await this.subscriberService.findOne(_id);
     if (subscriber) {

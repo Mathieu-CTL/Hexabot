@@ -6,22 +6,22 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import LocalStorageHelper from '@/extensions/helpers/local-storage/index.helper';
-import { HelperService } from '@/helper/helper.service';
-import { LoggerService } from '@/logger/logger.service';
-import { Setting } from '@/setting/schemas/setting.schema';
-import { SettingService } from '@/setting/services/setting.service';
-import { installSettingFixtures } from '@/utils/test/fixtures/setting';
+import LocalStorageHelper from "@/extensions/helpers/local-storage/index.helper";
+import { HelperService } from "@/helper/helper.service";
+import { LoggerService } from "@/logger/logger.service";
+import { Setting } from "@/setting/schemas/setting.schema";
+import { SettingService } from "@/setting/services/setting.service";
+import { installSettingFixtures } from "@/utils/test/fixtures/setting";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { CleanupService } from './cleanup.service';
-import { TNamespace } from './types';
+import { CleanupService } from "./cleanup.service";
+import { TNamespace } from "./types";
 
-describe('CleanupService', () => {
+describe("CleanupService", () => {
   let initialSettings: Setting[];
   let helperService: HelperService;
   let cleanupService: CleanupService;
@@ -29,7 +29,7 @@ describe('CleanupService', () => {
 
   beforeAll(async () => {
     const { getMocks, resolveMocks } = await buildTestingMocks({
-      autoInjectFrom: ['providers'],
+      autoInjectFrom: ["providers"],
       imports: [rootMongooseTestModule(installSettingFixtures)],
       providers: [CleanupService],
     });
@@ -51,8 +51,8 @@ describe('CleanupService', () => {
 
   afterEach(jest.clearAllMocks);
 
-  describe('delete', () => {
-    it('should delete all the unregistered settings with a group suffix `_channel` or/and `_helper`', async () => {
+  describe("delete", () => {
+    it("should delete all the unregistered settings with a group suffix `_channel` or/and `_helper`", async () => {
       const registeredNamespaces = [
         ...cleanupService.getChannelNamespaces(),
         ...cleanupService.getHelperNamespaces(),

@@ -6,28 +6,28 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from "@nestjs/common";
 
-import { I18nService } from '@/i18n/services/i18n.service';
+import { I18nService } from "@/i18n/services/i18n.service";
 import {
   categoryFixtures,
   installCategoryFixtures,
-} from '@/utils/test/fixtures/category';
-import { getPageQuery } from '@/utils/test/pagination';
-import { sortRowsBy } from '@/utils/test/sort';
+} from "@/utils/test/fixtures/category";
+import { getPageQuery } from "@/utils/test/pagination";
+import { sortRowsBy } from "@/utils/test/sort";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { CategoryCreateDto, CategoryUpdateDto } from '../dto/category.dto';
-import { CategoryService } from '../services/category.service';
+import { CategoryCreateDto, CategoryUpdateDto } from "../dto/category.dto";
+import { CategoryService } from "../services/category.service";
 
-import { Category } from './../schemas/category.schema';
-import { CategoryController } from './category.controller';
+import { Category } from "./../schemas/category.schema";
+import { CategoryController } from "./category.controller";
 
-describe('CategoryController', () => {
+describe("CategoryController", () => {
   let categoryController: CategoryController;
   let categoryService: CategoryService;
   let category: Category;
@@ -35,7 +35,7 @@ describe('CategoryController', () => {
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['controllers'],
+      autoInjectFrom: ["controllers"],
       controllers: [CategoryController],
       imports: [rootMongooseTestModule(installCategoryFixtures)],
       providers: [
@@ -52,10 +52,10 @@ describe('CategoryController', () => {
       CategoryController,
     ]);
     category = (await categoryService.findOne({
-      label: 'test category 1',
+      label: "test category 1",
     })) as Category;
     categoryToDelete = (await categoryService.findOne({
-      label: 'test category 2',
+      label: "test category 2",
     })) as Category;
   });
 
@@ -63,8 +63,8 @@ describe('CategoryController', () => {
 
   afterAll(closeInMongodConnection);
 
-  describe('findPage', () => {
-    it('should return an array of categories', async () => {
+  describe("findPage", () => {
+    it("should return an array of categories", async () => {
       const pageQuery = getPageQuery<Category>();
       const result = await categoryController.findPage(pageQuery, {});
 
@@ -72,9 +72,9 @@ describe('CategoryController', () => {
     });
   });
 
-  describe('count', () => {
-    it('should count categories', async () => {
-      jest.spyOn(categoryService, 'count');
+  describe("count", () => {
+    it("should count categories", async () => {
+      jest.spyOn(categoryService, "count");
       const result = await categoryController.filterCount();
 
       expect(categoryService.count).toHaveBeenCalled();
@@ -82,26 +82,26 @@ describe('CategoryController', () => {
     });
   });
 
-  describe('findOne', () => {
-    it('should return the existing category', async () => {
-      jest.spyOn(categoryService, 'findOne');
+  describe("findOne", () => {
+    it("should return the existing category", async () => {
+      jest.spyOn(categoryService, "findOne");
       const category = (await categoryService.findOne({
-        label: 'test category 1',
+        label: "test category 1",
       })) as Category;
       const result = await categoryController.findOne(category.id);
 
       expect(categoryService.findOne).toHaveBeenCalledWith(category.id);
       expect(result).toEqualPayload({
-        ...categoryFixtures.find(({ label }) => label === 'test category 1'),
+        ...categoryFixtures.find(({ label }) => label === "test category 1"),
       });
     });
   });
 
-  describe('create', () => {
-    it('should return created category', async () => {
-      jest.spyOn(categoryService, 'create');
+  describe("create", () => {
+    it("should return created category", async () => {
+      jest.spyOn(categoryService, "create");
       const categoryCreateDto: CategoryCreateDto = {
-        label: 'categoryLabel2',
+        label: "categoryLabel2",
         builtin: true,
         zoom: 100,
         offset: [0, 0],
@@ -113,9 +113,9 @@ describe('CategoryController', () => {
     });
   });
 
-  describe('deleteOne', () => {
-    it('should delete a category by id', async () => {
-      jest.spyOn(categoryService, 'deleteOne');
+  describe("deleteOne", () => {
+    it("should delete a category by id", async () => {
+      jest.spyOn(categoryService, "deleteOne");
       const result = await categoryController.deleteOne(categoryToDelete.id);
       expect(categoryService.deleteOne).toHaveBeenCalledWith(
         categoryToDelete.id,
@@ -123,8 +123,8 @@ describe('CategoryController', () => {
       expect(result).toEqual({ acknowledged: true, deletedCount: 1 });
     });
 
-    it('should throw a NotFoundException when attempting to delete a category by id', async () => {
-      jest.spyOn(categoryService, 'deleteOne');
+    it("should throw a NotFoundException when attempting to delete a category by id", async () => {
+      jest.spyOn(categoryService, "deleteOne");
 
       const result = categoryController.deleteOne(categoryToDelete.id);
       expect(categoryService.deleteOne).toHaveBeenCalledWith(
@@ -138,10 +138,10 @@ describe('CategoryController', () => {
     });
   });
 
-  describe('deleteMany', () => {
-    it('should delete multiple categories by ids', async () => {
+  describe("deleteMany", () => {
+    it("should delete multiple categories by ids", async () => {
       const deleteResult = { acknowledged: true, deletedCount: 2 };
-      jest.spyOn(categoryService, 'deleteMany').mockResolvedValue(deleteResult);
+      jest.spyOn(categoryService, "deleteMany").mockResolvedValue(deleteResult);
 
       const result = await categoryController.deleteMany([
         category.id,
@@ -154,14 +154,14 @@ describe('CategoryController', () => {
       expect(result).toEqual(deleteResult);
     });
 
-    it('should throw a NotFoundException when no categories are deleted', async () => {
+    it("should throw a NotFoundException when no categories are deleted", async () => {
       const deleteResult = { acknowledged: true, deletedCount: 0 };
-      jest.spyOn(categoryService, 'deleteMany').mockResolvedValue(deleteResult);
+      jest.spyOn(categoryService, "deleteMany").mockResolvedValue(deleteResult);
 
       await expect(
         categoryController.deleteMany([category.id, categoryToDelete.id]),
       ).rejects.toThrow(
-        new NotFoundException('Categories with provided IDs not found'),
+        new NotFoundException("Categories with provided IDs not found"),
       );
 
       expect(categoryService.deleteMany).toHaveBeenCalledWith({
@@ -169,19 +169,19 @@ describe('CategoryController', () => {
       });
     });
 
-    it('should throw a BadRequestException when no ids are provided', async () => {
+    it("should throw a BadRequestException when no ids are provided", async () => {
       await expect(categoryController.deleteMany([])).rejects.toThrow(
-        new BadRequestException('No IDs provided for deletion.'),
+        new BadRequestException("No IDs provided for deletion."),
       );
     });
   });
 
-  describe('updateOne', () => {
+  describe("updateOne", () => {
     const categoryUpdateDto: CategoryUpdateDto = {
       builtin: false,
     };
-    it('should return updated category', async () => {
-      jest.spyOn(categoryService, 'updateOne');
+    it("should return updated category", async () => {
+      jest.spyOn(categoryService, "updateOne");
       const result = await categoryController.updateOne(
         category.id,
         categoryUpdateDto,
@@ -192,7 +192,7 @@ describe('CategoryController', () => {
         categoryUpdateDto,
       );
       expect(result).toEqualPayload({
-        ...categoryFixtures.find(({ label }) => label === 'test category 1'),
+        ...categoryFixtures.find(({ label }) => label === "test category 1"),
         ...categoryUpdateDto,
       });
     });

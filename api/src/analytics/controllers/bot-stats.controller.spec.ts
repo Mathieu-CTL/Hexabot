@@ -9,23 +9,23 @@
 import {
   botstatsFixtures,
   installBotStatsFixtures,
-} from '@/utils/test/fixtures/botstats';
+} from "@/utils/test/fixtures/botstats";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { BotStatsType } from '../schemas/bot-stats.schema';
+import { BotStatsType } from "../schemas/bot-stats.schema";
 
-import { BotStatsController } from './bot-stats.controller';
+import { BotStatsController } from "./bot-stats.controller";
 
-describe('BotStatsController', () => {
+describe("BotStatsController", () => {
   let botStatsController: BotStatsController;
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['controllers'],
+      autoInjectFrom: ["controllers"],
       controllers: [BotStatsController],
       imports: [rootMongooseTestModule(installBotStatsFixtures)],
     });
@@ -36,11 +36,11 @@ describe('BotStatsController', () => {
 
   afterEach(jest.clearAllMocks);
 
-  describe('findMessages', () => {
-    it('should return no messages in the given date range', async () => {
+  describe("findMessages", () => {
+    it("should return no messages in the given date range", async () => {
       const result = await botStatsController.findMessages({
-        from: new Date('2024-11-01T23:00:00.000Z'),
-        to: new Date('2024-11-05T23:00:00.000Z'),
+        from: new Date("2024-11-01T23:00:00.000Z"),
+        to: new Date("2024-11-05T23:00:00.000Z"),
       });
       expect(result).toHaveLength(3);
       expect(result).toEqualPayload([
@@ -62,9 +62,9 @@ describe('BotStatsController', () => {
       ]);
     });
 
-    it('should return messages in the given date range', async () => {
-      const from = new Date('2023-11-01T23:00:00.000Z');
-      const to = new Date('2023-11-05T23:00:00.000Z');
+    it("should return messages in the given date range", async () => {
+      const from = new Date("2023-11-01T23:00:00.000Z");
+      const to = new Date("2023-11-05T23:00:00.000Z");
       const result = await botStatsController.findMessages({
         from,
         to,
@@ -99,11 +99,11 @@ describe('BotStatsController', () => {
     });
   });
 
-  describe('datum', () => {
-    it('should return messages of a given type', async () => {
+  describe("datum", () => {
+    it("should return messages of a given type", async () => {
       const result = await botStatsController.datum({
-        from: new Date('2023-11-06T23:00:00.000Z'),
-        to: new Date('2023-11-08T23:00:00.000Z'),
+        from: new Date("2023-11-06T23:00:00.000Z"),
+        to: new Date("2023-11-08T23:00:00.000Z"),
         type: BotStatsType.outgoing,
       });
 
@@ -122,11 +122,11 @@ describe('BotStatsController', () => {
     });
   });
 
-  describe('conversation', () => {
-    it('should return conversation messages', async () => {
+  describe("conversation", () => {
+    it("should return conversation messages", async () => {
       const result = await botStatsController.conversation({
-        from: new Date('2023-11-04T23:00:00.000Z'),
-        to: new Date('2023-11-06T23:00:00.000Z'),
+        from: new Date("2023-11-04T23:00:00.000Z"),
+        to: new Date("2023-11-06T23:00:00.000Z"),
       });
 
       expect(result).toEqualPayload([
@@ -149,11 +149,11 @@ describe('BotStatsController', () => {
     });
   });
 
-  describe('audiance', () => {
-    it('should return audiance messages', async () => {
+  describe("audiance", () => {
+    it("should return audiance messages", async () => {
       const result = await botStatsController.audiance({
-        from: new Date('2023-11-01T23:00:00.000Z'),
-        to: new Date('2023-11-08T23:00:00.000Z'),
+        from: new Date("2023-11-01T23:00:00.000Z"),
+        to: new Date("2023-11-08T23:00:00.000Z"),
       });
 
       expect(result).toEqualPayload([
@@ -181,17 +181,17 @@ describe('BotStatsController', () => {
     });
   });
 
-  describe('popularBlocks', () => {
-    it('should return popular blocks', async () => {
+  describe("popularBlocks", () => {
+    it("should return popular blocks", async () => {
       const result = await botStatsController.popularBlocks({
-        from: new Date('2023-11-01T23:00:00.000Z'),
-        to: new Date('2023-11-08T23:00:00.000Z'),
+        from: new Date("2023-11-01T23:00:00.000Z"),
+        to: new Date("2023-11-08T23:00:00.000Z"),
       });
 
       expect(result).toEqual([
         {
-          name: 'Global Fallback',
-          id: 'Global Fallback',
+          name: "Global Fallback",
+          id: "Global Fallback",
           value: 68,
         },
       ]);

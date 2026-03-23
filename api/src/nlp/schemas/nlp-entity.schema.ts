@@ -6,18 +6,18 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Exclude, Type } from 'class-transformer';
+import { ModelDefinition, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Exclude, Type } from "class-transformer";
 
-import { BaseSchema } from '@/utils/generics/base-schema';
-import { LifecycleHookManager } from '@/utils/generics/lifecycle-hook-manager';
+import { BaseSchema } from "@/utils/generics/base-schema";
+import { LifecycleHookManager } from "@/utils/generics/lifecycle-hook-manager";
 import {
   TFilterPopulateFields,
   THydratedDocument,
-} from '@/utils/types/filter.types';
+} from "@/utils/types/filter.types";
 
-import { NlpValue } from './nlp-value.schema';
-import { Lookup, LookupStrategy, NlpEntityMap } from './types';
+import { NlpValue } from "./nlp-value.schema";
+import { Lookup, LookupStrategy, NlpEntityMap } from "./types";
 
 @Schema({ timestamps: true })
 export class NlpEntityStub extends BaseSchema {
@@ -43,7 +43,7 @@ export class NlpEntityStub extends BaseSchema {
    */
   @Prop({
     type: [String],
-    default: ['keywords'],
+    default: ["keywords"],
     validate: {
       validator: (lookups: string[]) =>
         lookups.every((lookup) =>
@@ -73,7 +73,7 @@ export class NlpEntityStub extends BaseSchema {
     default: 1,
     validate: {
       validator: (value: number) => value > 0,
-      message: 'Weight must be a strictly positive number',
+      message: "Weight must be a strictly positive number",
     },
   })
   weight: number;
@@ -111,10 +111,10 @@ export const NlpEntityModel: ModelDefinition = LifecycleHookManager.attach({
   schema: SchemaFactory.createForClass(NlpEntityStub),
 });
 
-NlpEntityModel.schema.virtual('values', {
-  ref: 'NlpValue',
-  localField: '_id',
-  foreignField: 'entity',
+NlpEntityModel.schema.virtual("values", {
+  ref: "NlpValue",
+  localField: "_id",
+  foreignField: "entity",
 });
 
 export default NlpEntityModel.schema;
@@ -124,4 +124,4 @@ export type NlpEntityPopulate = keyof TFilterPopulateFields<
   NlpEntityStub
 >;
 
-export const NLP_ENTITY_POPULATE: NlpEntityPopulate[] = ['values'];
+export const NLP_ENTITY_POPULATE: NlpEntityPopulate[] = ["values"];

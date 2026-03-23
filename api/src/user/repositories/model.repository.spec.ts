@@ -6,25 +6,25 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { getModelToken } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { getModelToken } from "@nestjs/mongoose";
+import { Model } from "mongoose";
 
-import { modelFixtures } from '@/utils/test/fixtures/model';
-import { installPermissionFixtures } from '@/utils/test/fixtures/permission';
+import { modelFixtures } from "@/utils/test/fixtures/model";
+import { installPermissionFixtures } from "@/utils/test/fixtures/permission";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { ModelRepository } from '../repositories/model.repository';
-import { PermissionRepository } from '../repositories/permission.repository';
-import { ModelFull } from '../schemas/model.schema';
-import { Permission } from '../schemas/permission.schema';
+import { ModelRepository } from "../repositories/model.repository";
+import { PermissionRepository } from "../repositories/permission.repository";
+import { ModelFull } from "../schemas/model.schema";
+import { Permission } from "../schemas/permission.schema";
 
-import { Model as ModelType } from './../schemas/model.schema';
+import { Model as ModelType } from "./../schemas/model.schema";
 
-describe('ModelRepository', () => {
+describe("ModelRepository", () => {
   let modelRepository: ModelRepository;
   let permissionRepository: PermissionRepository;
   let modelModel: Model<ModelType>;
@@ -33,8 +33,8 @@ describe('ModelRepository', () => {
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['providers'],
-      models: ['PermissionModel'],
+      autoInjectFrom: ["providers"],
+      models: ["PermissionModel"],
       imports: [rootMongooseTestModule(installPermissionFixtures)],
       providers: [ModelRepository, PermissionRepository],
     });
@@ -43,7 +43,7 @@ describe('ModelRepository', () => {
       ModelRepository,
       getModelToken(Model.name),
     ]);
-    model = await modelRepository.findOne({ name: 'ContentType' });
+    model = await modelRepository.findOne({ name: "ContentType" });
     permissions = await permissionRepository.find({ model: model!.id });
   });
 
@@ -51,21 +51,21 @@ describe('ModelRepository', () => {
 
   afterEach(jest.clearAllMocks);
 
-  describe('findOneAndPopulate', () => {
-    it('should find a model and populate its permissions', async () => {
-      jest.spyOn(modelModel, 'findById');
+  describe("findOneAndPopulate", () => {
+    it("should find a model and populate its permissions", async () => {
+      jest.spyOn(modelModel, "findById");
       const result = await modelRepository.findOneAndPopulate(model!.id);
       expect(modelModel.findById).toHaveBeenCalledWith(model!.id, undefined);
       expect(result).toEqualPayload({
-        ...modelFixtures.find(({ name }) => name === 'ContentType'),
+        ...modelFixtures.find(({ name }) => name === "ContentType"),
         permissions,
       });
     });
   });
 
-  describe('findAndPopulate', () => {
-    it('should find models, and for each model populate the corresponding permissions', async () => {
-      jest.spyOn(modelModel, 'find');
+  describe("findAndPopulate", () => {
+    it("should find models, and for each model populate the corresponding permissions", async () => {
+      jest.spyOn(modelModel, "find");
       const allModels = await modelRepository.findAll();
       const allPermissions = await permissionRepository.findAll();
       const result = await modelRepository.findAndPopulate({});

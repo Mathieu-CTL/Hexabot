@@ -6,16 +6,16 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty, PartialType } from "@nestjs/swagger";
+import { IsNotEmpty, IsString } from "class-validator";
 
 export class MetadataCreateDto {
-  @ApiProperty({ description: 'Metadata name', type: String })
+  @ApiProperty({ description: "Metadata name", type: String })
   @IsNotEmpty()
   @IsString()
   name: string;
 
-  @ApiProperty({ description: 'Metadata value' })
+  @ApiProperty({ description: "Metadata value" })
   @IsNotEmpty()
   value: any;
 }

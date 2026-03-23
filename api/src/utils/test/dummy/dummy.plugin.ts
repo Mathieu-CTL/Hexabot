@@ -6,26 +6,26 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
 import {
   OutgoingMessageFormat,
   StdOutgoingTextEnvelope,
-} from '@/chat/schemas/types/message';
-import { LoggerService } from '@/logger/logger.service';
-import { BaseBlockPlugin } from '@/plugins/base-block-plugin';
-import { PluginService } from '@/plugins/plugins.service';
-import { PluginBlockTemplate, PluginSetting } from '@/plugins/types';
+} from "@/chat/schemas/types/message";
+import { LoggerService } from "@/logger/logger.service";
+import { BaseBlockPlugin } from "@/plugins/base-block-plugin";
+import { PluginService } from "@/plugins/plugins.service";
+import { PluginBlockTemplate, PluginSetting } from "@/plugins/types";
 
 @Injectable()
 export class DummyPlugin extends BaseBlockPlugin<PluginSetting[]> {
-  template: PluginBlockTemplate = { name: 'Dummy Plugin' };
+  template: PluginBlockTemplate = { name: "Dummy Plugin" };
 
   constructor(
     pluginService: PluginService,
     private logger: LoggerService,
   ) {
-    super('dummy-plugin', pluginService);
+    super("dummy-plugin", pluginService);
 
     this.effects = {
       onStoreContextData: () => {},
@@ -40,7 +40,7 @@ export class DummyPlugin extends BaseBlockPlugin<PluginSetting[]> {
     const envelope: StdOutgoingTextEnvelope = {
       format: OutgoingMessageFormat.text,
       message: {
-        text: 'Hello world !',
+        text: "Hello world !",
       },
     };
     return envelope;

@@ -6,33 +6,33 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { getModelToken } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { getModelToken } from "@nestjs/mongoose";
+import { Model } from "mongoose";
 
-import { AttachmentRepository } from '@/attachment/repositories/attachment.repository';
-import { Attachment } from '@/attachment/schemas/attachment.schema';
-import { UserRepository } from '@/user/repositories/user.repository';
-import { User } from '@/user/schemas/user.schema';
-import { NOT_FOUND_ID } from '@/utils/constants/mock';
+import { AttachmentRepository } from "@/attachment/repositories/attachment.repository";
+import { Attachment } from "@/attachment/schemas/attachment.schema";
+import { UserRepository } from "@/user/repositories/user.repository";
+import { User } from "@/user/schemas/user.schema";
+import { NOT_FOUND_ID } from "@/utils/constants/mock";
 import {
   installSubscriberFixtures,
   subscriberFixtures,
-} from '@/utils/test/fixtures/subscriber';
-import { getPageQuery } from '@/utils/test/pagination';
-import { sortRowsBy } from '@/utils/test/sort';
+} from "@/utils/test/fixtures/subscriber";
+import { getPageQuery } from "@/utils/test/pagination";
+import { sortRowsBy } from "@/utils/test/sort";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { Label } from '../schemas/label.schema';
-import { Subscriber, SubscriberFull } from '../schemas/subscriber.schema';
+import { Label } from "../schemas/label.schema";
+import { Subscriber, SubscriberFull } from "../schemas/subscriber.schema";
 
-import { LabelRepository } from './label.repository';
-import { SubscriberRepository } from './subscriber.repository';
+import { LabelRepository } from "./label.repository";
+import { SubscriberRepository } from "./subscriber.repository";
 
-describe('SubscriberRepository', () => {
+describe("SubscriberRepository", () => {
   let subscriberRepository: SubscriberRepository;
   let subscriberModel: Model<Subscriber>;
   let labelRepository: LabelRepository;
@@ -46,7 +46,7 @@ describe('SubscriberRepository', () => {
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['providers'],
+      autoInjectFrom: ["providers"],
       imports: [rootMongooseTestModule(installSubscriberFixtures)],
       providers: [
         SubscriberRepository,
@@ -86,11 +86,11 @@ describe('SubscriberRepository', () => {
 
   afterAll(closeInMongodConnection);
 
-  describe('findOneAndPopulate', () => {
-    it('should find one subscriber by id,and populate its labels', async () => {
-      jest.spyOn(subscriberModel, 'findById');
+  describe("findOneAndPopulate", () => {
+    it("should find one subscriber by id,and populate its labels", async () => {
+      jest.spyOn(subscriberModel, "findById");
       const subscriber = (await subscriberRepository.findOne({
-        first_name: 'Jhon',
+        first_name: "Jhon",
       }))!;
       const allLabels = await labelRepository.findAll();
       const result = await subscriberRepository.findOneAndPopulate(
@@ -115,10 +115,10 @@ describe('SubscriberRepository', () => {
     });
   });
 
-  describe('findAndPopulate', () => {
+  describe("findAndPopulate", () => {
     const pageQuery = getPageQuery<Subscriber>();
-    it('should find subscribers, and foreach subscriber populate the corresponding labels', async () => {
-      jest.spyOn(subscriberModel, 'find');
+    it("should find subscribers, and foreach subscriber populate the corresponding labels", async () => {
+      jest.spyOn(subscriberModel, "find");
       const result = await subscriberRepository.findAndPopulate({}, pageQuery);
 
       expect(subscriberModel.find).toHaveBeenCalledWith({}, undefined);
@@ -128,9 +128,9 @@ describe('SubscriberRepository', () => {
     });
   });
 
-  describe('findAllAndPopulate', () => {
-    it('should return all subscribers, and foreach subscriber populate the corresponding labels', async () => {
-      jest.spyOn(subscriberModel, 'find');
+  describe("findAllAndPopulate", () => {
+    it("should return all subscribers, and foreach subscriber populate the corresponding labels", async () => {
+      jest.spyOn(subscriberModel, "find");
       const result = await subscriberRepository.findAllAndPopulate();
 
       expect(subscriberModel.find).toHaveBeenCalledWith({}, undefined);
@@ -140,10 +140,10 @@ describe('SubscriberRepository', () => {
     });
   });
 
-  describe('updateLabels', () => {
-    it('should add labels without duplicates when labelsToPull is empty', async () => {
+  describe("updateLabels", () => {
+    it("should add labels without duplicates when labelsToPull is empty", async () => {
       const subscriber = await subscriberRepository.findOne({
-        first_name: 'Maynard',
+        first_name: "Maynard",
       });
 
       expect(subscriber).toBeTruthy();
@@ -151,8 +151,8 @@ describe('SubscriberRepository', () => {
       // one existing label (if any) and one new label not already present
       const existingLabelId = (subscriber!.labels || [])[0] || allLabels[0].id;
       const newLabel = await labelRepository.create({
-        title: 'New Label',
-        name: 'NEW_LABEL',
+        title: "New Label",
+        name: "NEW_LABEL",
       });
 
       const labelsToPush = [existingLabelId, newLabel!.id, newLabel!.id]; // duplicates on purpose
@@ -180,16 +180,16 @@ describe('SubscriberRepository', () => {
       expect(occurrences).toBe(1);
     });
 
-    it('should pull provided labels then push the new ones when labelsToPull is not empty', async () => {
+    it("should pull provided labels then push the new ones when labelsToPull is not empty", async () => {
       // Use another subscriber to avoid interference with the previous test
       const subscriber = await subscriberRepository.findOne({
-        first_name: 'Queen',
+        first_name: "Queen",
       });
 
       const labelToRemove = subscriber!.labels[0];
       const newLabel = await labelRepository.create({
-        title: 'Royal',
-        name: 'ROYAL',
+        title: "Royal",
+        name: "ROYAL",
       });
 
       const prevLabels = [...subscriber!.labels];
@@ -214,85 +214,85 @@ describe('SubscriberRepository', () => {
       expect(updated!.labels).toEqual(expect.arrayContaining(remainingPrev));
     });
 
-    it('should throw if subscriber does not exist during pull stage', async () => {
+    it("should throw if subscriber does not exist during pull stage", async () => {
       await expect(
         subscriberRepository.updateLabels(
           NOT_FOUND_ID,
-          ['1'.repeat(24)],
-          ['2'.repeat(24)],
+          ["1".repeat(24)],
+          ["2".repeat(24)],
         ),
       ).rejects.toThrow(`Unable to pull subscriber labels : ${NOT_FOUND_ID}`);
     });
 
-    it('should throw if subscriber does not exist during add stage', async () => {
+    it("should throw if subscriber does not exist during add stage", async () => {
       await expect(
-        subscriberRepository.updateLabels(NOT_FOUND_ID, ['1'.repeat(24)], []),
+        subscriberRepository.updateLabels(NOT_FOUND_ID, ["1".repeat(24)], []),
       ).rejects.toThrow(`Unable to assign subscriber labels : ${NOT_FOUND_ID}`);
     });
   });
 
-  describe('updateOne', () => {
-    it('should execute preUpdate hook and emit events on assignedTo change', async () => {
+  describe("updateOne", () => {
+    it("should execute preUpdate hook and emit events on assignedTo change", async () => {
       // Arrange: Set up a mock subscriber
       const oldSubscriber = {
         ...subscriberFixtures[0], // Mocked existing subscriber
         assignedTo: null,
       } as Subscriber;
 
-      const updates = { assignedTo: '9'.repeat(24) }; // Change assigned user;
+      const updates = { assignedTo: "9".repeat(24) }; // Change assigned user;
 
       jest
-        .spyOn(subscriberRepository, 'findOne')
+        .spyOn(subscriberRepository, "findOne")
         .mockResolvedValue(oldSubscriber);
-      jest.spyOn(subscriberRepository.eventEmitter, 'emit');
+      jest.spyOn(subscriberRepository.eventEmitter, "emit");
 
       await subscriberRepository.updateOne(oldSubscriber.id, updates);
 
       expect(subscriberRepository.eventEmitter.emit).toHaveBeenCalledWith(
-        'hook:subscriber:assign',
+        "hook:subscriber:assign",
         expect.anything(),
         expect.anything(),
       );
       expect(subscriberRepository.eventEmitter.emit).toHaveBeenCalledWith(
-        'hook:analytics:passation',
+        "hook:analytics:passation",
         expect.anything(),
         true, // Because assignedTo has changed
       );
     });
 
-    it('should not emit events if assignedTo remains unchanged', async () => {
+    it("should not emit events if assignedTo remains unchanged", async () => {
       const oldSubscriber = {
         ...subscriberFixtures[0],
-        assignedTo: '8'.repeat(24),
+        assignedTo: "8".repeat(24),
       } as Subscriber;
 
-      const updates = { assignedTo: '8'.repeat(24) }; // Same user;
+      const updates = { assignedTo: "8".repeat(24) }; // Same user;
 
       jest
-        .spyOn(subscriberRepository, 'findOne')
+        .spyOn(subscriberRepository, "findOne")
         .mockResolvedValue(oldSubscriber);
-      jest.spyOn(subscriberRepository.eventEmitter, 'emit');
+      jest.spyOn(subscriberRepository.eventEmitter, "emit");
 
       await subscriberRepository.updateOne(oldSubscriber.id, updates);
 
       expect(subscriberRepository.eventEmitter.emit).not.toHaveBeenCalledWith(
-        'hook:subscriber:assign',
+        "hook:subscriber:assign",
         expect.anything(),
         expect.anything(),
       );
       expect(subscriberRepository.eventEmitter.emit).not.toHaveBeenCalledWith(
-        'hook:analytics:passation',
+        "hook:analytics:passation",
         expect.anything(),
         expect.anything(),
       );
     });
 
-    it('should throw an error if the subscriber does not exist', async () => {
-      jest.spyOn(subscriberRepository, 'findOne').mockResolvedValue(null);
+    it("should throw an error if the subscriber does not exist", async () => {
+      jest.spyOn(subscriberRepository, "findOne").mockResolvedValue(null);
 
       await expect(
-        subscriberRepository.updateOne('0'.repeat(24), {
-          $set: { assignedTo: 'user-456' },
+        subscriberRepository.updateOne("0".repeat(24), {
+          $set: { assignedTo: "user-456" },
         }),
       ).rejects.toThrow();
     });

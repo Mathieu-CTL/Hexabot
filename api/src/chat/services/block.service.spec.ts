@@ -9,23 +9,23 @@
 import {
   subscriberWithLabels,
   subscriberWithoutLabels,
-} from '@/channel/lib/__test__/subscriber.mock';
-import { ButtonType, PayloadType } from '@/chat/schemas/types/button';
-import { Content } from '@/cms/schemas/content.schema';
-import { ContentTypeService } from '@/cms/services/content-type.service';
-import { ContentService } from '@/cms/services/content.service';
-import WebChannelHandler from '@/extensions/channels/web/index.channel';
-import { WEB_CHANNEL_NAME } from '@/extensions/channels/web/settings';
-import { Web } from '@/extensions/channels/web/types';
-import WebEventWrapper from '@/extensions/channels/web/wrapper';
-import { I18nService } from '@/i18n/services/i18n.service';
-import { FALLBACK_DEFAULT_NLU_PENALTY_FACTOR } from '@/utils/constants/nlp';
+} from "@/channel/lib/__test__/subscriber.mock";
+import { ButtonType, PayloadType } from "@/chat/schemas/types/button";
+import { Content } from "@/cms/schemas/content.schema";
+import { ContentTypeService } from "@/cms/services/content-type.service";
+import { ContentService } from "@/cms/services/content.service";
+import WebChannelHandler from "@/extensions/channels/web/index.channel";
+import { WEB_CHANNEL_NAME } from "@/extensions/channels/web/settings";
+import { Web } from "@/extensions/channels/web/types";
+import WebEventWrapper from "@/extensions/channels/web/wrapper";
+import { I18nService } from "@/i18n/services/i18n.service";
+import { FALLBACK_DEFAULT_NLU_PENALTY_FACTOR } from "@/utils/constants/nlp";
 import {
   blockFixtures,
   installBlockFixtures,
-} from '@/utils/test/fixtures/block';
-import { installContentFixtures } from '@/utils/test/fixtures/content';
-import { installNlpValueFixtures } from '@/utils/test/fixtures/nlpvalue';
+} from "@/utils/test/fixtures/block";
+import { installContentFixtures } from "@/utils/test/fixtures/content";
+import { installNlpValueFixtures } from "@/utils/test/fixtures/nlpvalue";
 import {
   blockEmpty,
   blockGetStarted,
@@ -38,47 +38,47 @@ import {
   mockNlpGreetingPatterns,
   mockNlpGreetingWrongNamePatterns,
   mockWebChannelData,
-} from '@/utils/test/mocks/block';
+} from "@/utils/test/mocks/block";
 import {
   contextBlankInstance,
   subscriberContextBlankInstance,
-} from '@/utils/test/mocks/conversation';
+} from "@/utils/test/mocks/conversation";
 import {
   mockNlpFirstNameEntities,
   mockNlpGreetingFullNameEntities,
   mockNlpGreetingNameEntities,
-} from '@/utils/test/mocks/nlp';
+} from "@/utils/test/mocks/nlp";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { BlockRepository } from '../repositories/block.repository';
-import { Block, BlockFull } from '../schemas/block.schema';
-import { Category } from '../schemas/category.schema';
-import { Subscriber } from '../schemas/subscriber.schema';
-import { FileType } from '../schemas/types/attachment';
-import { Context } from '../schemas/types/context';
+import { BlockRepository } from "../repositories/block.repository";
+import { Block, BlockFull } from "../schemas/block.schema";
+import { Category } from "../schemas/category.schema";
+import { Subscriber } from "../schemas/subscriber.schema";
+import { FileType } from "../schemas/types/attachment";
+import { Context } from "../schemas/types/context";
 import {
   OutgoingMessageFormat,
   StdOutgoingListMessage,
-} from '../schemas/types/message';
-import { QuickReplyType } from '../schemas/types/quick-reply';
+} from "../schemas/types/message";
+import { QuickReplyType } from "../schemas/types/quick-reply";
 
-import { CategoryRepository } from './../repositories/category.repository';
-import { BlockService } from './block.service';
+import { CategoryRepository } from "./../repositories/category.repository";
+import { BlockService } from "./block.service";
 
 function makeMockBlock(overrides: Partial<Block>): Block {
   return {
-    id: 'default',
+    id: "default",
     message: [],
     trigger_labels: [],
     assign_labels: [],
     nextBlocks: [],
     attachedBlock: null,
     category: null,
-    name: '',
+    name: "",
     patterns: [],
     outcomes: [],
     trigger_channels: [],
@@ -93,7 +93,7 @@ function makeMockBlock(overrides: Partial<Block>): Block {
   };
 }
 
-describe('BlockService', () => {
+describe("BlockService", () => {
   let blockRepository: BlockRepository;
   let categoryRepository: CategoryRepository;
   let category: Category;
@@ -105,8 +105,8 @@ describe('BlockService', () => {
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      models: ['LabelModel'],
-      autoInjectFrom: ['providers'],
+      models: ["LabelModel"],
+      autoInjectFrom: ["providers"],
       imports: [
         rootMongooseTestModule(async () => {
           await installContentFixtures();
@@ -122,7 +122,7 @@ describe('BlockService', () => {
           provide: I18nService,
           useValue: {
             t: jest.fn().mockImplementation((t) => {
-              return t === 'Welcome' ? 'Bienvenue' : t;
+              return t === "Welcome" ? "Bienvenue" : t;
             }),
           },
         },
@@ -141,19 +141,19 @@ describe('BlockService', () => {
       CategoryRepository,
       BlockRepository,
     ]);
-    category = (await categoryRepository.findOne({ label: 'default' }))!;
+    category = (await categoryRepository.findOne({ label: "default" }))!;
     hasPreviousBlocks = (await blockRepository.findOne({
-      name: 'hasPreviousBlocks',
+      name: "hasPreviousBlocks",
     }))!;
-    block = (await blockRepository.findOne({ name: 'hasNextBlocks' }))!;
+    block = (await blockRepository.findOne({ name: "hasNextBlocks" }))!;
   });
 
   afterEach(jest.clearAllMocks);
   afterAll(closeInMongodConnection);
 
-  describe('findOneAndPopulate', () => {
-    it('should find one block by id, and populate its trigger_labels, assign_labels,attachedBlock,category,nextBlocks', async () => {
-      jest.spyOn(blockRepository, 'findOneAndPopulate');
+  describe("findOneAndPopulate", () => {
+    it("should find one block by id, and populate its trigger_labels, assign_labels,attachedBlock,category,nextBlocks", async () => {
+      jest.spyOn(blockRepository, "findOneAndPopulate");
       const result = await blockService.findOneAndPopulate(block.id);
 
       expect(blockRepository.findOneAndPopulate).toHaveBeenCalledWith(
@@ -161,7 +161,7 @@ describe('BlockService', () => {
         undefined,
       );
       expect(result).toEqualPayload({
-        ...blockFixtures.find(({ name }) => name === 'hasNextBlocks'),
+        ...blockFixtures.find(({ name }) => name === "hasNextBlocks"),
         category,
         nextBlocks: [hasPreviousBlocks],
         previousBlocks: [],
@@ -170,17 +170,17 @@ describe('BlockService', () => {
     });
   });
 
-  describe('findAndPopulate', () => {
-    it('should find blocks and populate them', async () => {
-      jest.spyOn(blockRepository, 'findAndPopulate');
+  describe("findAndPopulate", () => {
+    it("should find blocks and populate them", async () => {
+      jest.spyOn(blockRepository, "findAndPopulate");
       const result = await blockService.findAndPopulate({});
       const blocksWithCategory = blockFixtures.map((blockFixture) => ({
         ...blockFixture,
         category,
         previousBlocks:
-          blockFixture.name === 'hasPreviousBlocks' ? [block] : [],
+          blockFixture.name === "hasPreviousBlocks" ? [block] : [],
         nextBlocks:
-          blockFixture.name === 'hasNextBlocks' ? [hasPreviousBlocks] : [],
+          blockFixture.name === "hasNextBlocks" ? [hasPreviousBlocks] : [],
         attachedToBlock: null,
       }));
 
@@ -193,7 +193,7 @@ describe('BlockService', () => {
     });
   });
 
-  describe('match', () => {
+  describe("match", () => {
     const handlerMock = {
       getName: jest.fn(() => WEB_CHANNEL_NAME),
     } as any as WebChannelHandler;
@@ -202,7 +202,7 @@ describe('BlockService', () => {
       {
         type: Web.IncomingMessageType.text,
         data: {
-          text: 'Hello',
+          text: "Hello",
         },
       },
       mockWebChannelData,
@@ -212,8 +212,8 @@ describe('BlockService', () => {
       {
         type: Web.IncomingMessageType.postback,
         data: {
-          text: 'Get Started',
-          payload: 'GET_STARTED',
+          text: "Get Started",
+          payload: "GET_STARTED",
         },
       },
       mockWebChannelData,
@@ -230,38 +230,38 @@ describe('BlockService', () => {
       mockWebChannelData,
     );
 
-    it('should return undefined when no blocks are provided', async () => {
+    it("should return undefined when no blocks are provided", async () => {
       const result = await blockService.match([], webEventGreeting);
       expect(result).toBe(undefined);
     });
 
-    it('should return undefined for empty blocks', async () => {
+    it("should return undefined for empty blocks", async () => {
       const result = await blockService.match([blockEmpty], webEventGreeting);
       expect(result).toEqual(undefined);
     });
 
-    it('should return undefined for no matching labels', async () => {
+    it("should return undefined for no matching labels", async () => {
       webEventGreeting.setSender(subscriberWithoutLabels);
       const result = await blockService.match(blocks, webEventGreeting);
       expect(result).toEqual(undefined);
     });
 
-    it('should match block text and labels', async () => {
+    it("should match block text and labels", async () => {
       webEventGreeting.setSender(subscriberWithLabels);
       const result = await blockService.match(blocks, webEventGreeting);
       expect(result).toEqual(blockGetStarted);
     });
 
-    it('should return undefined when multiple matches are not allowed', async () => {
+    it("should return undefined when multiple matches are not allowed", async () => {
       const result = await blockService.match(
         [
           {
             ...blockEmpty,
-            patterns: ['/yes/'],
+            patterns: ["/yes/"],
           },
           {
             ...blockEmpty,
-            patterns: ['/no/'],
+            patterns: ["/no/"],
           },
         ],
         webEventAmbiguous,
@@ -270,13 +270,13 @@ describe('BlockService', () => {
       expect(result).toEqual(undefined);
     });
 
-    it('should match block with payload', async () => {
+    it("should match block with payload", async () => {
       webEventGetStarted.setSender(subscriberWithLabels);
       const result = await blockService.match(blocks, webEventGetStarted);
       expect(result).toEqual(blockGetStarted);
     });
 
-    it('should match block with nlp', async () => {
+    it("should match block with nlp", async () => {
       webEventGreeting.setSender(subscriberWithLabels);
       webEventGreeting.setNLP(mockNlpGreetingFullNameEntities);
       const result = await blockService.match(blocks, webEventGreeting);
@@ -284,8 +284,8 @@ describe('BlockService', () => {
     });
   });
 
-  describe('matchNLP', () => {
-    it('should return an empty array for a block with no NLP patterns', () => {
+  describe("matchNLP", () => {
+    it("should return an empty array for a block with no NLP patterns", () => {
       const result = blockService.getMatchingNluPatterns(
         mockNlpGreetingFullNameEntities,
         blockEmpty,
@@ -293,7 +293,7 @@ describe('BlockService', () => {
       expect(result).toEqual([]);
     });
 
-    it('should return an empty array when no NLP entities are provided', () => {
+    it("should return an empty array when no NLP entities are provided", () => {
       const result = blockService.getMatchingNluPatterns(
         { entities: [] },
         blockGetStarted,
@@ -301,7 +301,7 @@ describe('BlockService', () => {
       expect(result).toEqual([]);
     });
 
-    it('should return match nlp patterns', () => {
+    it("should return match nlp patterns", () => {
       const result = blockService.getMatchingNluPatterns(
         mockNlpGreetingFullNameEntities,
         {
@@ -312,20 +312,20 @@ describe('BlockService', () => {
       expect(result).toEqual([
         [
           {
-            entity: 'intent',
-            match: 'value',
-            value: 'greeting',
+            entity: "intent",
+            match: "value",
+            value: "greeting",
           },
           {
-            entity: 'firstname',
-            match: 'value',
-            value: 'jhon',
+            entity: "firstname",
+            match: "value",
+            value: "jhon",
           },
         ],
       ]);
     });
 
-    it('should return match nlp patterns with synonyms match (canonical value)', () => {
+    it("should return match nlp patterns with synonyms match (canonical value)", () => {
       const result = blockService.getMatchingNluPatterns(
         mockNlpFirstNameEntities,
         {
@@ -336,41 +336,41 @@ describe('BlockService', () => {
       expect(result).toEqual([
         [
           {
-            entity: 'firstname',
-            match: 'value',
-            value: 'jhon',
+            entity: "firstname",
+            match: "value",
+            value: "jhon",
           },
         ],
       ]);
     });
 
-    it('should return empty array when it does not match nlp patterns', () => {
+    it("should return empty array when it does not match nlp patterns", () => {
       const result = blockService.getMatchingNluPatterns(
         mockNlpGreetingFullNameEntities,
         {
           ...blockGetStarted,
           patterns: [
-            [{ entity: 'lastname', match: 'value', value: 'Belakhel' }],
+            [{ entity: "lastname", match: "value", value: "Belakhel" }],
           ],
         },
       );
       expect(result).toEqual([]);
     });
 
-    it('should return empty array when unknown nlp patterns', () => {
+    it("should return empty array when unknown nlp patterns", () => {
       const result = blockService.getMatchingNluPatterns(
         mockNlpGreetingFullNameEntities,
         {
           ...blockGetStarted,
-          patterns: [[{ entity: 'product', match: 'value', value: 'pizza' }]],
+          patterns: [[{ entity: "product", match: "value", value: "pizza" }]],
         },
       );
       expect(result).toEqual([]);
     });
   });
 
-  describe('matchBestNLP', () => {
-    it('should return the block with the highest NLP score', async () => {
+  describe("matchBestNLP", () => {
+    it("should return the block with the highest NLP score", async () => {
       const mockExpectedBlock: BlockFull = {
         ...blockGetStarted,
         patterns: [...blockGetStarted.patterns, mockNlpGreetingNamePatterns],
@@ -405,7 +405,7 @@ describe('BlockService', () => {
       // Spy on calculateBlockScore to check if it's called
       const calculateBlockScoreSpy = jest.spyOn(
         blockService,
-        'calculateNluPatternMatchScore',
+        "calculateNluPatternMatchScore",
       );
 
       const bestBlock = blockService.matchBestNLP(
@@ -421,7 +421,7 @@ describe('BlockService', () => {
       expect(bestBlock).toEqual(mockExpectedBlock);
     });
 
-    it('should return the block with the highest NLP score applying penalties', async () => {
+    it("should return the block with the highest NLP score applying penalties", async () => {
       const mockExpectedBlock: BlockFull = {
         ...blockGetStarted,
         patterns: [...blockGetStarted.patterns, mockNlpGreetingNamePatterns],
@@ -449,7 +449,7 @@ describe('BlockService', () => {
       // Spy on calculateBlockScore to check if it's called
       const calculateBlockScoreSpy = jest.spyOn(
         blockService,
-        'calculateNluPatternMatchScore',
+        "calculateNluPatternMatchScore",
       );
       const bestBlock = blockService.matchBestNLP(
         blocks,
@@ -464,7 +464,7 @@ describe('BlockService', () => {
       expect(bestBlock).toEqual(mockExpectedBlock);
     });
 
-    it('should return undefined if no blocks match or the list is empty', async () => {
+    it("should return undefined if no blocks match or the list is empty", async () => {
       const blocks: BlockFull[] = [
         {
           ...blockGetStarted,
@@ -484,8 +484,8 @@ describe('BlockService', () => {
     });
   });
 
-  describe('calculateNluPatternMatchScore', () => {
-    it('should calculate the correct NLP score for a block', async () => {
+  describe("calculateNluPatternMatchScore", () => {
+    it("should calculate the correct NLP score for a block", async () => {
       const matchingScore = blockService.calculateNluPatternMatchScore(
         mockNlpGreetingNamePatterns,
         mockNlpGreetingNameEntities,
@@ -495,7 +495,7 @@ describe('BlockService', () => {
       expect(matchingScore).toBeGreaterThan(0);
     });
 
-    it('should calculate the correct NLP score for a block and apply penalties ', async () => {
+    it("should calculate the correct NLP score for a block and apply penalties ", async () => {
       const scoreWithoutPenalty = blockService.calculateNluPatternMatchScore(
         mockNlpGreetingNamePatterns,
         mockNlpGreetingNameEntities,
@@ -511,7 +511,7 @@ describe('BlockService', () => {
       expect(scoreWithoutPenalty).toBeGreaterThan(scoreWithPenalty);
     });
 
-    it('should handle invalid case for penalty factor values', async () => {
+    it("should handle invalid case for penalty factor values", async () => {
       // Test with invalid penalty (should use fallback)
       const scoreWithInvalidPenalty =
         blockService.calculateNluPatternMatchScore(
@@ -524,32 +524,32 @@ describe('BlockService', () => {
     });
   });
 
-  describe('matchPayload', () => {
-    it('should return undefined for empty payload', () => {
-      const result = blockService.matchPayload('', blockGetStarted);
+  describe("matchPayload", () => {
+    it("should return undefined for empty payload", () => {
+      const result = blockService.matchPayload("", blockGetStarted);
       expect(result).toEqual(undefined);
     });
 
-    it('should return undefined for empty block', () => {
-      const result = blockService.matchPayload('test', blockEmpty);
+    it("should return undefined for empty block", () => {
+      const result = blockService.matchPayload("test", blockEmpty);
       expect(result).toEqual(undefined);
     });
 
-    it('should match payload and return object for label string', () => {
+    it("should match payload and return object for label string", () => {
       const location = {
-        label: 'Tounes',
-        value: 'Tounes',
-        type: 'location',
+        label: "Tounes",
+        value: "Tounes",
+        type: "location",
       };
-      const result = blockService.matchPayload('Tounes', blockGetStarted);
+      const result = blockService.matchPayload("Tounes", blockGetStarted);
       expect(result).toEqual(location);
     });
 
-    it('should match payload and return object for value string', () => {
-      const result = blockService.matchPayload('GET_STARTED', blockGetStarted);
+    it("should match payload and return object for value string", () => {
+      const result = blockService.matchPayload("GET_STARTED", blockGetStarted);
       expect(result).toEqual({
-        label: 'Get Started',
-        value: 'GET_STARTED',
+        label: "Get Started",
+        value: "GET_STARTED",
       });
     });
 
@@ -574,8 +574,8 @@ describe('BlockService', () => {
           attachment: {
             type: FileType.file,
             payload: {
-              id: '9'.repeat(24),
-              url: 'http://link.to/the/file',
+              id: "9".repeat(24),
+              url: "http://link.to/the/file",
             },
           },
         },
@@ -585,68 +585,68 @@ describe('BlockService', () => {
     });
   });
 
-  describe('matchText', () => {
-    it('should return false for matching an empty text', () => {
-      const result = blockService.matchText('', blockGetStarted);
+  describe("matchText", () => {
+    it("should return false for matching an empty text", () => {
+      const result = blockService.matchText("", blockGetStarted);
       expect(result).toEqual(false);
     });
 
-    it('should match text message', () => {
-      const result = blockService.matchText('Hello', blockGetStarted);
-      expect(result).toEqual(['Hello']);
+    it("should match text message", () => {
+      const result = blockService.matchText("Hello", blockGetStarted);
+      expect(result).toEqual(["Hello"]);
     });
 
-    it('should match regex text message', () => {
+    it("should match regex text message", () => {
       const result = blockService.matchText(
-        'weeeelcome to our house',
+        "weeeelcome to our house",
         blockGetStarted,
       );
       expect(result).toEqualPayload(
-        ['weeeelcome'],
-        ['index', 'index', 'input', 'groups'],
+        ["weeeelcome"],
+        ["index", "index", "input", "groups"],
       );
     });
 
     it("should return false when there's no match", () => {
       const result = blockService.matchText(
-        'Goodbye Mr black',
+        "Goodbye Mr black",
         blockGetStarted,
       );
       expect(result).toEqual(false);
     });
 
-    it('should return false when matching message against a block with no patterns', () => {
-      const result = blockService.matchText('Hello', blockEmpty);
+    it("should return false when matching message against a block with no patterns", () => {
+      const result = blockService.matchText("Hello", blockEmpty);
       expect(result).toEqual(false);
     });
   });
 
-  describe('processMessage', () => {
+  describe("processMessage", () => {
     // generic inputs we re-use
     const ctx: Context = {
       vars: {
-        phone: '+1123456789',
+        phone: "+1123456789",
       },
       user_location: {
         address: undefined,
         lat: 0,
         lon: 0,
       },
-      user: { id: 'user-id', first_name: 'Jhon', last_name: 'Doe' } as any,
+      user: { id: "user-id", first_name: "Jhon", last_name: "Doe" } as any,
       skip: {},
       attempt: 0,
     }; // Context
-    const subCtx: Subscriber['context'] = {
+    const subCtx: Subscriber["context"] = {
       vars: {
-        color: 'green',
+        color: "green",
       },
     }; // SubscriberContext
-    const conversationId = 'conv-id';
+    const conversationId = "conv-id";
 
-    it('should return a text envelope when the block is a text block', async () => {
+    it("should return a text envelope when the block is a text block", async () => {
       const block = makeMockBlock({
         message: [
-          'Hello {{context.user.first_name}}, your phone is {{context.vars.phone}} and your favorite color is {{context.vars.color}}',
+          "Hello {{context.user.first_name}}, your phone is {{context.vars.phone}} and your favorite color is {{context.vars.color}}",
         ],
       });
 
@@ -661,19 +661,19 @@ describe('BlockService', () => {
       expect(env).toEqual({
         format: OutgoingMessageFormat.text,
         message: {
-          text: 'Hello Jhon, your phone is +1123456789 and your favorite color is green',
+          text: "Hello Jhon, your phone is +1123456789 and your favorite color is green",
         },
       });
     });
 
-    it('should return a text envelope when the block is a text block (local fallback)', async () => {
+    it("should return a text envelope when the block is a text block (local fallback)", async () => {
       const block = makeMockBlock({
-        message: ['Hello world!'],
+        message: ["Hello world!"],
         options: {
           fallback: {
             active: true,
             max_attempts: 1,
-            message: ['Local fallback message ...'],
+            message: ["Local fallback message ..."],
           },
         },
       });
@@ -689,18 +689,18 @@ describe('BlockService', () => {
       expect(env).toEqual({
         format: OutgoingMessageFormat.text,
         message: {
-          text: 'Local fallback message ...',
+          text: "Local fallback message ...",
         },
       });
     });
 
-    it('should return a quick replies envelope when the block message has quickReplies', async () => {
+    it("should return a quick replies envelope when the block message has quickReplies", async () => {
       const block = makeMockBlock({
         message: {
-          text: '{{context.user.first_name}}, is this your phone number? {{context.vars.phone}}',
+          text: "{{context.user.first_name}}, is this your phone number? {{context.vars.phone}}",
           quickReplies: [
-            { content_type: QuickReplyType.text, title: 'Yes', payload: 'YES' },
-            { content_type: QuickReplyType.text, title: 'No', payload: 'NO' },
+            { content_type: QuickReplyType.text, title: "Yes", payload: "YES" },
+            { content_type: QuickReplyType.text, title: "No", payload: "NO" },
           ],
         },
       });
@@ -716,29 +716,29 @@ describe('BlockService', () => {
       expect(env).toEqual({
         format: OutgoingMessageFormat.quickReplies,
         message: {
-          text: 'Jhon, is this your phone number? +1123456789',
+          text: "Jhon, is this your phone number? +1123456789",
           quickReplies: [
-            { content_type: QuickReplyType.text, title: 'Yes', payload: 'YES' },
-            { content_type: QuickReplyType.text, title: 'No', payload: 'NO' },
+            { content_type: QuickReplyType.text, title: "Yes", payload: "YES" },
+            { content_type: QuickReplyType.text, title: "No", payload: "NO" },
           ],
         },
       });
     });
 
-    it('should return a quick replies envelope when the block message has quickReplies (local fallback)', async () => {
+    it("should return a quick replies envelope when the block message has quickReplies (local fallback)", async () => {
       const block = makeMockBlock({
         message: {
-          text: '{{context.user.first_name}}, are you there?',
+          text: "{{context.user.first_name}}, are you there?",
           quickReplies: [
-            { content_type: QuickReplyType.text, title: 'Yes', payload: 'YES' },
-            { content_type: QuickReplyType.text, title: 'No', payload: 'NO' },
+            { content_type: QuickReplyType.text, title: "Yes", payload: "YES" },
+            { content_type: QuickReplyType.text, title: "No", payload: "NO" },
           ],
         },
         options: {
           fallback: {
             active: true,
             max_attempts: 1,
-            message: ['Local fallback message ...'],
+            message: ["Local fallback message ..."],
           },
         },
       });
@@ -754,22 +754,22 @@ describe('BlockService', () => {
       expect(env).toEqual({
         format: OutgoingMessageFormat.quickReplies,
         message: {
-          text: 'Local fallback message ...',
+          text: "Local fallback message ...",
           quickReplies: [
-            { content_type: QuickReplyType.text, title: 'Yes', payload: 'YES' },
-            { content_type: QuickReplyType.text, title: 'No', payload: 'NO' },
+            { content_type: QuickReplyType.text, title: "Yes", payload: "YES" },
+            { content_type: QuickReplyType.text, title: "No", payload: "NO" },
           ],
         },
       });
     });
 
-    it('should return a buttons envelope when the block message has buttons', async () => {
+    it("should return a buttons envelope when the block message has buttons", async () => {
       const block = makeMockBlock({
         message: {
-          text: '{{context.user.first_name}} {{context.user.last_name}}, what color do you like? {{context.vars.color}}?',
+          text: "{{context.user.first_name}} {{context.user.last_name}}, what color do you like? {{context.vars.color}}?",
           buttons: [
-            { type: ButtonType.postback, title: 'Red', payload: 'RED' },
-            { type: ButtonType.postback, title: 'Green', payload: 'GREEN' },
+            { type: ButtonType.postback, title: "Red", payload: "RED" },
+            { type: ButtonType.postback, title: "Green", payload: "GREEN" },
           ],
         },
       });
@@ -785,37 +785,37 @@ describe('BlockService', () => {
       expect(env).toEqual({
         format: OutgoingMessageFormat.buttons,
         message: {
-          text: 'Jhon Doe, what color do you like? green?',
+          text: "Jhon Doe, what color do you like? green?",
           buttons: [
             {
               type: ButtonType.postback,
-              title: 'Red',
-              payload: 'RED',
+              title: "Red",
+              payload: "RED",
             },
             {
               type: ButtonType.postback,
-              title: 'Green',
-              payload: 'GREEN',
+              title: "Green",
+              payload: "GREEN",
             },
           ],
         },
       });
     });
 
-    it('should return a buttons envelope when the block message has buttons (local fallback)', async () => {
+    it("should return a buttons envelope when the block message has buttons (local fallback)", async () => {
       const block = makeMockBlock({
         message: {
-          text: '{{context.user.first_name}} {{context.user.last_name}}, what color do you like? {{context.vars.color}}?',
+          text: "{{context.user.first_name}} {{context.user.last_name}}, what color do you like? {{context.vars.color}}?",
           buttons: [
-            { type: ButtonType.postback, title: 'Red', payload: 'RED' },
-            { type: ButtonType.postback, title: 'Green', payload: 'GREEN' },
+            { type: ButtonType.postback, title: "Red", payload: "RED" },
+            { type: ButtonType.postback, title: "Green", payload: "GREEN" },
           ],
         },
         options: {
           fallback: {
             active: true,
             max_attempts: 1,
-            message: ['Local fallback message ...'],
+            message: ["Local fallback message ..."],
           },
         },
       });
@@ -831,29 +831,29 @@ describe('BlockService', () => {
       expect(env).toEqual({
         format: OutgoingMessageFormat.buttons,
         message: {
-          text: 'Local fallback message ...',
+          text: "Local fallback message ...",
           buttons: [
             {
               type: ButtonType.postback,
-              title: 'Red',
-              payload: 'RED',
+              title: "Red",
+              payload: "RED",
             },
             {
               type: ButtonType.postback,
-              title: 'Green',
-              payload: 'GREEN',
+              title: "Green",
+              payload: "GREEN",
             },
           ],
         },
       });
     });
 
-    it('should return an attachment envelope when payload has an id', async () => {
+    it("should return an attachment envelope when payload has an id", async () => {
       const block = makeMockBlock({
         message: {
           attachment: {
             type: FileType.image,
-            payload: { id: 'ABC123' },
+            payload: { id: "ABC123" },
           },
         },
       });
@@ -870,19 +870,19 @@ describe('BlockService', () => {
         format: OutgoingMessageFormat.attachment,
         message: {
           attachment: {
-            type: 'image',
-            payload: { id: 'ABC123' },
+            type: "image",
+            payload: { id: "ABC123" },
           },
         },
       });
     });
 
-    it('should return an attachment envelope when payload has an id (local fallback)', async () => {
+    it("should return an attachment envelope when payload has an id (local fallback)", async () => {
       const block = makeMockBlock({
         message: {
           attachment: {
             type: FileType.image,
-            payload: { id: 'ABC123' },
+            payload: { id: "ABC123" },
           },
           quickReplies: [],
         },
@@ -890,7 +890,7 @@ describe('BlockService', () => {
           fallback: {
             active: true,
             max_attempts: 1,
-            message: ['Local fallback ...'],
+            message: ["Local fallback ..."],
           },
         },
       });
@@ -906,28 +906,28 @@ describe('BlockService', () => {
       expect(env).toEqual({
         format: OutgoingMessageFormat.text,
         message: {
-          text: 'Local fallback ...',
+          text: "Local fallback ...",
         },
       });
     });
 
-    it('should keep quickReplies when present in an attachment block', async () => {
+    it("should keep quickReplies when present in an attachment block", async () => {
       const block = makeMockBlock({
         message: {
           attachment: {
             type: FileType.video,
-            payload: { id: 'VID42' },
+            payload: { id: "VID42" },
           },
           quickReplies: [
             {
               content_type: QuickReplyType.text,
-              title: 'Replay',
-              payload: 'REPLAY',
+              title: "Replay",
+              payload: "REPLAY",
             },
             {
               content_type: QuickReplyType.text,
-              title: 'Next',
-              payload: 'NEXT',
+              title: "Next",
+              payload: "NEXT",
             },
           ],
         },
@@ -946,35 +946,35 @@ describe('BlockService', () => {
           attachment: {
             type: FileType.video,
             payload: {
-              id: 'VID42',
+              id: "VID42",
             },
           },
           quickReplies: [
             {
               content_type: QuickReplyType.text,
-              title: 'Replay',
-              payload: 'REPLAY',
+              title: "Replay",
+              payload: "REPLAY",
             },
             {
               content_type: QuickReplyType.text,
-              title: 'Next',
-              payload: 'NEXT',
+              title: "Next",
+              payload: "NEXT",
             },
           ],
         },
       });
     });
 
-    it('should throw when attachment payload misses an id (remote URLs deprecated)', async () => {
+    it("should throw when attachment payload misses an id (remote URLs deprecated)", async () => {
       const spyCheckDeprecated = jest
-        .spyOn(blockService as any, 'checkDeprecatedAttachmentUrl')
+        .spyOn(blockService as any, "checkDeprecatedAttachmentUrl")
         .mockImplementation(() => {});
 
       const block = makeMockBlock({
         message: {
           attachment: {
             type: FileType.image,
-            payload: { url: 'https://example.com/old-way.png' }, // no "id"
+            payload: { url: "https://example.com/old-way.png" }, // no "id"
           },
         },
       });
@@ -982,7 +982,7 @@ describe('BlockService', () => {
       await expect(
         blockService.processMessage(block, ctx, subCtx, false, conversationId),
       ).rejects.toThrow(
-        'Remote attachments in blocks are no longer supported!',
+        "Remote attachments in blocks are no longer supported!",
       );
 
       expect(spyCheckDeprecated).toHaveBeenCalledTimes(1);
@@ -990,9 +990,9 @@ describe('BlockService', () => {
       spyCheckDeprecated.mockRestore();
     });
 
-    it('should process list message (with limit = 2 and skip = 0)', async () => {
+    it("should process list message (with limit = 2 and skip = 0)", async () => {
       const contentType = (await contentTypeService.findOne({
-        name: 'Product',
+        name: "Product",
       }))!;
       blockProductListMock.options.content!.entity = contentType.id;
       const result = await blockService.processMessage(
@@ -1003,11 +1003,11 @@ describe('BlockService', () => {
         },
         subscriberContextBlankInstance,
         false,
-        'conv_id',
+        "conv_id",
       );
       const elements = await contentService.find(
         { status: true, entity: contentType.id },
-        { skip: 0, limit: 2, sort: ['createdAt', 'desc'] },
+        { skip: 0, limit: 2, sort: ["createdAt", "desc"] },
       );
       const flattenedElements = elements.map(Content.toElement);
       expect(result.format).toEqualPayload(
@@ -1024,9 +1024,9 @@ describe('BlockService', () => {
       ).toEqualPayload({ total: 4, skip: 0, limit: 2 });
     });
 
-    it('should process list message (with limit = 2 and skip = 2)', async () => {
+    it("should process list message (with limit = 2 and skip = 2)", async () => {
       const contentType = (await contentTypeService.findOne({
-        name: 'Product',
+        name: "Product",
       }))!;
       blockProductListMock.options.content!.entity = contentType.id;
       const result = await blockService.processMessage(
@@ -1037,11 +1037,11 @@ describe('BlockService', () => {
         },
         subscriberContextBlankInstance,
         false,
-        'conv_id',
+        "conv_id",
       );
       const elements = await contentService.find(
         { status: true, entity: contentType.id },
-        { skip: 2, limit: 2, sort: ['createdAt', 'desc'] },
+        { skip: 2, limit: 2, sort: ["createdAt", "desc"] },
       );
       const flattenedElements = elements.map(Content.toElement);
       expect(result.format).toEqual(
@@ -1061,30 +1061,30 @@ describe('BlockService', () => {
     });
   });
 
-  describe('search', () => {
-    it('should forward search request to repository', async () => {
+  describe("search", () => {
+    it("should forward search request to repository", async () => {
       const result = await blockService.search(
-        'hasNextBlocks',
+        "hasNextBlocks",
         10,
         category.id,
       );
 
       expect(Array.isArray(result)).toBe(true);
       expect(result.length).toBeGreaterThan(0);
-      expect(result[0].name).toBe('hasNextBlocks');
+      expect(result[0].name).toBe("hasNextBlocks");
     });
 
-    it('should use default limit when not specified', async () => {
-      const result = await blockService.search('hasNextBlocks');
+    it("should use default limit when not specified", async () => {
+      const result = await blockService.search("hasNextBlocks");
 
       expect(Array.isArray(result)).toBe(true);
       expect(result.length).toBeGreaterThan(0);
       // Verify it's using the default limit
     });
 
-    it('should filter by category correctly', async () => {
+    it("should filter by category correctly", async () => {
       const result = await blockService.search(
-        'hasNextBlocks',
+        "hasNextBlocks",
         10,
         category.id,
       );
@@ -1096,33 +1096,33 @@ describe('BlockService', () => {
       });
     });
 
-    it('should return search results with scores', async () => {
-      const result = await blockService.search('hasNextBlocks', 10);
+    it("should return search results with scores", async () => {
+      const result = await blockService.search("hasNextBlocks", 10);
 
       expect(Array.isArray(result)).toBe(true);
       expect(result.length).toBeGreaterThan(0);
       result.forEach((block) => {
-        expect(block).toHaveProperty('score');
-        expect(typeof block.score).toBe('number');
+        expect(block).toHaveProperty("score");
+        expect(typeof block.score).toBe("number");
         expect(block.score).toBeGreaterThan(0);
       });
     });
 
-    it('should handle empty search results', async () => {
-      const result = await blockService.search('nonexistentblockname', 10);
+    it("should handle empty search results", async () => {
+      const result = await blockService.search("nonexistentblockname", 10);
 
       expect(Array.isArray(result)).toBe(true);
       expect(result.length).toBe(0);
     });
 
-    it('should handle repository search errors gracefully', async () => {
+    it("should handle repository search errors gracefully", async () => {
       // Mock the repository to throw an error
       jest
-        .spyOn(blockRepository, 'search')
-        .mockRejectedValue(new Error('MongoDB connection error'));
+        .spyOn(blockRepository, "search")
+        .mockRejectedValue(new Error("MongoDB connection error"));
 
-      await expect(blockService.search('test', 10)).rejects.toThrow(
-        'MongoDB connection error',
+      await expect(blockService.search("test", 10)).rejects.toThrow(
+        "MongoDB connection error",
       );
     });
   });

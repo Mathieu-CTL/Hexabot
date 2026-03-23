@@ -8,7 +8,7 @@
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function idPlugin(schema, _options) {
-  schema.set('toJSON', {
+  schema.set("toJSON", {
     transform: (doc, ret) => {
       ret.id = ret._id; // Map _id to id
       delete ret._id; // Remove _id

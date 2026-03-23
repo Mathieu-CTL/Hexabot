@@ -6,9 +6,9 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { hashSync } from 'bcryptjs';
+import { hashSync } from "bcryptjs";
 
-import { config } from '@/config';
+import { config } from "@/config";
 
 export const hash = (plainPassword: string) =>
   hashSync(plainPassword, config.authentication.jwtOptions.salt);

@@ -6,17 +6,17 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 import {
   I18nService as NativeI18nService,
   Path,
   PathValue,
   TranslateOptions,
-} from 'nestjs-i18n';
-import { IfAnyOrNever } from 'nestjs-i18n/dist/types';
+} from "nestjs-i18n";
+import { IfAnyOrNever } from "nestjs-i18n/dist/types";
 
-import { config } from '@/config';
-import { Translation } from '@/i18n/schemas/translation.schema';
+import { config } from "@/config";
+import { Translation } from "@/i18n/schemas/translation.schema";
 
 @Injectable()
 export class I18nService<

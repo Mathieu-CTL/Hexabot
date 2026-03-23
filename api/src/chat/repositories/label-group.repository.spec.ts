@@ -9,19 +9,19 @@
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { LabelGroupRepository } from './label-group.repository';
-import { LabelRepository } from './label.repository';
+import { LabelGroupRepository } from "./label-group.repository";
+import { LabelRepository } from "./label.repository";
 
-describe('LabelRepository', () => {
+describe("LabelRepository", () => {
   let labelRepository: LabelRepository;
   let labelGroupRepository: LabelGroupRepository;
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['providers'],
+      autoInjectFrom: ["providers"],
       imports: [rootMongooseTestModule(() => Promise.resolve())],
       providers: [LabelRepository, LabelGroupRepository],
     });
@@ -34,22 +34,22 @@ describe('LabelRepository', () => {
   afterEach(jest.clearAllMocks);
   afterAll(closeInMongodConnection);
 
-  describe('deleteOne', () => {
-    it('should reset labels to null when their group is deleted', async () => {
+  describe("deleteOne", () => {
+    it("should reset labels to null when their group is deleted", async () => {
       const newGroup = await labelGroupRepository.create({
-        name: 'Group To Be Deleted',
+        name: "Group To Be Deleted",
       });
 
       await labelRepository.create({
-        title: 'Orphan Label',
-        name: 'ORPHAN_LABEL',
+        title: "Orphan Label",
+        name: "ORPHAN_LABEL",
         group: newGroup.id,
       });
 
       await labelGroupRepository.deleteOne(newGroup.id);
 
       const orphanLabel = await labelRepository.findOne({
-        name: 'ORPHAN_LABEL',
+        name: "ORPHAN_LABEL",
       });
 
       expect(orphanLabel?.group).toBe(null);

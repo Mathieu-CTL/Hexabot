@@ -6,52 +6,52 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import path from 'path';
+import path from "path";
 
-import { CacheModule } from '@nestjs/cache-manager';
-import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
-import { EventEmitterModule } from '@nestjs/event-emitter';
-import { MongooseModule } from '@nestjs/mongoose';
-import { redisStore } from 'cache-manager-redis-yet';
+import { CacheModule } from "@nestjs/cache-manager";
+import { Module } from "@nestjs/common";
+import { APP_GUARD } from "@nestjs/core";
+import { EventEmitterModule } from "@nestjs/event-emitter";
+import { MongooseModule } from "@nestjs/mongoose";
+import { redisStore } from "cache-manager-redis-yet";
 import {
   AcceptLanguageResolver,
   I18nOptions,
   QueryResolver,
-} from 'nestjs-i18n';
-import { RedisClientOptions } from 'redis';
+} from "nestjs-i18n";
+import { RedisClientOptions } from "redis";
 
-import { AnalyticsModule } from './analytics/analytics.module';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { AttachmentModule } from './attachment/attachment.module';
-import { ChannelModule } from './channel/channel.module';
-import { ChatModule } from './chat/chat.module';
-import { CmsModule } from './cms/cms.module';
-import { config } from './config';
-import { ExtensionModule } from './extension/extension.module';
-import extraModules from './extra';
-import { HelperModule } from './helper/helper.module';
-import { I18nModule } from './i18n/i18n.module';
-import { LoggerModule } from './logger/logger.module';
-import { MailerModule } from './mailer/mailer.module';
-import { MigrationModule } from './migration/migration.module';
-import { NlpModule } from './nlp/nlp.module';
-import { PluginsModule } from './plugins/plugins.module';
-import { SettingModule } from './setting/setting.module';
-import { Ability } from './user/guards/ability.guard';
-import { UserModule } from './user/user.module';
-import idPlugin from './utils/schema-plugin/id.plugin';
-import { WebsocketModule } from './websocket/websocket.module';
+import { AnalyticsModule } from "./analytics/analytics.module";
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
+import { AttachmentModule } from "./attachment/attachment.module";
+import { ChannelModule } from "./channel/channel.module";
+import { ChatModule } from "./chat/chat.module";
+import { CmsModule } from "./cms/cms.module";
+import { config } from "./config";
+import { ExtensionModule } from "./extension/extension.module";
+import extraModules from "./extra";
+import { HelperModule } from "./helper/helper.module";
+import { I18nModule } from "./i18n/i18n.module";
+import { LoggerModule } from "./logger/logger.module";
+import { MailerModule } from "./mailer/mailer.module";
+import { MigrationModule } from "./migration/migration.module";
+import { NlpModule } from "./nlp/nlp.module";
+import { PluginsModule } from "./plugins/plugins.module";
+import { SettingModule } from "./setting/setting.module";
+import { Ability } from "./user/guards/ability.guard";
+import { UserModule } from "./user/user.module";
+import idPlugin from "./utils/schema-plugin/id.plugin";
+import { WebsocketModule } from "./websocket/websocket.module";
 
 const i18nOptions: I18nOptions = {
-  fallbackLanguage: 'en',
+  fallbackLanguage: "en",
   loaderOptions: {
-    path: path.join(__dirname, '/config/i18n/'),
+    path: path.join(__dirname, "/config/i18n/"),
     watch: true,
   },
   resolvers: [
-    { use: QueryResolver, options: ['lang'] },
+    { use: QueryResolver, options: ["lang"] },
     AcceptLanguageResolver,
   ],
 };
@@ -61,15 +61,15 @@ const i18nOptions: I18nOptions = {
     MailerModule,
     MongooseModule.forRoot(config.mongo.uri, {
       dbName: config.mongo.dbName,
-      autoIndex: config.env !== 'production', // Disable in production
+      autoIndex: config.env !== "production", // Disable in production
       connectionFactory: (connection) => {
         connection.plugin(idPlugin);
         // eslint-disable-next-line @typescript-eslint/no-var-requires
-        connection.plugin(require('mongoose-lean-virtuals'));
+        connection.plugin(require("mongoose-lean-virtuals"));
         // eslint-disable-next-line @typescript-eslint/no-var-requires
-        connection.plugin(require('mongoose-lean-getters'));
+        connection.plugin(require("mongoose-lean-getters"));
         // eslint-disable-next-line @typescript-eslint/no-var-requires
-        connection.plugin(require('mongoose-lean-defaults').default);
+        connection.plugin(require("mongoose-lean-defaults").default);
         return connection;
       },
     }),
@@ -89,7 +89,7 @@ const i18nOptions: I18nOptions = {
       // set this to `true` to use wildcards
       wildcard: true,
       // the delimiter used to segment namespaces
-      delimiter: ':',
+      delimiter: ":",
       // set this to `true` if you want to emit the newListener event
       newListener: false,
       // set this to `true` if you want to emit the removeListener event
@@ -102,7 +102,7 @@ const i18nOptions: I18nOptions = {
       ignoreErrors: false,
     }),
     I18nModule.forRoot(i18nOptions),
-    config.cache.type === 'redis'
+    config.cache.type === "redis"
       ? CacheModule.register<RedisClientOptions>({
           isGlobal: true,
           store: redisStore,

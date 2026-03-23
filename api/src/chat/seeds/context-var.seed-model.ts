@@ -6,15 +6,15 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ContextVarCreateDto } from '../dto/context-var.dto';
+import { ContextVarCreateDto } from "../dto/context-var.dto";
 
 export const contextVarModels: ContextVarCreateDto[] = [
   {
-    name: 'phone_number',
-    label: 'Phone Number',
+    name: "phone_number",
+    label: "Phone Number",
   },
   {
-    name: 'email',
-    label: 'Email Address',
+    name: "email",
+    label: "Email Address",
   },
 ];

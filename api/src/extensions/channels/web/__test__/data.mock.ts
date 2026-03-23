@@ -6,13 +6,13 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { textMessage } from '@/channel/lib/__test__/common.mock';
-import { VIEW_MORE_PAYLOAD } from '@/chat/helpers/constants';
-import { ButtonType } from '@/chat/schemas/types/button';
-import { FileType } from '@/chat/schemas/types/message';
-import { QuickReplyType } from '@/chat/schemas/types/quick-reply';
+import { textMessage } from "@/channel/lib/__test__/common.mock";
+import { VIEW_MORE_PAYLOAD } from "@/chat/helpers/constants";
+import { ButtonType } from "@/chat/schemas/types/button";
+import { FileType } from "@/chat/schemas/types/message";
+import { QuickReplyType } from "@/chat/schemas/types/quick-reply";
 
-import { Web } from '../types';
+import { Web } from "../types";
 
 export const webText: Web.OutgoingMessageBase = {
   type: Web.OutgoingMessageType.text,
@@ -24,16 +24,16 @@ export const webQuickReplies: Web.OutgoingMessageBase = {
     quick_replies: [
       {
         content_type: QuickReplyType.text,
-        title: 'First option',
-        payload: 'first_option',
+        title: "First option",
+        payload: "first_option",
       },
       {
         content_type: QuickReplyType.text,
-        title: 'Second option',
-        payload: 'second_option',
+        title: "Second option",
+        payload: "second_option",
       },
     ],
-    text: 'Choose one option',
+    text: "Choose one option",
   },
   type: Web.OutgoingMessageType.quick_replies,
 };
@@ -43,18 +43,18 @@ export const webButtons: Web.OutgoingMessageBase = {
     buttons: [
       {
         type: ButtonType.postback,
-        title: 'First button',
-        payload: 'first_button',
+        title: "First button",
+        payload: "first_button",
       },
       {
         type: ButtonType.web_url,
-        title: 'Second button',
-        url: 'http://button.com',
+        title: "Second button",
+        url: "http://button.com",
         messenger_extensions: true,
-        webview_height_ratio: 'compact',
+        webview_height_ratio: "compact",
       },
     ],
-    text: 'Hit one of these buttons :',
+    text: "Hit one of these buttons :",
   },
   type: Web.OutgoingMessageType.buttons,
 };
@@ -64,7 +64,7 @@ export const webList: Web.OutgoingMessageBase = {
     buttons: [
       {
         payload: VIEW_MORE_PAYLOAD,
-        title: 'View More',
+        title: "View More",
         type: ButtonType.postback,
       },
     ],
@@ -72,26 +72,26 @@ export const webList: Web.OutgoingMessageBase = {
       {
         buttons: [
           {
-            payload: 'More:First',
-            title: 'More',
+            payload: "More:First",
+            title: "More",
             type: ButtonType.postback,
           },
         ],
-        image_url: 'http://public.url/download/filename.extension?t=any',
-        subtitle: 'About being first',
-        title: 'First',
+        image_url: "http://public.url/download/filename.extension?t=any",
+        subtitle: "About being first",
+        title: "First",
       },
       {
         buttons: [
           {
-            payload: 'More:Second',
-            title: 'More',
+            payload: "More:Second",
+            title: "More",
             type: ButtonType.postback,
           },
         ],
-        image_url: 'http://public.url/download/filename.extension?t=any',
-        subtitle: 'About being second',
-        title: 'Second',
+        image_url: "http://public.url/download/filename.extension?t=any",
+        subtitle: "About being second",
+        title: "Second",
       },
     ],
   },
@@ -104,26 +104,26 @@ export const webCarousel: Web.OutgoingMessageBase = {
       {
         buttons: [
           {
-            payload: 'More:First',
-            title: 'More',
+            payload: "More:First",
+            title: "More",
             type: ButtonType.postback,
           },
         ],
-        image_url: 'http://public.url/download/filename.extension?t=any',
-        subtitle: 'About being first',
-        title: 'First',
+        image_url: "http://public.url/download/filename.extension?t=any",
+        subtitle: "About being first",
+        title: "First",
       },
       {
         buttons: [
           {
-            payload: 'More:Second',
-            title: 'More',
+            payload: "More:Second",
+            title: "More",
             type: ButtonType.postback,
           },
         ],
-        image_url: 'http://public.url/download/filename.extension?t=any',
-        subtitle: 'About being second',
-        title: 'Second',
+        image_url: "http://public.url/download/filename.extension?t=any",
+        subtitle: "About being second",
+        title: "Second",
       },
     ],
   },
@@ -135,12 +135,12 @@ export const webAttachment: Web.OutgoingMessageBase = {
     quick_replies: [
       {
         content_type: QuickReplyType.text,
-        payload: 'NEXT',
-        title: 'Next >',
+        payload: "NEXT",
+        title: "Next >",
       },
     ],
     type: FileType.image,
-    url: 'http://public.url/download/filename.extension?t=any',
+    url: "http://public.url/download/filename.extension?t=any",
   },
   type: Web.OutgoingMessageType.file,
 };

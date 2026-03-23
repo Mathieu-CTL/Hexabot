@@ -6,20 +6,20 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
+import { Injectable } from "@nestjs/common";
+import { OnEvent } from "@nestjs/event-emitter";
 
-import { I18nService } from '@/i18n/services/i18n.service';
-import { PluginService } from '@/plugins/plugins.service';
-import { PluginType } from '@/plugins/types';
-import { SettingType } from '@/setting/schemas/types';
-import { SettingService } from '@/setting/services/setting.service';
-import { BaseService } from '@/utils/generics/base-service';
+import { I18nService } from "@/i18n/services/i18n.service";
+import { PluginService } from "@/plugins/plugins.service";
+import { PluginType } from "@/plugins/types";
+import { SettingType } from "@/setting/schemas/types";
+import { SettingService } from "@/setting/services/setting.service";
+import { BaseService } from "@/utils/generics/base-service";
 
-import { Block } from '../../chat/schemas/block.schema';
-import { BlockService } from '../../chat/services/block.service';
-import { TranslationRepository } from '../repositories/translation.repository';
-import { Translation } from '../schemas/translation.schema';
+import { Block } from "../../chat/schemas/block.schema";
+import { BlockService } from "../../chat/services/block.service";
+import { TranslationRepository } from "../repositories/translation.repository";
+import { Translation } from "../schemas/translation.schema";
 
 @Injectable()
 export class TranslationService extends BaseService<Translation> {
@@ -52,8 +52,8 @@ export class TranslationService extends BaseService<Translation> {
     if (Array.isArray(block.message)) {
       // Text Messages
       strings = strings.concat(block.message);
-    } else if (typeof block.message === 'object') {
-      if ('plugin' in block.message) {
+    } else if (typeof block.message === "object") {
+      if ("plugin" in block.message) {
         const plugin = this.pluginService.getPlugin(
           PluginType.block,
           block.message.plugin,
@@ -79,7 +79,7 @@ export class TranslationService extends BaseService<Translation> {
             case SettingType.multiple_text:
               if (Array.isArray(value)) {
                 strings = strings.concat(value);
-              } else if (typeof value === 'string') {
+              } else if (typeof value === "string") {
                 this.logger.warn(
                   `The plugin ${plugin?.name} setting '${key}' is incompatible with the settings.ts`,
                 );
@@ -95,7 +95,7 @@ export class TranslationService extends BaseService<Translation> {
               break;
             case SettingType.text:
             case SettingType.textarea:
-              if (typeof value === 'string') {
+              if (typeof value === "string") {
                 strings.push(value);
               } else if (Array.isArray(value)) {
                 this.logger.warn(
@@ -115,18 +115,18 @@ export class TranslationService extends BaseService<Translation> {
               break;
           }
         }
-      } else if ('text' in block.message && Array.isArray(block.message.text)) {
+      } else if ("text" in block.message && Array.isArray(block.message.text)) {
         // array of text
         strings = strings.concat(block.message.text);
       } else if (
-        'text' in block.message &&
-        typeof block.message.text === 'string'
+        "text" in block.message &&
+        typeof block.message.text === "string"
       ) {
         // text
         strings.push(block.message.text);
       }
       if (
-        'quickReplies' in block.message &&
+        "quickReplies" in block.message &&
         Array.isArray(block.message.quickReplies) &&
         block.message.quickReplies.length > 0
       ) {
@@ -135,7 +135,7 @@ export class TranslationService extends BaseService<Translation> {
           block.message.quickReplies.map((qr) => qr.title),
         );
       } else if (
-        'buttons' in block.message &&
+        "buttons" in block.message &&
         Array.isArray(block.message.buttons) &&
         block.message.buttons.length > 0
       ) {
@@ -146,9 +146,9 @@ export class TranslationService extends BaseService<Translation> {
     // Add fallback messages
     if (
       block.options &&
-      'fallback' in block.options &&
+      "fallback" in block.options &&
       block.options.fallback &&
-      'message' in block.options.fallback &&
+      "message" in block.options.fallback &&
       Array.isArray(block.options.fallback.message)
     ) {
       strings = strings.concat(block.options.fallback.message);
@@ -198,7 +198,7 @@ export class TranslationService extends BaseService<Translation> {
   /**
    * Updates the in-memory translations
    */
-  @OnEvent('hook:translation:*')
+  @OnEvent("hook:translation:*")
   handleTranslationsUpdate() {
     this.resetI18nTranslations();
   }

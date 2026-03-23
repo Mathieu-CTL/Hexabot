@@ -6,14 +6,14 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { TranslationCreateDto } from '../dto/translation.dto';
+import { TranslationCreateDto } from "../dto/translation.dto";
 
 export const translationModels: TranslationCreateDto[] = [
   {
-    str: 'Welcome',
+    str: "Welcome",
     translations: {
-      en: 'Welcome',
-      fr: 'Bienvenue',
+      en: "Welcome",
+      fr: "Bienvenue",
     },
     translated: 100,
   },

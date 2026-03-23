@@ -6,33 +6,33 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { LanguageRepository } from '@/i18n/repositories/language.repository';
-import { Language } from '@/i18n/schemas/language.schema';
-import { nlpSampleFixtures } from '@/utils/test/fixtures/nlpsample';
+import { LanguageRepository } from "@/i18n/repositories/language.repository";
+import { Language } from "@/i18n/schemas/language.schema";
+import { nlpSampleFixtures } from "@/utils/test/fixtures/nlpsample";
 import {
   installNlpSampleEntityFixtures,
   nlpSampleEntityFixtures,
-} from '@/utils/test/fixtures/nlpsampleentity';
-import { nlpValueFixtures } from '@/utils/test/fixtures/nlpvalue';
-import { getPageQuery } from '@/utils/test/pagination';
+} from "@/utils/test/fixtures/nlpsampleentity";
+import { nlpValueFixtures } from "@/utils/test/fixtures/nlpvalue";
+import { getPageQuery } from "@/utils/test/pagination";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { TFixtures } from '@/utils/test/types';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { TFixtures } from "@/utils/test/types";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { NlpEntity } from '../schemas/nlp-entity.schema';
+import { NlpEntity } from "../schemas/nlp-entity.schema";
 import {
   NlpSampleEntity,
   NlpSampleEntityFull,
-} from '../schemas/nlp-sample-entity.schema';
-import { NlpValueStub } from '../schemas/nlp-value.schema';
+} from "../schemas/nlp-sample-entity.schema";
+import { NlpValueStub } from "../schemas/nlp-value.schema";
 
-import { NlpEntityRepository } from './nlp-entity.repository';
-import { NlpSampleEntityRepository } from './nlp-sample-entity.repository';
+import { NlpEntityRepository } from "./nlp-entity.repository";
+import { NlpSampleEntityRepository } from "./nlp-sample-entity.repository";
 
-describe('NlpSampleEntityRepository', () => {
+describe("NlpSampleEntityRepository", () => {
   let nlpSampleEntityRepository: NlpSampleEntityRepository;
   let nlpEntityRepository: NlpEntityRepository;
   let languageRepository: LanguageRepository;
@@ -42,8 +42,8 @@ describe('NlpSampleEntityRepository', () => {
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      models: ['NlpSampleModel', 'NlpValueModel'],
-      autoInjectFrom: ['providers'],
+      models: ["NlpSampleModel", "NlpValueModel"],
+      autoInjectFrom: ["providers"],
       imports: [rootMongooseTestModule(installNlpSampleEntityFixtures)],
       providers: [
         NlpSampleEntityRepository,
@@ -66,8 +66,8 @@ describe('NlpSampleEntityRepository', () => {
 
   afterEach(jest.clearAllMocks);
 
-  describe('findOneAndPopulate', () => {
-    it('should return a nlp SampleEntity with populate', async () => {
+  describe("findOneAndPopulate", () => {
+    it("should return a nlp SampleEntity with populate", async () => {
       const result = await nlpSampleEntityRepository.findOneAndPopulate(
         nlpSampleEntities[0].id,
       );
@@ -83,10 +83,10 @@ describe('NlpSampleEntityRepository', () => {
     });
   });
 
-  describe('findAndPopulate', () => {
-    it('should return all nlp entities with populate', async () => {
+  describe("findAndPopulate", () => {
+    it("should return all nlp entities with populate", async () => {
       const pageQuery = getPageQuery<NlpSampleEntity>({
-        sort: ['value', 'asc'],
+        sort: ["value", "asc"],
       });
       const result = await nlpSampleEntityRepository.findAndPopulate(
         {},
@@ -129,8 +129,8 @@ describe('NlpSampleEntityRepository', () => {
     });
   });
 
-  describe('The deleteCascadeOne function', () => {
-    it('should delete a nlp SampleEntity', async () => {
+  describe("The deleteCascadeOne function", () => {
+    it("should delete a nlp SampleEntity", async () => {
       const result = await nlpSampleEntityRepository.deleteOne(
         nlpSampleEntities[1].id,
       );

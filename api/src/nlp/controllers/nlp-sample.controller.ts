@@ -6,7 +6,7 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Readable } from 'stream';
+import { Readable } from "stream";
 
 import {
   BadRequestException,
@@ -25,40 +25,40 @@ import {
   StreamableFile,
   UploadedFile,
   UseInterceptors,
-} from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { Response } from 'express';
-import { z } from 'zod';
+} from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { Response } from "express";
+import { z } from "zod";
 
 import {
   NlpValueMatchPattern,
   nlpValueMatchPatternSchema,
-} from '@/chat/schemas/types/pattern';
-import { HelperService } from '@/helper/helper.service';
-import { HelperType } from '@/helper/types';
-import { LanguageService } from '@/i18n/services/language.service';
-import { BaseController } from '@/utils/generics/base-controller';
-import { DeleteResult } from '@/utils/generics/base-repository';
-import { PageQueryDto } from '@/utils/pagination/pagination-query.dto';
-import { PageQueryPipe } from '@/utils/pagination/pagination-query.pipe';
-import { PopulatePipe } from '@/utils/pipes/populate.pipe';
-import { SearchFilterPipe } from '@/utils/pipes/search-filter.pipe';
-import { ZodQueryParamPipe } from '@/utils/pipes/zod.pipe';
-import { TFilterQuery } from '@/utils/types/filter.types';
+} from "@/chat/schemas/types/pattern";
+import { HelperService } from "@/helper/helper.service";
+import { HelperType } from "@/helper/types";
+import { LanguageService } from "@/i18n/services/language.service";
+import { BaseController } from "@/utils/generics/base-controller";
+import { DeleteResult } from "@/utils/generics/base-repository";
+import { PageQueryDto } from "@/utils/pagination/pagination-query.dto";
+import { PageQueryPipe } from "@/utils/pagination/pagination-query.pipe";
+import { PopulatePipe } from "@/utils/pipes/populate.pipe";
+import { SearchFilterPipe } from "@/utils/pipes/search-filter.pipe";
+import { ZodQueryParamPipe } from "@/utils/pipes/zod.pipe";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
-import { NlpSampleDto, TNlpSampleDto } from '../dto/nlp-sample.dto';
+import { NlpSampleDto, TNlpSampleDto } from "../dto/nlp-sample.dto";
 import {
   NlpSample,
   NlpSampleFull,
   NlpSamplePopulate,
   NlpSampleStub,
-} from '../schemas/nlp-sample.schema';
-import { NlpSampleState } from '../schemas/types';
-import { NlpEntityService } from '../services/nlp-entity.service';
-import { NlpSampleEntityService } from '../services/nlp-sample-entity.service';
-import { NlpSampleService } from '../services/nlp-sample.service';
+} from "../schemas/nlp-sample.schema";
+import { NlpSampleState } from "../schemas/types";
+import { NlpEntityService } from "../services/nlp-entity.service";
+import { NlpSampleEntityService } from "../services/nlp-sample-entity.service";
+import { NlpSampleService } from "../services/nlp-sample.service";
 
-@Controller('nlpsample')
+@Controller("nlpsample")
 export class NlpSampleController extends BaseController<
   NlpSample,
   NlpSampleStub,
@@ -76,17 +76,17 @@ export class NlpSampleController extends BaseController<
     super(nlpSampleService);
   }
 
-  @Post('annotate/:entityId')
-  async annotateWithKeywordEntity(@Param('entityId') entityId: string) {
+  @Post("annotate/:entityId")
+  async annotateWithKeywordEntity(@Param("entityId") entityId: string) {
     const entity = await this.nlpEntityService.findOneAndPopulate(entityId);
 
     if (!entity) {
-      throw new NotFoundException('Unable to find the keyword entity.');
+      throw new NotFoundException("Unable to find the keyword entity.");
     }
 
-    if (!entity.lookups.includes('keywords')) {
+    if (!entity.lookups.includes("keywords")) {
       throw new BadRequestException(
-        'Cannot annotate samples with a non-keyword entity',
+        "Cannot annotate samples with a non-keyword entity",
       );
     }
 
@@ -105,10 +105,10 @@ export class NlpSampleController extends BaseController<
    *
    * @returns A streamable JSON file containing the exported data.
    */
-  @Get('export')
+  @Get("export")
   async export(
     @Res({ passthrough: true }) response: Response,
-    @Query('type') type?: NlpSampleState,
+    @Query("type") type?: NlpSampleState,
   ) {
     const samples = await this.nlpSampleService.findAndPopulate(
       type ? { type } : {},
@@ -121,9 +121,9 @@ export class NlpSampleController extends BaseController<
     const readable = Readable.from(JSON.stringify(result));
 
     return new StreamableFile(readable, {
-      type: 'application/json',
+      type: "application/json",
       disposition: `attachment; filename=nlp_export${
-        type ? `_${type}` : ''
+        type ? `_${type}` : ""
       }.json`,
     });
   }
@@ -173,11 +173,11 @@ export class NlpSampleController extends BaseController<
    *
    * @returns The count of samples that match the filters.
    */
-  @Get('count')
+  @Get("count")
   async filterCount(
     @Query(
       new SearchFilterPipe<NlpSample>({
-        allowedFields: ['text', 'type', 'language'],
+        allowedFields: ["text", "type", "language"],
       }),
     )
     filters: TFilterQuery<NlpSample> = {},
@@ -205,8 +205,8 @@ export class NlpSampleController extends BaseController<
    *
    * @returns The result of the NLP parsing process.
    */
-  @Get('message')
-  async message(@Query('text') text: string) {
+  @Get("message")
+  async message(@Query("text") text: string) {
     const helper = await this.helperService.getDefaultHelper(HelperType.NLU);
     return helper.predict(text);
   }
@@ -216,24 +216,24 @@ export class NlpSampleController extends BaseController<
    *
    * @returns The result of the training process.
    */
-  @Get('train')
+  @Get("train")
   async train() {
     const { samples, entities } =
-      await this.nlpSampleService.getAllSamplesAndEntitiesByType('train');
+      await this.nlpSampleService.getAllSamplesAndEntitiesByType("train");
 
     try {
       const helper = await this.helperService.getDefaultHelper(HelperType.NLU);
       const response = await helper.train?.(samples, entities);
       // Mark samples as trained
       await this.nlpSampleService.updateMany(
-        { type: 'train' },
+        { type: "train" },
         { trained: true },
       );
       return response;
     } catch (err) {
       this.logger.error(err);
       throw new InternalServerErrorException(
-        'Unable to perform the train operation',
+        "Unable to perform the train operation",
       );
     }
   }
@@ -243,10 +243,10 @@ export class NlpSampleController extends BaseController<
    *
    * @returns The result of the evaluation process.
    */
-  @Get('evaluate')
+  @Get("evaluate")
   async evaluate() {
     const { samples, entities } =
-      await this.nlpSampleService.getAllSamplesAndEntitiesByType('test');
+      await this.nlpSampleService.getAllSamplesAndEntitiesByType("test");
 
     const helper = await this.helperService.getDefaultHelper(HelperType.NLU);
     return await helper.evaluate?.(samples, entities);
@@ -260,9 +260,9 @@ export class NlpSampleController extends BaseController<
    *
    * @returns The requested NLP sample if found.
    */
-  @Get(':id')
+  @Get(":id")
   async findOne(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Query(PopulatePipe) populate: string[],
   ) {
     const doc = this.canPopulate(populate)
@@ -290,7 +290,7 @@ export class NlpSampleController extends BaseController<
     @Query(PopulatePipe) populate: string[],
     @Query(
       new SearchFilterPipe<NlpSample>({
-        allowedFields: ['text', 'type', 'language'],
+        allowedFields: ["text", "type", "language"],
       }),
     )
     filters: TFilterQuery<NlpSample>,
@@ -322,9 +322,9 @@ export class NlpSampleController extends BaseController<
    * @returns The updated NLP sample with its entities.
    */
 
-  @Patch(':id')
+  @Patch(":id")
   async updateOne(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body() { entities, language: languageCode, ...sampleAttrs }: NlpSampleDto,
   ): Promise<NlpSampleFull> {
     const language = await this.languageService.getLanguageByCode(languageCode);
@@ -358,9 +358,9 @@ export class NlpSampleController extends BaseController<
    * @returns The result of the deletion operation.
    */
 
-  @Delete(':id')
+  @Delete(":id")
   @HttpCode(204)
-  async deleteOne(@Param('id') id: string) {
+  async deleteOne(@Param("id") id: string) {
     const result = await this.nlpSampleService.deleteCascadeOne(id);
     if (result.deletedCount === 0) {
       this.logger.warn(`Unable to delete NLP Sample by id ${id}`);
@@ -375,11 +375,11 @@ export class NlpSampleController extends BaseController<
    * @returns A Promise that resolves to the deletion result.
    */
 
-  @Delete('')
+  @Delete("")
   @HttpCode(204)
-  async deleteMany(@Body('ids') ids?: string[]): Promise<DeleteResult> {
+  async deleteMany(@Body("ids") ids?: string[]): Promise<DeleteResult> {
     if (!ids?.length) {
-      throw new BadRequestException('No IDs provided for deletion.');
+      throw new BadRequestException("No IDs provided for deletion.");
     }
     const deleteResult = await this.nlpSampleService.deleteMany({
       _id: { $in: ids },
@@ -389,17 +389,17 @@ export class NlpSampleController extends BaseController<
       this.logger.warn(
         `Unable to delete NLP samples with provided IDs: ${ids}`,
       );
-      throw new NotFoundException('NLP samples with provided IDs not found');
+      throw new NotFoundException("NLP samples with provided IDs not found");
     }
 
     this.logger.log(`Successfully deleted NLP samples with IDs: ${ids}`);
     return deleteResult;
   }
 
-  @Post('import')
-  @UseInterceptors(FileInterceptor('file'))
+  @Post("import")
+  @UseInterceptors(FileInterceptor("file"))
   async importFile(@UploadedFile() file: Express.Multer.File) {
-    const datasetContent = file.buffer.toString('utf-8');
+    const datasetContent = file.buffer.toString("utf-8");
     return await this.nlpSampleService.parseAndSaveDataset(datasetContent);
   }
 }

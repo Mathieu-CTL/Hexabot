@@ -6,24 +6,24 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import {
   ConflictException,
   Inject,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
-import { Cache } from 'cache-manager';
+} from "@nestjs/common";
+import { OnEvent } from "@nestjs/event-emitter";
+import { Cache } from "cache-manager";
 
-import { MENU_CACHE_KEY } from '@/utils/constants/cache';
-import { Cacheable } from '@/utils/decorators/cacheable.decorator';
-import { BaseService } from '@/utils/generics/base-service';
+import { MENU_CACHE_KEY } from "@/utils/constants/cache";
+import { Cacheable } from "@/utils/decorators/cacheable.decorator";
+import { BaseService } from "@/utils/generics/base-service";
 
-import { MenuCreateDto, MenuDto } from '../dto/menu.dto';
-import { MenuRepository } from '../repositories/menu.repository';
-import { Menu, MenuFull, MenuPopulate } from '../schemas/menu.schema';
-import { AnyMenu, MenuTree, MenuType } from '../schemas/types/menu';
+import { MenuCreateDto, MenuDto } from "../dto/menu.dto";
+import { MenuRepository } from "../repositories/menu.repository";
+import { Menu, MenuFull, MenuPopulate } from "../schemas/menu.schema";
+import { AnyMenu, MenuTree, MenuType } from "../schemas/types/menu";
 
 @Injectable()
 export class MenuService extends BaseService<
@@ -32,7 +32,7 @@ export class MenuService extends BaseService<
   MenuFull,
   MenuDto
 > {
-  private RootSymbol: symbol = Symbol('RootMenu');
+  private RootSymbol: symbol = Symbol("RootMenu");
 
   constructor(
     readonly repository: MenuRepository,
@@ -54,7 +54,7 @@ export class MenuService extends BaseService<
       // check if parent exists in database
       const parent = await this.findOne(dto.parent);
       if (!parent)
-        throw new NotFoundException('The parent of this object does not exist');
+        throw new NotFoundException("The parent of this object does not exist");
       // Check if that parent is nested
       if (parent.type !== MenuType.nested)
         throw new ConflictException("Cant't nest non nested menu");
@@ -150,7 +150,7 @@ export class MenuService extends BaseService<
   /**
    * Event handler that listens to menu-related events. On receiving such an event, it invalidates the cached menu data.
    */
-  @OnEvent('hook:menu:*')
+  @OnEvent("hook:menu:*")
   async handleMenuUpdateEvent() {
     await this.cacheManager.del(MENU_CACHE_KEY);
   }

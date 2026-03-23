@@ -6,7 +6,7 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Cache } from 'cache-manager';
+import { Cache } from "cache-manager";
 
 export function Cacheable(cacheKey: string) {
   return function (
@@ -21,7 +21,7 @@ export function Cacheable(cacheKey: string) {
 
       if (!cache) {
         throw new Error(
-          'Cannot use Cacheable() decorator without injecting the cache manager.',
+          "Cannot use Cacheable() decorator without injecting the cache manager.",
         );
       }
 

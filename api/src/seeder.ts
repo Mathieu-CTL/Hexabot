@@ -6,35 +6,35 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { INestApplicationContext } from '@nestjs/common';
+import { INestApplicationContext } from "@nestjs/common";
 
-import { CategorySeeder } from './chat/seeds/category.seed';
-import { categoryModels } from './chat/seeds/category.seed-model';
-import { ContextVarSeeder } from './chat/seeds/context-var.seed';
-import { contextVarModels } from './chat/seeds/context-var.seed-model';
-import { LanguageSeeder } from './i18n/seeds/language.seed';
-import { languageModels } from './i18n/seeds/language.seed-model';
-import { TranslationSeeder } from './i18n/seeds/translation.seed';
-import { translationModels } from './i18n/seeds/translation.seed-model';
-import { LoggerService } from './logger/logger.service';
-import { NlpEntitySeeder } from './nlp/seeds/nlp-entity.seed';
-import { nlpEntityModels } from './nlp/seeds/nlp-entity.seed-model';
-import { NlpValueSeeder } from './nlp/seeds/nlp-value.seed';
-import { nlpValueModels } from './nlp/seeds/nlp-value.seed-model';
-import { MetadataSeeder } from './setting/seeds/metadata.seed';
-import { DEFAULT_METADATA } from './setting/seeds/metadata.seed-model';
-import { SettingSeeder } from './setting/seeds/setting.seed';
-import { DEFAULT_SETTINGS } from './setting/seeds/setting.seed-model';
-import { PermissionCreateDto } from './user/dto/permission.dto';
-import { Role } from './user/schemas/role.schema';
-import { ModelSeeder } from './user/seeds/model.seed';
-import { modelModels } from './user/seeds/model.seed-model';
-import { PermissionSeeder } from './user/seeds/permission.seed';
-import { permissionModels } from './user/seeds/permission.seed-model';
-import { RoleSeeder } from './user/seeds/role.seed';
-import { roleModels } from './user/seeds/role.seed-model';
-import { UserSeeder } from './user/seeds/user.seed';
-import { userModels } from './user/seeds/user.seed-model';
+import { CategorySeeder } from "./chat/seeds/category.seed";
+import { categoryModels } from "./chat/seeds/category.seed-model";
+import { ContextVarSeeder } from "./chat/seeds/context-var.seed";
+import { contextVarModels } from "./chat/seeds/context-var.seed-model";
+import { LanguageSeeder } from "./i18n/seeds/language.seed";
+import { languageModels } from "./i18n/seeds/language.seed-model";
+import { TranslationSeeder } from "./i18n/seeds/translation.seed";
+import { translationModels } from "./i18n/seeds/translation.seed-model";
+import { LoggerService } from "./logger/logger.service";
+import { NlpEntitySeeder } from "./nlp/seeds/nlp-entity.seed";
+import { nlpEntityModels } from "./nlp/seeds/nlp-entity.seed-model";
+import { NlpValueSeeder } from "./nlp/seeds/nlp-value.seed";
+import { nlpValueModels } from "./nlp/seeds/nlp-value.seed-model";
+import { MetadataSeeder } from "./setting/seeds/metadata.seed";
+import { DEFAULT_METADATA } from "./setting/seeds/metadata.seed-model";
+import { SettingSeeder } from "./setting/seeds/setting.seed";
+import { DEFAULT_SETTINGS } from "./setting/seeds/setting.seed-model";
+import { PermissionCreateDto } from "./user/dto/permission.dto";
+import { Role } from "./user/schemas/role.schema";
+import { ModelSeeder } from "./user/seeds/model.seed";
+import { modelModels } from "./user/seeds/model.seed-model";
+import { PermissionSeeder } from "./user/seeds/permission.seed";
+import { permissionModels } from "./user/seeds/permission.seed-model";
+import { RoleSeeder } from "./user/seeds/role.seed";
+import { roleModels } from "./user/seeds/role.seed-model";
+import { UserSeeder } from "./user/seeds/user.seed";
+import { userModels } from "./user/seeds/user.seed-model";
 
 export async function seedDatabase(app: INestApplicationContext) {
   const logger = await app.resolve(LoggerService);
@@ -54,7 +54,7 @@ export async function seedDatabase(app: INestApplicationContext) {
   const existingUsers = await userSeeder.findAll();
 
   if (existingUsers.length > 0) {
-    logger.log('Database already seeded, aborting ...');
+    logger.log("Database already seeded, aborting ...");
     return;
   }
 
@@ -62,7 +62,7 @@ export async function seedDatabase(app: INestApplicationContext) {
   try {
     await modelSeeder.seed(modelModels);
   } catch (e) {
-    logger.error('Unable to seed the database with models!');
+    logger.error("Unable to seed the database with models!");
     throw e;
   }
 
@@ -70,16 +70,16 @@ export async function seedDatabase(app: INestApplicationContext) {
   try {
     await roleSeeder.seed(roleModels);
   } catch (e) {
-    logger.error('Unable to seed the database with roles!');
+    logger.error("Unable to seed the database with roles!");
     throw e;
   }
 
   const models = await modelSeeder.findAll();
   const roles = await roleSeeder.findAll();
-  const adminRole = roles.find(({ name }) => name === 'admin') as Role;
-  const managerRole = roles.find(({ name }) => name === 'manager') as Role;
+  const adminRole = roles.find(({ name }) => name === "admin") as Role;
+  const managerRole = roles.find(({ name }) => name === "manager") as Role;
   const managerModels = models.filter(
-    (model) => !['Role', 'User', 'Permission'].includes(model.name),
+    (model) => !["Role", "User", "Permission"].includes(model.name),
   );
   const roleModelsCombinations = [
     ...models.map((model) => [model.id, adminRole.id]),
@@ -97,7 +97,7 @@ export async function seedDatabase(app: INestApplicationContext) {
   try {
     await permissionSeeder.seed(permissionSeeds);
   } catch (e) {
-    logger.error('Unable to seed the database with permissions!');
+    logger.error("Unable to seed the database with permissions!");
     throw e;
   }
 
@@ -106,7 +106,7 @@ export async function seedDatabase(app: INestApplicationContext) {
     try {
       await userSeeder.seed(userModels([adminRole.id]));
     } catch (e) {
-      logger.error('Unable to seed the database with users!');
+      logger.error("Unable to seed the database with users!");
       throw e;
     }
   }
@@ -116,7 +116,7 @@ export async function seedDatabase(app: INestApplicationContext) {
     await settingSeeder.seed(DEFAULT_SETTINGS);
     await metadataSeeder.seed(DEFAULT_METADATA);
   } catch (e) {
-    logger.error('Unable to seed the database with settings and metadata!');
+    logger.error("Unable to seed the database with settings and metadata!");
     throw e;
   }
 
@@ -124,7 +124,7 @@ export async function seedDatabase(app: INestApplicationContext) {
   try {
     await categorySeeder.seed(categoryModels);
   } catch (e) {
-    logger.error('Unable to seed the database with categories!');
+    logger.error("Unable to seed the database with categories!");
     throw e;
   }
 
@@ -132,7 +132,7 @@ export async function seedDatabase(app: INestApplicationContext) {
   try {
     await contextVarSeeder.seed(contextVarModels);
   } catch (e) {
-    logger.error('Unable to seed the database with context vars!');
+    logger.error("Unable to seed the database with context vars!");
     throw e;
   }
 
@@ -140,7 +140,7 @@ export async function seedDatabase(app: INestApplicationContext) {
   try {
     await languageSeeder.seed(languageModels);
   } catch (e) {
-    logger.error('Unable to seed the database with languages!');
+    logger.error("Unable to seed the database with languages!");
     throw e;
   }
 
@@ -148,7 +148,7 @@ export async function seedDatabase(app: INestApplicationContext) {
   try {
     await translationSeeder.seed(translationModels);
   } catch (e) {
-    logger.error('Unable to seed the database with translations!');
+    logger.error("Unable to seed the database with translations!");
     throw e;
   }
 
@@ -157,7 +157,7 @@ export async function seedDatabase(app: INestApplicationContext) {
     await nlpEntitySeeder.seed(nlpEntityModels);
     await nlpValueSeeder.seed(nlpValueModels);
   } catch (e) {
-    logger.error('Unable to seed the database with nlp entities!');
+    logger.error("Unable to seed the database with nlp entities!");
     throw e;
   }
 }

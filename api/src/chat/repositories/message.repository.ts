@@ -6,20 +6,20 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
 
-import { BaseRepository } from '@/utils/generics/base-repository';
+import { BaseRepository } from "@/utils/generics/base-repository";
 
 import {
   Message,
   MESSAGE_POPULATE,
   MessageFull,
   MessagePopulate,
-} from '../schemas/message.schema';
-import { SubscriberStub } from '../schemas/subscriber.schema';
-import { AnyMessage } from '../schemas/types/message';
+} from "../schemas/message.schema";
+import { SubscriberStub } from "../schemas/subscriber.schema";
+import { AnyMessage } from "../schemas/types/message";
 
 @Injectable()
 export class MessageRepository extends BaseRepository<
@@ -46,8 +46,8 @@ export class MessageRepository extends BaseRepository<
    */
   async preCreate(_doc: AnyMessage): Promise<void> {
     if (_doc) {
-      if (!('sender' in _doc) && !('recipient' in _doc)) {
-        throw new Error('Either sender or recipient must be provided!');
+      if (!("sender" in _doc) && !("recipient" in _doc)) {
+        throw new Error("Either sender or recipient must be provided!");
       }
     }
   }
@@ -72,7 +72,7 @@ export class MessageRepository extends BaseRepository<
         $or: [{ recipient: subscriber.id }, { sender: subscriber.id }],
         createdAt: { $lt: until },
       },
-      { skip: 0, limit, sort: ['createdAt', 'desc'] },
+      { skip: 0, limit, sort: ["createdAt", "desc"] },
     );
   }
 
@@ -96,7 +96,7 @@ export class MessageRepository extends BaseRepository<
         $or: [{ recipient: subscriber.id }, { sender: subscriber.id }],
         createdAt: { $gt: since },
       },
-      { skip: 0, limit, sort: ['createdAt', 'asc'] },
+      { skip: 0, limit, sort: ["createdAt", "asc"] },
     );
   }
 }

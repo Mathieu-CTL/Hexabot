@@ -6,8 +6,8 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Menu } from '../schemas/menu.schema';
-import { AnyMenu, MenuTree, MenuType } from '../schemas/types/menu';
+import { Menu } from "../schemas/menu.schema";
+import { AnyMenu, MenuTree, MenuType } from "../schemas/types/menu";
 
 const verifyMenu = (
   menu: AnyMenu<Menu> & {
@@ -15,14 +15,14 @@ const verifyMenu = (
   },
 ) => {
   // first check if menu is an object
-  if (typeof menu !== 'object') return false;
+  if (typeof menu !== "object") return false;
   // check essential menu fields
-  if (typeof menu.title !== 'string') return false;
-  if (menu.type === MenuType.postback && typeof menu.payload === 'string')
+  if (typeof menu.title !== "string") return false;
+  if (menu.type === MenuType.postback && typeof menu.payload === "string")
     return true;
   if (
     menu.type === MenuType.web_url &&
-    typeof menu.url === 'string' &&
+    typeof menu.url === "string" &&
     new URL(menu.url)
   )
     return true;

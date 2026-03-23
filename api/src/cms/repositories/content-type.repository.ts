@@ -6,17 +6,17 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ForbiddenException, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Document, Model, Query } from 'mongoose';
+import { ForbiddenException, Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Document, Model, Query } from "mongoose";
 
-import { BlockService } from '@/chat/services/block.service';
-import { BaseRepository, DeleteResult } from '@/utils/generics/base-repository';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { BlockService } from "@/chat/services/block.service";
+import { BaseRepository, DeleteResult } from "@/utils/generics/base-repository";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
-import { ContentTypeDto } from '../dto/contentType.dto';
-import { ContentType } from '../schemas/content-type.schema';
-import { Content } from '../schemas/content.schema';
+import { ContentTypeDto } from "../dto/contentType.dto";
+import { ContentType } from "../schemas/content-type.schema";
+import { Content } from "../schemas/content.schema";
 
 @Injectable()
 export class ContentTypeRepository extends BaseRepository<
@@ -48,23 +48,23 @@ export class ContentTypeRepository extends BaseRepository<
       Document<ContentType, any, any>,
       unknown,
       ContentType,
-      'deleteOne' | 'deleteMany'
+      "deleteOne" | "deleteMany"
     >,
     criteria: TFilterQuery<ContentType>,
   ) {
     if (criteria._id) {
       const associatedBlock = await this.blockService.findOne({
-        'options.content.entity': criteria._id,
+        "options.content.entity": criteria._id,
       });
       if (associatedBlock) {
         throw new ForbiddenException(
-          'Content type have blocks associated to it',
+          "Content type have blocks associated to it",
         );
       }
       await this.contentModel.deleteMany({ entity: criteria._id });
     } else {
       throw new Error(
-        'Attempted to delete content type using unknown criteria',
+        "Attempted to delete content type using unknown criteria",
       );
     }
   }

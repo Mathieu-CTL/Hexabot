@@ -6,15 +6,15 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Subscriber } from '../schemas/subscriber.schema';
-import { Context } from '../schemas/types/context';
+import { Subscriber } from "../schemas/subscriber.schema";
+import { Context } from "../schemas/types/context";
 
 export function getDefaultConversationContext(): Context {
   return {
     vars: {}, // Used for capturing vars from user entries
     user: {
-      first_name: '',
-      last_name: '',
+      first_name: "",
+      last_name: "",
       // @TODO: Typing is not correct
     } as Subscriber,
     user_location: {

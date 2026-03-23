@@ -6,10 +6,10 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { SubscriberFull } from '@/chat/schemas/subscriber.schema';
-import { Button, WebUrlButton } from '@/chat/schemas/types/button';
-import { FileType } from '@/chat/schemas/types/message';
-import { StdQuickReply } from '@/chat/schemas/types/quick-reply';
+import { SubscriberFull } from "@/chat/schemas/subscriber.schema";
+import { Button, WebUrlButton } from "@/chat/schemas/types/button";
+import { FileType } from "@/chat/schemas/types/message";
+import { StdQuickReply } from "@/chat/schemas/types/quick-reply";
 
 export namespace Web {
   export type RequestSession = {
@@ -22,28 +22,28 @@ export namespace Web {
   };
 
   export enum StatusEventType {
-    delivery = 'delivery',
-    read = 'read',
-    typing = 'typing',
+    delivery = "delivery",
+    read = "read",
+    typing = "typing",
   }
 
   export enum IncomingMessageType {
-    text = 'text',
-    quick_reply = 'quick_reply',
-    postback = 'postback',
-    location = 'location',
-    file = 'file',
+    text = "text",
+    quick_reply = "quick_reply",
+    postback = "postback",
+    location = "location",
+    file = "file",
   }
 
   export type EventType = Web.StatusEventType | Web.IncomingMessageType;
 
   export enum OutgoingMessageType {
-    text = 'text',
-    buttons = 'buttons',
-    quick_replies = 'quick_replies',
-    file = 'file',
-    list = 'list',
-    carousel = 'carousel',
+    text = "text",
+    buttons = "buttons",
+    quick_replies = "quick_replies",
+    file = "file",
+    list = "list",
+    carousel = "carousel",
   }
 
   export type IncomingTextMessageData = { text: string };
@@ -147,7 +147,7 @@ export namespace Web {
     title: string;
     subtitle?: string;
     image_url?: string;
-    default_action?: Omit<WebUrlButton, 'title'>;
+    default_action?: Omit<WebUrlButton, "title">;
     buttons?: Button[];
   }
 
@@ -172,7 +172,7 @@ export namespace Web {
   };
 
   export type OutgoingListMessageData = OutgoingCarouselMessageData & {
-    top_element_style?: 'large' | 'compact';
+    top_element_style?: "large" | "compact";
     buttons: Button[];
   };
 

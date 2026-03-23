@@ -17,19 +17,19 @@ import {
   Patch,
   Post,
   Query,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
-import { BaseController } from '@/utils/generics/base-controller';
-import { PageQueryDto } from '@/utils/pagination/pagination-query.dto';
-import { PageQueryPipe } from '@/utils/pagination/pagination-query.pipe';
-import { SearchFilterPipe } from '@/utils/pipes/search-filter.pipe';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { BaseController } from "@/utils/generics/base-controller";
+import { PageQueryDto } from "@/utils/pagination/pagination-query.dto";
+import { PageQueryPipe } from "@/utils/pagination/pagination-query.pipe";
+import { SearchFilterPipe } from "@/utils/pipes/search-filter.pipe";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
-import { MenuCreateDto, MenuQueryDto } from '../dto/menu.dto';
-import { Menu, MenuFull, MenuPopulate, MenuStub } from '../schemas/menu.schema';
-import { MenuService } from '../services/menu.service';
+import { MenuCreateDto, MenuQueryDto } from "../dto/menu.dto";
+import { Menu, MenuFull, MenuPopulate, MenuStub } from "../schemas/menu.schema";
+import { MenuService } from "../services/menu.service";
 
-@Controller('menu')
+@Controller("menu")
 export class MenuController extends BaseController<
   Menu,
   MenuStub,
@@ -47,9 +47,9 @@ export class MenuController extends BaseController<
    *
    * @returns A promise that resolves to the count of filtered menu items.
    */
-  @Get('count')
+  @Get("count")
   async filterCount(
-    @Query(new SearchFilterPipe<Menu>({ allowedFields: ['parent'] }))
+    @Query(new SearchFilterPipe<Menu>({ allowedFields: ["parent"] }))
     filters: TFilterQuery<Menu>,
   ) {
     return await this.count(filters);
@@ -65,7 +65,7 @@ export class MenuController extends BaseController<
   @Get()
   async findPage(
     @Query(PageQueryPipe) pageQuery: PageQueryDto<Menu>,
-    @Query(new SearchFilterPipe<Menu>({ allowedFields: ['parent'] }))
+    @Query(new SearchFilterPipe<Menu>({ allowedFields: ["parent"] }))
     filters: TFilterQuery<Menu>,
   ) {
     return await this.menuService.find(filters, pageQuery);
@@ -115,7 +115,7 @@ export class MenuController extends BaseController<
    *
    * @returns A promise that resolves to the tree-structured list of menu items.
    */
-  @Get('tree')
+  @Get("tree")
   async getTree() {
     return await this.menuService.getTree();
   }
@@ -129,8 +129,8 @@ export class MenuController extends BaseController<
    *
    * @returns A promise that resolves to the menu item if found, or throws a `NotFoundException`.
    */
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
+  @Get(":id")
+  async findOne(@Param("id") id: string) {
     try {
       const result = await this.menuService.findOne(id);
       if (!result) {
@@ -154,10 +154,10 @@ export class MenuController extends BaseController<
    *
    * @returns A promise that resolves to the updated or newly created menu item.
    */
-  @Patch(':id')
+  @Patch(":id")
   async updateOne(
     @Body() body: MenuCreateDto,
-    @Param('id') id: string,
+    @Param("id") id: string,
   ): Promise<Menu> {
     if (!id) return await this.create(body);
     return await this.menuService.updateOne(id, body);
@@ -172,15 +172,15 @@ export class MenuController extends BaseController<
    *
    * @returns A promise that resolves to an empty string upon successful deletion.
    */
-  @Delete(':id')
-  async delete(@Param('id') id: string) {
+  @Delete(":id")
+  async delete(@Param("id") id: string) {
     try {
       const deletedCount = await this.menuService.deepDelete(id);
       if (deletedCount == 0) {
         this.logger.warn(`Unable to delete menu with id: ${id}`);
         throw new NotFoundException();
       }
-      return '';
+      return "";
     } catch (e) {
       this.logger.error(e);
       throw new InternalServerErrorException();

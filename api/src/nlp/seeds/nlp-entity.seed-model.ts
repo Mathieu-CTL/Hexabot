@@ -6,12 +6,12 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { NlpEntityCreateDto } from '../dto/nlp-entity.dto';
+import { NlpEntityCreateDto } from "../dto/nlp-entity.dto";
 
 export const nlpEntityModels: NlpEntityCreateDto[] = [
   {
-    name: 'intent',
-    lookups: ['trait'],
+    name: "intent",
+    lookups: ["trait"],
     doc: `"intent" refers to the underlying purpose or goal that a piece of text aims to convey. Identifying the intent involves determining what action or response the text is prompting. For instance, in customer service chatbots, recognizing the intent behind a user's message, such as "book a flight" or "check account balance," is crucial to provide accurate and relevant responses`,
     builtin: true,
   },

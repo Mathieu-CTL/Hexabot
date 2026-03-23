@@ -11,34 +11,34 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-} from '@nestjs/common';
-import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
-import bodyParser from 'body-parser';
-import { NextFunction, Request, Response } from 'express';
-import multer, { diskStorage, memoryStorage } from 'multer';
-import { Socket } from 'socket.io';
-import { v4 as uuidv4 } from 'uuid';
+} from "@nestjs/common";
+import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
+import bodyParser from "body-parser";
+import { NextFunction, Request, Response } from "express";
+import multer, { diskStorage, memoryStorage } from "multer";
+import { Socket } from "socket.io";
+import { v4 as uuidv4 } from "uuid";
 
-import { Attachment } from '@/attachment/schemas/attachment.schema';
-import { AttachmentService } from '@/attachment/services/attachment.service';
+import { Attachment } from "@/attachment/schemas/attachment.schema";
+import { AttachmentService } from "@/attachment/services/attachment.service";
 import {
   AttachmentAccess,
   AttachmentCreatedByRef,
   AttachmentResourceRef,
-} from '@/attachment/types';
-import { ChannelService } from '@/channel/channel.service';
-import ChannelHandler from '@/channel/lib/Handler';
-import { ChannelName } from '@/channel/types';
-import { MessageCreateDto } from '@/chat/dto/message.dto';
-import { SubscriberCreateDto } from '@/chat/dto/subscriber.dto';
-import { VIEW_MORE_PAYLOAD } from '@/chat/helpers/constants';
+} from "@/attachment/types";
+import { ChannelService } from "@/channel/channel.service";
+import ChannelHandler from "@/channel/lib/Handler";
+import { ChannelName } from "@/channel/types";
+import { MessageCreateDto } from "@/chat/dto/message.dto";
+import { SubscriberCreateDto } from "@/chat/dto/subscriber.dto";
+import { VIEW_MORE_PAYLOAD } from "@/chat/helpers/constants";
 import {
   Subscriber,
   SubscriberFull,
   SubscriberStub,
-} from '@/chat/schemas/subscriber.schema';
-import { AttachmentRef } from '@/chat/schemas/types/attachment';
-import { Button, ButtonType, PayloadType } from '@/chat/schemas/types/button';
+} from "@/chat/schemas/subscriber.schema";
+import { AttachmentRef } from "@/chat/schemas/types/attachment";
+import { Button, ButtonType, PayloadType } from "@/chat/schemas/types/button";
 import {
   AnyMessage,
   ContentElement,
@@ -54,23 +54,23 @@ import {
   StdOutgoingMessage,
   StdOutgoingQuickRepliesMessage,
   StdOutgoingTextMessage,
-} from '@/chat/schemas/types/message';
-import { BlockOptions } from '@/chat/schemas/types/options';
-import { MessageService } from '@/chat/services/message.service';
-import { SubscriberService } from '@/chat/services/subscriber.service';
-import { Content } from '@/cms/schemas/content.schema';
-import { MenuService } from '@/cms/services/menu.service';
-import { config } from '@/config';
-import { I18nService } from '@/i18n/services/i18n.service';
-import { LoggerService } from '@/logger/logger.service';
-import { SettingService } from '@/setting/services/setting.service';
-import { SocketRequest } from '@/websocket/utils/socket-request';
-import { SocketResponse } from '@/websocket/utils/socket-response';
-import { WebsocketGateway } from '@/websocket/websocket.gateway';
+} from "@/chat/schemas/types/message";
+import { BlockOptions } from "@/chat/schemas/types/options";
+import { MessageService } from "@/chat/services/message.service";
+import { SubscriberService } from "@/chat/services/subscriber.service";
+import { Content } from "@/cms/schemas/content.schema";
+import { MenuService } from "@/cms/services/menu.service";
+import { config } from "@/config";
+import { I18nService } from "@/i18n/services/i18n.service";
+import { LoggerService } from "@/logger/logger.service";
+import { SettingService } from "@/setting/services/setting.service";
+import { SocketRequest } from "@/websocket/utils/socket-request";
+import { SocketResponse } from "@/websocket/utils/socket-response";
+import { WebsocketGateway } from "@/websocket/websocket.gateway";
 
-import { WEB_CHANNEL_NAME, WEB_CHANNEL_NAMESPACE } from './settings';
-import { Web } from './types';
-import WebEventWrapper from './wrapper';
+import { WEB_CHANNEL_NAME, WEB_CHANNEL_NAMESPACE } from "./settings";
+import { Web } from "./types";
+import WebEventWrapper from "./wrapper";
 
 // Handle multipart uploads (Long Pooling only)
 const upload = multer({
@@ -78,13 +78,13 @@ const upload = multer({
     fileSize: config.parameters.maxUploadSize,
   },
   storage: (() => {
-    if (config.parameters.storageMode === 'memory') {
+    if (config.parameters.storageMode === "memory") {
       return memoryStorage();
     } else {
       return diskStorage({});
     }
   })(),
-}).single('file'); // 'file' is the field name in the form
+}).single("file"); // 'file' is the field name in the form
 
 @Injectable()
 export default abstract class BaseWebChannelHandler<
@@ -112,7 +112,7 @@ export default abstract class BaseWebChannelHandler<
    * @returns -
    */
   init(): void {
-    this.logger.debug('initialization ...');
+    this.logger.debug("initialization ...");
   }
 
   /**
@@ -120,7 +120,7 @@ export default abstract class BaseWebChannelHandler<
    *
    * @param client - The socket client
    */
-  @OnEvent('hook:websocket:connection', { async: true })
+  @OnEvent("hook:websocket:connection", { async: true })
   async onWebSocketConnection(client: Socket) {
     try {
       const settings = await this.getSettings();
@@ -141,35 +141,35 @@ export default abstract class BaseWebChannelHandler<
         messages = await this.formatMessages(messagesHistory.reverse());
       }
 
-      this.logger.debug('WS connected .. sending settings');
+      this.logger.debug("WS connected .. sending settings");
 
       try {
         const menu = await this.menuService.getTree();
 
-        client.emit('settings', {
+        client.emit("settings", {
           menu,
           profile,
           messages,
           ...settings,
         });
       } catch (err) {
-        this.logger.warn('Unable to retrieve menu ', err);
-        client.emit('settings', { profile, messages, ...settings });
+        this.logger.warn("Unable to retrieve menu ", err);
+        client.emit("settings", { profile, messages, ...settings });
       }
     } catch (err) {
-      this.logger.error('Unable to initiate websocket connection', err);
+      this.logger.error("Unable to initiate websocket connection", err);
       client.disconnect();
     }
   }
 
-  @OnEvent('hook:websocket:error')
+  @OnEvent("hook:websocket:error")
   broadcastError(socket: Socket, error: HttpException): void {
     const response = (
       error instanceof HttpException
         ? error.getResponse()
         : {
             statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-            message: 'Internal Server Error',
+            message: "Internal Server Error",
           }
     ) as SocketResponse;
 
@@ -194,7 +194,7 @@ export default abstract class BaseWebChannelHandler<
     incoming: IncomingMessage,
   ): Promise<Web.IncomingMessageBase> {
     // Format incoming message
-    if ('type' in incoming.message) {
+    if ("type" in incoming.message) {
       if (incoming.message.type === PayloadType.location) {
         const coordinates = incoming.message.coordinates;
         return {
@@ -238,14 +238,14 @@ export default abstract class BaseWebChannelHandler<
     outgoing: OutgoingMessage,
   ): Promise<Web.OutgoingMessageBase> {
     // Format outgoing message
-    if ('buttons' in outgoing.message) {
+    if ("buttons" in outgoing.message) {
       return this._buttonsFormat(outgoing.message);
-    } else if ('attachment' in outgoing.message) {
+    } else if ("attachment" in outgoing.message) {
       return this._attachmentFormat(outgoing.message);
-    } else if ('quickReplies' in outgoing.message) {
+    } else if ("quickReplies" in outgoing.message) {
       return this._quickRepliesFormat(outgoing.message);
-    } else if ('options' in outgoing.message) {
-      if (outgoing.message.options.display === 'carousel') {
+    } else if ("options" in outgoing.message) {
+      if (outgoing.message.options.display === "carousel") {
         return await this._carouselFormat(outgoing.message, {
           content: outgoing.message.options,
         });
@@ -266,7 +266,7 @@ export default abstract class BaseWebChannelHandler<
    * @returns True, if it's a incoming message
    */
   private isIncomingMessage(message: AnyMessage): message is IncomingMessage {
-    return 'sender' in message && !!message.sender;
+    return "sender" in message && !!message.sender;
   }
 
   /**
@@ -295,7 +295,7 @@ export default abstract class BaseWebChannelHandler<
         const message = await this.formatOutgoingHistoryMessage(anyMessage);
         formattedMessages.push({
           ...message,
-          author: 'chatbot',
+          author: "chatbot",
           read: true, // Temporary fix as read is false in the bd
           mid: anyMessage.mid || this.generateId(),
           handover: !!anyMessage.handover,
@@ -371,20 +371,20 @@ export default abstract class BaseWebChannelHandler<
 
     // Check if we have an origin header...
     if (!req.headers?.origin) {
-      this.logger.debug('No origin ', req.headers);
-      throw new Error('CORS - No origin provided!');
+      this.logger.debug("No origin ", req.headers);
+      throw new Error("CORS - No origin provided!");
     }
 
     const originUrl = new URL(req.headers.origin);
-    const allowedProtocols = new Set(['http:', 'https:']);
+    const allowedProtocols = new Set(["http:", "https:"]);
     if (!allowedProtocols.has(originUrl.protocol)) {
-      throw new Error('CORS - Invalid origin!');
+      throw new Error("CORS - Invalid origin!");
     }
 
     // Get the allowed origins
-    const origins: string[] = settings.allowed_domains.split(',');
+    const origins: string[] = settings.allowed_domains.split(",");
     const foundOrigin = origins
-      .filter((origin) => origin.trim() !== '*') // Skip "*"
+      .filter((origin) => origin.trim() !== "*") // Skip "*"
       .map((origin) => {
         try {
           return new URL(origin.trim()).origin;
@@ -403,23 +403,23 @@ export default abstract class BaseWebChannelHandler<
         return origin === originUrl.origin;
       });
 
-    if (!foundOrigin && !origins.includes('*')) {
+    if (!foundOrigin && !origins.includes("*")) {
       // For HTTP requests, set the Access-Control-Allow-Origin header to '', which the browser will
       // interpret as, 'no way Jose.'
-      res.set('Access-Control-Allow-Origin', '');
-      this.logger.debug('No origin found ', req.headers.origin);
-      throw new Error('CORS - Domain not allowed!');
+      res.set("Access-Control-Allow-Origin", "");
+      this.logger.debug("No origin found ", req.headers.origin);
+      throw new Error("CORS - Domain not allowed!");
     } else {
-      res.set('Access-Control-Allow-Origin', originUrl.origin);
+      res.set("Access-Control-Allow-Origin", originUrl.origin);
     }
     // Determine whether or not to allow cookies to be passed cross-origin
-    res.set('Access-Control-Allow-Credentials', 'true');
+    res.set("Access-Control-Allow-Credentials", "true");
     // This header lets a server whitelist headers that browsers are allowed to access
-    res.set('Access-Control-Expose-Headers', '');
+    res.set("Access-Control-Expose-Headers", "");
     // Handle preflight requests
-    if (req.method == 'OPTIONS') {
-      res.set('Access-Control-Allow-Methods', 'GET, POST');
-      res.set('Access-Control-Allow-Headers', 'content-type');
+    if (req.method == "OPTIONS") {
+      res.set("Access-Control-Allow-Methods", "GET, POST");
+      res.set("Access-Control-Allow-Headers", "content-type");
     }
   }
 
@@ -435,22 +435,22 @@ export default abstract class BaseWebChannelHandler<
     next: <S extends SubscriberStub>(profile: S) => void,
   ) {
     if (!req.session.web?.profile?.id) {
-      this.logger.warn('No session ID to be found!', req.session);
+      this.logger.warn("No session ID to be found!", req.session);
       return res
         .status(403)
-        .json({ err: 'Web Channel Handler : Unauthorized!' });
+        .json({ err: "Web Channel Handler : Unauthorized!" });
     } else if (
       (this.isSocketRequest(req) &&
         !!req.isSocket !== req.session.web.isSocket) ||
       !Array.isArray(req.session.web.messageQueue)
     ) {
       this.logger.warn(
-        'Mixed channel request or invalid session data!',
+        "Mixed channel request or invalid session data!",
         req.session,
       );
       return res
         .status(403)
-        .json({ err: 'Web Channel Handler : Unauthorized!' });
+        .json({ err: "Web Channel Handler : Unauthorized!" });
     }
     next(req.session.web?.profile);
   }
@@ -468,8 +468,8 @@ export default abstract class BaseWebChannelHandler<
     try {
       await this.validateCors(req, res);
     } catch (err) {
-      this.logger.warn('Attempt to access from an unauthorized origin', err);
-      throw new Error('Unauthorized, invalid origin !');
+      this.logger.warn("Attempt to access from an unauthorized origin", err);
+      throw new Error("Unauthorized, invalid origin !");
     }
   }
 
@@ -491,7 +491,7 @@ export default abstract class BaseWebChannelHandler<
         sessionProfile.id,
       );
       if (!subscriber || !req.session.web) {
-        throw new Error('Subscriber session was not persisted in DB');
+        throw new Error("Subscriber session was not persisted in DB");
       }
       req.session.web.profile = subscriber;
       return subscriber;
@@ -499,8 +499,8 @@ export default abstract class BaseWebChannelHandler<
 
     const newProfile: SubscriberCreateDto = {
       foreign_id: this.generateId(),
-      first_name: data.first_name ? data.first_name.toString() : 'Anon.',
-      last_name: data.last_name ? data.last_name.toString() : 'Web User',
+      first_name: data.first_name ? data.first_name.toString() : "Anon.",
+      last_name: data.last_name ? data.last_name.toString() : "Web User",
       assignedTo: null,
       assignedAt: null,
       lastvisit: new Date(),
@@ -509,11 +509,11 @@ export default abstract class BaseWebChannelHandler<
         name: this.getName(),
         ...this.getChannelAttributes(req),
       },
-      language: '',
-      locale: '',
+      language: "",
+      locale: "",
       timezone: 0,
-      gender: 'male',
-      country: '',
+      gender: "male",
+      country: "",
       labels: [],
     };
     const subscriber = await this.subscriberService.create(newProfile);
@@ -543,25 +543,25 @@ export default abstract class BaseWebChannelHandler<
   private getMessageQueue(req: Request, res: Response) {
     // Polling not authorized when using websockets
     if (this.isSocketRequest(req)) {
-      this.logger.warn('Polling not authorized when using websockets');
+      this.logger.warn("Polling not authorized when using websockets");
       return res
         .status(403)
-        .json({ err: 'Polling not authorized when using websockets' });
+        .json({ err: "Polling not authorized when using websockets" });
     }
     // Session must be active
     if (!(req.session && req.session.web && req.session.web?.profile?.id)) {
-      this.logger.warn('Must be connected to poll messages');
+      this.logger.warn("Must be connected to poll messages");
       return res
         .status(403)
-        .json({ err: 'Polling not authorized : Must be connected' });
+        .json({ err: "Polling not authorized : Must be connected" });
     }
 
     // Can only request polling once at a time
     if (req.session && req.session.web && req.session.web.polling) {
-      this.logger.warn('Poll rejected ... already requested');
+      this.logger.warn("Poll rejected ... already requested");
       return res
         .status(403)
-        .json({ err: 'Poll rejected ... already requested' });
+        .json({ err: "Poll rejected ... already requested" });
     }
 
     req.session.web.polling = true;
@@ -580,17 +580,17 @@ export default abstract class BaseWebChannelHandler<
           }, retrials * 1000);
         } else if (req.session.web) {
           req.session.web.polling = false;
-          return res.status(200).json(messages.map((msg) => ['message', msg]));
+          return res.status(200).json(messages.map((msg) => ["message", msg]));
         } else {
-          this.logger.error('Polling failed .. no session data');
-          return res.status(500).json({ err: 'No session data' });
+          this.logger.error("Polling failed .. no session data");
+          return res.status(500).json({ err: "No session data" });
         }
       } catch (err) {
         if (req.session.web) {
           req.session.web.polling = false;
         }
-        this.logger.error('Polling failed', err);
-        return res.status(500).json({ err: 'Polling failed' });
+        this.logger.error("Polling failed", err);
+        return res.status(500).json({ err: "Polling failed" });
       }
     };
     fetchMessages(req, res);
@@ -606,7 +606,7 @@ export default abstract class BaseWebChannelHandler<
     req: Request | SocketRequest,
     res: Response | SocketResponse,
   ) {
-    this.logger.debug('subscribe (isSocket=' + this.isSocketRequest(req) + ')');
+    this.logger.debug("subscribe (isSocket=" + this.isSocketRequest(req) + ")");
     try {
       const profile = await this.getOrCreateSession(req);
       // Join socket room when using websocket
@@ -614,19 +614,19 @@ export default abstract class BaseWebChannelHandler<
         try {
           await req.socket.join(profile.foreign_id);
         } catch (err) {
-          this.logger.error('Unable to subscribe via websocket', err);
+          this.logger.error("Unable to subscribe via websocket", err);
         }
       }
       // Fetch message history
       const criteria =
-        'since' in req.query
+        "since" in req.query
           ? req.query.since // Long polling case
           : req.body?.since || undefined; // Websocket case
       const messages = await this.fetchHistory(req, criteria);
       return res.status(200).json({ profile, messages });
     } catch (err) {
-      this.logger.warn('Unable to subscribe ', err);
-      return res.status(500).json({ err: 'Unable to subscribe' });
+      this.logger.warn("Unable to subscribe ", err);
+      return res.status(500).json({ err: "Unable to subscribe" });
     }
   }
 
@@ -644,24 +644,24 @@ export default abstract class BaseWebChannelHandler<
       const { type, data } = req.body as Web.IncomingMessage;
 
       if (!req.session.web?.profile?.id) {
-        this.logger.debug('No session');
+        this.logger.debug("No session");
         return null;
       }
 
       // Check if any file is provided
       if (
         type !== Web.IncomingMessageType.file ||
-        !('file' in data) ||
+        !("file" in data) ||
         !data.file
       ) {
-        this.logger.debug('No files provided');
+        this.logger.debug("No files provided");
         return null;
       }
 
       const size = Buffer.byteLength(data.file);
 
       if (size > config.parameters.maxUploadSize) {
-        throw new Error('Max upload size has been exceeded');
+        throw new Error("Max upload size has been exceeded");
       }
 
       return await this.attachmentService.store(data.file, {
@@ -674,8 +674,8 @@ export default abstract class BaseWebChannelHandler<
         createdBy: req.session.web.profile.id,
       });
     } catch (err) {
-      this.logger.error('Unable to store uploaded file', err);
-      throw new Error('Unable to upload file!');
+      this.logger.error("Unable to store uploaded file", err);
+      throw new Error("Unable to upload file!");
     }
   }
 
@@ -694,13 +694,13 @@ export default abstract class BaseWebChannelHandler<
   ): Promise<Attachment | null | undefined> {
     try {
       if (!req.session.web?.profile?.id) {
-        this.logger.debug('Upload denied, no session is defined');
+        this.logger.debug("Upload denied, no session is defined");
         return null;
       }
 
       // Check if any file is provided
       if (!req.file) {
-        this.logger.debug('No files provided');
+        this.logger.debug("No files provided");
         return null;
       }
 
@@ -714,7 +714,7 @@ export default abstract class BaseWebChannelHandler<
         createdBy: req.session.web.profile.id,
       });
     } catch (err) {
-      this.logger.error('Unable to store uploaded file', err);
+      this.logger.error("Unable to store uploaded file", err);
       throw err;
     }
   }
@@ -733,7 +733,7 @@ export default abstract class BaseWebChannelHandler<
   ): Promise<Attachment | null | undefined> {
     // Check if any file is provided
     if (!req.session.web) {
-      this.logger.debug('No session provided');
+      this.logger.debug("No session provided");
       return null;
     }
 
@@ -758,9 +758,9 @@ export default abstract class BaseWebChannelHandler<
       // If config.http.trustProxy is enabled, this variable contains the IP addresses
       // in this request's "X-Forwarded-For" header as an array of the IP address strings.
       // Otherwise an empty array is returned.
-      return req.ips.join(',');
+      return req.ips.join(",");
     } else {
-      return req.ip || '0.0.0.0';
+      return req.ip || "0.0.0.0";
     }
   }
 
@@ -777,7 +777,7 @@ export default abstract class BaseWebChannelHandler<
     return {
       isSocket: this.isSocketRequest(req),
       ipAddress: this.getIpAddress(req),
-      agent: req.headers['user-agent'] || 'browser',
+      agent: req.headers["user-agent"] || "browser",
     };
   }
 
@@ -793,13 +793,13 @@ export default abstract class BaseWebChannelHandler<
   ): void {
     // @TODO: perform payload validation
     if (!req.body) {
-      this.logger.debug('Empty body');
-      res.status(400).json({ err: 'Web Channel Handler : Bad Request!' });
+      this.logger.debug("Empty body");
+      res.status(400).json({ err: "Web Channel Handler : Bad Request!" });
       return;
     } else {
       // Parse json form data (in case of content-type multipart/form-data)
       req.body.data =
-        typeof req.body.data === 'string'
+        typeof req.body.data === "string"
           ? JSON.parse(req.body.data)
           : req.body.data;
     }
@@ -823,15 +823,15 @@ export default abstract class BaseWebChannelHandler<
               };
             }
           } catch (err) {
-            this.logger.warn('Unable to upload file ', err);
+            this.logger.warn("Unable to upload file ", err);
             return res
               .status(403)
-              .json({ err: 'Web Channel Handler : File upload failed!' });
+              .json({ err: "Web Channel Handler : File upload failed!" });
           }
         }
 
         // Handler sync message sent by chatbot
-        if (body.sync && body.author === 'chatbot') {
+        if (body.sync && body.author === "chatbot") {
           const sentMessage: MessageCreateDto = {
             mid: event.getId(),
             message: event.getMessage() as StdOutgoingMessage,
@@ -839,7 +839,7 @@ export default abstract class BaseWebChannelHandler<
             read: true,
             delivery: true,
           };
-          this.eventEmitter.emit('hook:chatbot:sent', sentMessage, event);
+          this.eventEmitter.emit("hook:chatbot:sent", sentMessage, event);
           return res.status(200).json(event._adapter.raw);
         } else {
           // Generate unique ID and handle message
@@ -856,7 +856,7 @@ export default abstract class BaseWebChannelHandler<
         this.broadcast(profile as Subscriber, type, event._adapter.raw);
         this.eventEmitter.emit(`hook:chatbot:${type}`, event);
       } else {
-        this.logger.error('Webhook received unknown event ', event);
+        this.logger.error("Webhook received unknown event ", event);
       }
       res.status(200).json(event._adapter.raw);
     });
@@ -869,7 +869,7 @@ export default abstract class BaseWebChannelHandler<
    * @returns True if it's a WS request
    */
   isSocketRequest(req: Request | SocketRequest): req is SocketRequest {
-    return 'isSocket' in req && req.isSocket;
+    return "isSocket" in req && req.isSocket;
   }
 
   /**
@@ -883,11 +883,11 @@ export default abstract class BaseWebChannelHandler<
     // Web Channel messaging can be done through websockets or long-polling
     try {
       await this.checkRequest(req, res);
-      if (req.method === 'GET') {
+      if (req.method === "GET") {
         if (!this.isSocketRequest(req) && req.query._get) {
           switch (req.query._get) {
-            case 'settings':
-              this.logger.debug('connected .. sending settings');
+            case "settings":
+              this.logger.debug("connected .. sending settings");
               try {
                 const menu = await this.menuService.getTree();
                 return res.status(200).json({
@@ -896,17 +896,17 @@ export default abstract class BaseWebChannelHandler<
                   ...settings,
                 });
               } catch (err) {
-                this.logger.warn('Unable to retrieve menu ', err);
-                return res.status(500).json({ err: 'Unable to retrieve menu' });
+                this.logger.warn("Unable to retrieve menu ", err);
+                return res.status(500).json({ err: "Unable to retrieve menu" });
               }
-            case 'polling':
+            case "polling":
               // Handle polling when user is not connected via websocket
               return this.getMessageQueue(req, res as Response);
             default:
-              this.logger.error('Webhook received unknown command');
+              this.logger.error("Webhook received unknown command");
               return res
                 .status(500)
-                .json({ err: 'Webhook received unknown command' });
+                .json({ err: "Webhook received unknown command" });
           }
         } else if (req.query._disconnect) {
           req.session.web = undefined;
@@ -920,10 +920,10 @@ export default abstract class BaseWebChannelHandler<
         return this._handleEvent(req, res);
       }
     } catch (err) {
-      this.logger.warn('Request check failed', err);
+      this.logger.warn("Request check failed", err);
       return res
         .status(403)
-        .json({ err: 'Web Channel Handler : Unauthorized!' });
+        .json({ err: "Web Channel Handler : Unauthorized!" });
     }
   }
 
@@ -933,7 +933,7 @@ export default abstract class BaseWebChannelHandler<
    * @returns UUID
    */
   generateId(): string {
-    return 'web-' + uuidv4();
+    return "web-" + uuidv4();
   }
 
   /**
@@ -1040,7 +1040,7 @@ export default abstract class BaseWebChannelHandler<
     options: BlockOptions,
   ): Promise<Web.MessageElement[]> {
     if (!options.content || !options.content.fields) {
-      throw new Error('Content options are missing the fields');
+      throw new Error("Content options are missing the fields");
     }
 
     const fields = options.content.fields;
@@ -1059,7 +1059,7 @@ export default abstract class BaseWebChannelHandler<
 
       if (fields.image_url && item[fields.image_url]) {
         const attachmentRef =
-          typeof item[fields.image_url] === 'string'
+          typeof item[fields.image_url] === "string"
             ? { url: item[fields.image_url] }
             : (item[fields.image_url].payload as AttachmentRef);
         element.image_url = await this.getPublicUrl(attachmentRef);
@@ -1072,8 +1072,8 @@ export default abstract class BaseWebChannelHandler<
           const urlField = fields.url;
           btn.url =
             urlField && item[urlField] ? item[urlField] : Content.getUrl(item);
-          if (!btn.url.startsWith('http')) {
-            btn.url = 'https://' + btn.url;
+          if (!btn.url.startsWith("http")) {
+            btn.url = "https://" + btn.url;
           }
           // Set default action the same as the first web_url button
           if (!element.default_action) {
@@ -1082,14 +1082,14 @@ export default abstract class BaseWebChannelHandler<
           }
         } else {
           if (
-            'action_payload' in fields &&
+            "action_payload" in fields &&
             fields.action_payload &&
             fields.action_payload in item
           ) {
-            btn.payload = btn.title + ':' + item[fields.action_payload];
+            btn.payload = btn.title + ":" + item[fields.action_payload];
           } else {
             const postback = Content.getPayload(item);
-            btn.payload = btn.title + ':' + postback;
+            btn.payload = btn.title + ":" + postback;
           }
         }
         // Set custom title for first button if provided
@@ -1128,8 +1128,8 @@ export default abstract class BaseWebChannelHandler<
 
     // Items count min check
     if (!data.length) {
-      this.logger.error('Insufficient content count (must be >= 0 for list)');
-      throw new Error('Insufficient content count (list >= 0)');
+      this.logger.error("Insufficient content count (must be >= 0 for list)");
+      throw new Error("Insufficient content count (list >= 0)");
     }
 
     // Toggle "View More" button (check if there's more items to display)
@@ -1137,7 +1137,7 @@ export default abstract class BaseWebChannelHandler<
       buttons = [
         {
           type: ButtonType.postback,
-          title: this.i18n.t('View More'),
+          title: this.i18n.t("View More"),
           payload: VIEW_MORE_PAYLOAD,
         },
       ];
@@ -1176,9 +1176,9 @@ export default abstract class BaseWebChannelHandler<
     // Items count min check
     if (data.length === 0) {
       this.logger.error(
-        'Insufficient content count (must be > 0 for carousel)',
+        "Insufficient content count (must be > 0 for carousel)",
       );
-      throw new Error('Insufficient content count (carousel > 0)');
+      throw new Error("Insufficient content count (carousel > 0)");
     }
 
     // Populate items (elements/cards) with content
@@ -1218,7 +1218,7 @@ export default abstract class BaseWebChannelHandler<
         return this._textFormat(envelope.message, options);
 
       default:
-        throw new Error('Unknown message format');
+        throw new Error("Unknown message format");
     }
   }
 
@@ -1270,7 +1270,7 @@ export default abstract class BaseWebChannelHandler<
     const message: Web.OutgoingMessage = {
       ...messageBase,
       mid: this.generateId(),
-      author: 'chatbot',
+      author: "chatbot",
       createdAt: new Date(),
       handover: !!(options && options.assignTo),
     };
@@ -1281,16 +1281,16 @@ export default abstract class BaseWebChannelHandler<
 
     if (options && options.typing) {
       const autoTimeout =
-        message && message.data && 'text' in message.data
+        message && message.data && "text" in message.data
           ? message.data.text.length * 10
           : 1000;
       const timeout =
-        typeof options.typing === 'number' ? options.typing : autoTimeout;
+        typeof options.typing === "number" ? options.typing : autoTimeout;
       try {
         await this.sendTypingIndicator(subscriber, timeout);
         return next();
       } catch (err) {
-        this.logger.error('Failed in sending typing indicator ', err);
+        this.logger.error("Failed in sending typing indicator ", err);
       }
     }
 
@@ -1369,12 +1369,12 @@ export default abstract class BaseWebChannelHandler<
     } else {
       // Or, he would like to access an attachment sent to him privately
       const message = await this.messageService.findOne({
-        ['recipient' as any]: subscriberId,
+        ["recipient" as any]: subscriberId,
         $or: [
-          { 'message.attachment.payload.id': attachment.id },
+          { "message.attachment.payload.id": attachment.id },
           {
-            'message.attachment': {
-              $elemMatch: { 'payload.id': attachment.id },
+            "message.attachment": {
+              $elemMatch: { "payload.id": attachment.id },
             },
           },
         ],
@@ -1393,17 +1393,17 @@ export default abstract class BaseWebChannelHandler<
    */
   async middleware(req: Request, res: Response, next: NextFunction) {
     if (!this.isSocketRequest(req)) {
-      if (req.headers['content-type']?.includes('multipart/form-data')) {
+      if (req.headers["content-type"]?.includes("multipart/form-data")) {
         // Handle multipart uploads (Long Pooling only)
         return upload(req, res, next);
-      } else if (req.headers['content-type']?.includes('text/plain')) {
+      } else if (req.headers["content-type"]?.includes("text/plain")) {
         // Handle plain text payloads as JSON (retro-compatibility)
-        const textParser = bodyParser.text({ type: 'text/plain' });
+        const textParser = bodyParser.text({ type: "text/plain" });
 
         return textParser(req, res, () => {
           try {
             req.body =
-              typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+              typeof req.body === "string" ? JSON.parse(req.body) : req.body;
             next();
           } catch (err) {
             next(err);

@@ -6,27 +6,27 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { User } from '@/user/schemas/user.schema';
-import { UserService } from '@/user/services/user.service';
+import { User } from "@/user/schemas/user.schema";
+import { UserService } from "@/user/services/user.service";
 import {
   installMessageFixtures,
   messageFixtures,
-} from '@/utils/test/fixtures/message';
-import { getPageQuery } from '@/utils/test/pagination';
+} from "@/utils/test/fixtures/message";
+import { getPageQuery } from "@/utils/test/pagination";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { Message } from '../schemas/message.schema';
-import { Subscriber } from '../schemas/subscriber.schema';
-import { MessageService } from '../services/message.service';
-import { SubscriberService } from '../services/subscriber.service';
+import { Message } from "../schemas/message.schema";
+import { Subscriber } from "../schemas/subscriber.schema";
+import { MessageService } from "../services/message.service";
+import { SubscriberService } from "../services/subscriber.service";
 
-import { MessageController } from './message.controller';
+import { MessageController } from "./message.controller";
 
-describe('MessageController', () => {
+describe("MessageController", () => {
   let messageController: MessageController;
   let messageService: MessageService;
   let subscriberService: SubscriberService;
@@ -41,7 +41,7 @@ describe('MessageController', () => {
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['controllers', 'providers'],
+      autoInjectFrom: ["controllers", "providers"],
       controllers: [MessageController],
       imports: [rootMongooseTestModule(installMessageFixtures)],
       providers: [UserService],
@@ -53,7 +53,7 @@ describe('MessageController', () => {
         SubscriberService,
         MessageController,
       ]);
-    message = (await messageService.findOne({ mid: 'mid-1' }))!;
+    message = (await messageService.findOne({ mid: "mid-1" }))!;
     sender = (await subscriberService.findOne(message.sender!))!;
     recipient = (await subscriberService.findOne(message.recipient!))!;
     user = (await userService.findOne(message.sentBy!))!;
@@ -66,9 +66,9 @@ describe('MessageController', () => {
 
   afterAll(closeInMongodConnection);
 
-  describe('count', () => {
-    it('should count messages', async () => {
-      jest.spyOn(messageService, 'count');
+  describe("count", () => {
+    it("should count messages", async () => {
+      jest.spyOn(messageService, "count");
       const result = await messageController.filterCount();
 
       expect(messageService.count).toHaveBeenCalled();
@@ -76,12 +76,12 @@ describe('MessageController', () => {
     });
   });
 
-  describe('findOne', () => {
-    it('should find message by id, and populate its corresponding sender and recipient', async () => {
-      jest.spyOn(messageService, 'findOneAndPopulate');
+  describe("findOne", () => {
+    it("should find message by id, and populate its corresponding sender and recipient", async () => {
+      jest.spyOn(messageService, "findOneAndPopulate");
       const result = await messageController.findOne(message.id, [
-        'sender',
-        'recipient',
+        "sender",
+        "recipient",
       ]);
 
       expect(messageService.findOneAndPopulate).toHaveBeenCalledWith(
@@ -94,8 +94,8 @@ describe('MessageController', () => {
         sentBy: user.id,
       });
     });
-    it('should find message by id', async () => {
-      jest.spyOn(messageService, 'findOne');
+    it("should find message by id", async () => {
+      jest.spyOn(messageService, "findOne");
       const result = await messageController.findOne(message.id, []);
 
       expect(messageService.findOne).toHaveBeenCalledWith(message.id);
@@ -108,10 +108,10 @@ describe('MessageController', () => {
     });
   });
 
-  describe('findPage', () => {
+  describe("findPage", () => {
     const pageQuery = getPageQuery<Message>();
-    it('should find messages', async () => {
-      jest.spyOn(messageService, 'find');
+    it("should find messages", async () => {
+      jest.spyOn(messageService, "find");
       const result = await messageController.findPage(pageQuery, [], {});
       const messagesWithSenderAndRecipient = allMessages.map((message) => ({
         ...message,
@@ -125,11 +125,11 @@ describe('MessageController', () => {
       expect(result).toEqualPayload(messagesWithSenderAndRecipient);
     });
 
-    it('should find messages, and foreach message populate the corresponding sender and recipient', async () => {
-      jest.spyOn(messageService, 'findAndPopulate');
+    it("should find messages, and foreach message populate the corresponding sender and recipient", async () => {
+      jest.spyOn(messageService, "findAndPopulate");
       const result = await messageController.findPage(
         pageQuery,
-        ['sender', 'recipient'],
+        ["sender", "recipient"],
         {},
       );
       const messages = allMessages.map((message) => ({

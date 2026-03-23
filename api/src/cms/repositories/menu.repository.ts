@@ -6,21 +6,21 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
 
-import { BaseRepository } from '@/utils/generics/base-repository';
+import { BaseRepository } from "@/utils/generics/base-repository";
 
-import { MenuDto } from '../dto/menu.dto';
+import { MenuDto } from "../dto/menu.dto";
 import {
   Menu,
   MENU_POPULATE,
   MenuDocument,
   MenuFull,
   MenuPopulate,
-} from '../schemas/menu.schema';
-import { MenuType } from '../schemas/types/menu';
+} from "../schemas/menu.schema";
+import { MenuType } from "../schemas/types/menu";
 
 @Injectable()
 export class MenuRepository extends BaseRepository<
@@ -43,20 +43,20 @@ export class MenuRepository extends BaseRepository<
     if (_doc) {
       const modifiedPaths = _doc.modifiedPaths();
       if (!_doc?.isNew) {
-        if (modifiedPaths.includes('type'))
+        if (modifiedPaths.includes("type"))
           throw new Error("Illegal Update: can't update type");
       }
 
       switch (_doc.type) {
         case MenuType.postback:
-          if (!modifiedPaths.includes('payload'))
+          if (!modifiedPaths.includes("payload"))
             throw new Error(
               "Menu Validation Error: doesn't include payload for type postback",
             );
 
           break;
         case MenuType.web_url:
-          if (!modifiedPaths.includes('url'))
+          if (!modifiedPaths.includes("url"))
             throw new Error(
               "Menu Validation Error: doesn't include url for type web_url",
             );

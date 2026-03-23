@@ -6,16 +6,16 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Transform, Type } from 'class-transformer';
-import { Schema as MongooseSchema } from 'mongoose';
+import { ModelDefinition, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Transform, Type } from "class-transformer";
+import { Schema as MongooseSchema } from "mongoose";
 
-import { BaseSchema } from '@/utils/generics/base-schema';
-import { LifecycleHookManager } from '@/utils/generics/lifecycle-hook-manager';
-import { TFilterPopulateFields } from '@/utils/types/filter.types';
+import { BaseSchema } from "@/utils/generics/base-schema";
+import { LifecycleHookManager } from "@/utils/generics/lifecycle-hook-manager";
+import { TFilterPopulateFields } from "@/utils/types/filter.types";
 
-import { Subscriber } from './subscriber.schema';
-import { StdIncomingMessage, StdOutgoingMessage } from './types/message';
+import { Subscriber } from "./subscriber.schema";
+import { StdIncomingMessage, StdOutgoingMessage } from "./types/message";
 
 @Schema({ timestamps: true })
 export class MessageStub extends BaseSchema {
@@ -29,21 +29,21 @@ export class MessageStub extends BaseSchema {
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     required: false,
-    ref: 'Subscriber',
+    ref: "Subscriber",
   })
   sender?: unknown;
 
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     required: false,
-    ref: 'Subscriber',
+    ref: "Subscriber",
   })
   recipient?: unknown;
 
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     required: false,
-    ref: 'User',
+    ref: "User",
   })
   sentBy?: unknown;
 
@@ -105,4 +105,4 @@ export default MessageModel.schema;
 
 export type MessagePopulate = keyof TFilterPopulateFields<Message, MessageStub>;
 
-export const MESSAGE_POPULATE: MessagePopulate[] = ['sender', 'recipient'];
+export const MESSAGE_POPULATE: MessagePopulate[] = ["sender", "recipient"];

@@ -6,10 +6,10 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { registerDecorator, ValidationOptions } from 'class-validator';
-import { ZodArray, ZodType } from 'zod';
+import { registerDecorator, ValidationOptions } from "class-validator";
+import { ZodArray, ZodType } from "zod";
 
-import { buildZodSchemaValidator } from '../helpers/zod-validation';
+import { buildZodSchemaValidator } from "../helpers/zod-validation";
 
 export const Validate =
   (schema: ZodType | ZodArray<any>, validationOptions?: ValidationOptions) =>
@@ -28,8 +28,8 @@ export const Validate =
           const { error, success } = schema.safeParse(value);
           if (!success && error?.errors) {
             return error.errors
-              .map((e) => `${[property, ...e.path].join('.')}: ${e.message}`)
-              .join(', ');
+              .map((e) => `${[property, ...e.path].join(".")}: ${e.message}`)
+              .join(", ");
           }
 
           return `${property}: Validation failed`;

@@ -21,26 +21,26 @@ import {
   Patch,
   Post,
   Query,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
-import { BaseController } from '@/utils/generics/base-controller';
-import { DeleteResult } from '@/utils/generics/base-repository';
-import { PageQueryDto } from '@/utils/pagination/pagination-query.dto';
-import { PageQueryPipe } from '@/utils/pagination/pagination-query.pipe';
-import { PopulatePipe } from '@/utils/pipes/populate.pipe';
-import { SearchFilterPipe } from '@/utils/pipes/search-filter.pipe';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { BaseController } from "@/utils/generics/base-controller";
+import { DeleteResult } from "@/utils/generics/base-repository";
+import { PageQueryDto } from "@/utils/pagination/pagination-query.dto";
+import { PageQueryPipe } from "@/utils/pagination/pagination-query.pipe";
+import { PopulatePipe } from "@/utils/pipes/populate.pipe";
+import { SearchFilterPipe } from "@/utils/pipes/search-filter.pipe";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
-import { NlpEntityCreateDto, NlpEntityUpdateDto } from '../dto/nlp-entity.dto';
+import { NlpEntityCreateDto, NlpEntityUpdateDto } from "../dto/nlp-entity.dto";
 import {
   NlpEntity,
   NlpEntityFull,
   NlpEntityPopulate,
   NlpEntityStub,
-} from '../schemas/nlp-entity.schema';
-import { NlpEntityService } from '../services/nlp-entity.service';
+} from "../schemas/nlp-entity.schema";
+import { NlpEntityService } from "../services/nlp-entity.service";
 
-@Controller('nlpentity')
+@Controller("nlpentity")
 export class NlpEntityController extends BaseController<
   NlpEntity,
   NlpEntityStub,
@@ -76,9 +76,9 @@ export class NlpEntityController extends BaseController<
    *
    * @returns The count of NLP entities matching the filters.
    */
-  @Get('count')
+  @Get("count")
   async filterCount(
-    @Query(new SearchFilterPipe<NlpEntity>({ allowedFields: ['name', 'doc'] }))
+    @Query(new SearchFilterPipe<NlpEntity>({ allowedFields: ["name", "doc"] }))
     filters?: TFilterQuery<NlpEntity>,
   ) {
     return await this.count(filters);
@@ -94,9 +94,9 @@ export class NlpEntityController extends BaseController<
    *
    * @returns The NLP entity found by the ID.
    */
-  @Get(':id')
+  @Get(":id")
   async findOne(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Query(PopulatePipe) populate: string[],
   ) {
     const doc = this.canPopulate(populate)
@@ -124,7 +124,7 @@ export class NlpEntityController extends BaseController<
   async findPage(
     @Query(PageQueryPipe) pageQuery: PageQueryDto<NlpEntity>,
     @Query(PopulatePipe) populate: string[],
-    @Query(new SearchFilterPipe<NlpEntity>({ allowedFields: ['name', 'doc'] }))
+    @Query(new SearchFilterPipe<NlpEntity>({ allowedFields: ["name", "doc"] }))
     filters: TFilterQuery<NlpEntity>,
   ) {
     return this.canPopulate(populate)
@@ -142,9 +142,9 @@ export class NlpEntityController extends BaseController<
    *
    * @returns The updated NLP entity.
    */
-  @Patch(':id')
+  @Patch(":id")
   async updateOne(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body() nlpEntityDto: NlpEntityUpdateDto,
   ): Promise<NlpEntity> {
     const nlpEntity = await this.nlpEntityService.findOne(id);
@@ -179,9 +179,9 @@ export class NlpEntityController extends BaseController<
    *
    * @returns The result of the deletion operation.
    */
-  @Delete(':id')
+  @Delete(":id")
   @HttpCode(204)
-  async deleteOne(@Param('id') id: string) {
+  async deleteOne(@Param("id") id: string) {
     const nlpEntity = await this.nlpEntityService.findOne(id);
     if (!nlpEntity) {
       this.logger.warn(`Unable to delete NLP Entity by id ${id}`);
@@ -208,11 +208,11 @@ export class NlpEntityController extends BaseController<
    * @param ids - IDs of NLP entities to be deleted.
    * @returns A Promise that resolves to the deletion result.
    */
-  @Delete('')
+  @Delete("")
   @HttpCode(204)
-  async deleteMany(@Body('ids') ids?: string[]): Promise<DeleteResult> {
+  async deleteMany(@Body("ids") ids?: string[]): Promise<DeleteResult> {
     if (!ids?.length) {
-      throw new BadRequestException('No IDs provided for deletion.');
+      throw new BadRequestException("No IDs provided for deletion.");
     }
 
     const deleteResult = await this.nlpEntityService.deleteMany({
@@ -223,7 +223,7 @@ export class NlpEntityController extends BaseController<
       this.logger.warn(
         `Unable to delete NLP entities with provided IDs: ${ids}`,
       );
-      throw new NotFoundException('NLP entities with provided IDs not found');
+      throw new NotFoundException("NLP entities with provided IDs not found");
     }
 
     this.logger.log(`Successfully deleted NLP entities with IDs: ${ids}`);

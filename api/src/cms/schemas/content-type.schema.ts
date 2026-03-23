@@ -6,14 +6,14 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ModelDefinition, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
-import { FieldType } from '@/setting/schemas/types';
-import { BaseSchema } from '@/utils/generics/base-schema';
-import { LifecycleHookManager } from '@/utils/generics/lifecycle-hook-manager';
+import { FieldType } from "@/setting/schemas/types";
+import { BaseSchema } from "@/utils/generics/base-schema";
+import { LifecycleHookManager } from "@/utils/generics/lifecycle-hook-manager";
 
-import { ContentField } from '../dto/contentType.dto';
-import { validateUniqueFields } from '../utilities/field-validation.utils';
+import { ContentField } from "../dto/contentType.dto";
+import { validateUniqueFields } from "../utilities/field-validation.utils";
 
 @Schema({ timestamps: true })
 export class ContentType extends BaseSchema {
@@ -31,13 +31,13 @@ export class ContentType extends BaseSchema {
     type: [ContentField],
     default: [
       {
-        name: 'title',
-        label: 'Title',
+        name: "title",
+        label: "Title",
         type: FieldType.text,
       },
       {
-        name: 'status',
-        label: 'Status',
+        name: "status",
+        label: "Status",
         type: FieldType.checkbox,
       },
     ],
@@ -49,7 +49,7 @@ export class ContentType extends BaseSchema {
        * when `runValidators: true` is set.
        */
       validator(fields: ContentField[]): boolean {
-        return validateUniqueFields(fields, 'label');
+        return validateUniqueFields(fields, "label");
       },
       message:
         'Each element in "fields" must have a unique "label" (duplicate detected)',

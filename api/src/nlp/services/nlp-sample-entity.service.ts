@@ -6,23 +6,23 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
-import { BaseService } from '@/utils/generics/base-service';
+import { BaseService } from "@/utils/generics/base-service";
 
-import { NlpSampleEntityCreateDto } from '../dto/nlp-sample-entity.dto';
-import { NlpSampleEntityRepository } from '../repositories/nlp-sample-entity.repository';
+import { NlpSampleEntityCreateDto } from "../dto/nlp-sample-entity.dto";
+import { NlpSampleEntityRepository } from "../repositories/nlp-sample-entity.repository";
 import {
   NlpSampleEntity,
   NlpSampleEntityFull,
   NlpSampleEntityPopulate,
-} from '../schemas/nlp-sample-entity.schema';
-import { NlpSample, NlpSampleStub } from '../schemas/nlp-sample.schema';
-import { NlpValue } from '../schemas/nlp-value.schema';
-import { NlpSampleEntityValue } from '../schemas/types';
+} from "../schemas/nlp-sample-entity.schema";
+import { NlpSample, NlpSampleStub } from "../schemas/nlp-sample.schema";
+import { NlpValue } from "../schemas/nlp-value.schema";
+import { NlpSampleEntityValue } from "../schemas/types";
 
-import { NlpEntityService } from './nlp-entity.service';
-import { NlpValueService } from './nlp-value.service';
+import { NlpEntityService } from "./nlp-entity.service";
+import { NlpValueService } from "./nlp-value.service";
 
 @Injectable()
 export class NlpSampleEntityService extends BaseService<
@@ -65,14 +65,14 @@ export class NlpSampleEntityService extends BaseService<
       const storedEntity = storedEntities.find((se) => se.name === e.entity);
       const storedValue = storedValues.find((sv) => sv.value === e.value);
       if (!storedEntity || !storedValue) {
-        throw new Error('Unable to find the stored entity or value');
+        throw new Error("Unable to find the stored entity or value");
       }
       return {
         sample: sample.id,
         entity: storedEntity.id, // replace entity name by id
         value: storedValue.id, // replace value by id
-        start: 'start' in e ? e.start : undefined,
-        end: 'end' in e ? e.end : undefined,
+        start: "start" in e ? e.start : undefined,
+        end: "end" in e ? e.end : undefined,
       } as NlpSampleEntity;
     });
 
@@ -92,8 +92,8 @@ export class NlpSampleEntityService extends BaseService<
     value: NlpValue,
   ): NlpSampleEntityCreateDto[] {
     const keywords = [value.value, ...value.expressions];
-    const regex = `(?<!\\p{L})${keywords.join('|')}(?!\\p{L})`;
-    const regexPattern = new RegExp(regex, 'giu');
+    const regex = `(?<!\\p{L})${keywords.join("|")}(?!\\p{L})`;
+    const regexPattern = new RegExp(regex, "giu");
     const matches: NlpSampleEntityCreateDto[] = [];
     let match: RegExpExecArray | null;
 

@@ -6,27 +6,27 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 
-import { NlpValueMatchPattern } from '@/chat/schemas/types/pattern';
-import { DeleteResult } from '@/utils/generics/base-repository';
-import { BaseService } from '@/utils/generics/base-service';
-import { PageQueryDto } from '@/utils/pagination/pagination-query.dto';
-import { TFilterQuery } from '@/utils/types/filter.types';
-import { Format } from '@/utils/types/format.types';
+import { NlpValueMatchPattern } from "@/chat/schemas/types/pattern";
+import { DeleteResult } from "@/utils/generics/base-repository";
+import { BaseService } from "@/utils/generics/base-service";
+import { PageQueryDto } from "@/utils/pagination/pagination-query.dto";
+import { TFilterQuery } from "@/utils/types/filter.types";
+import { Format } from "@/utils/types/format.types";
 
-import { NlpValueCreateDto, NlpValueDto } from '../dto/nlp-value.dto';
-import { NlpValueRepository } from '../repositories/nlp-value.repository';
-import { NlpEntity } from '../schemas/nlp-entity.schema';
+import { NlpValueCreateDto, NlpValueDto } from "../dto/nlp-value.dto";
+import { NlpValueRepository } from "../repositories/nlp-value.repository";
+import { NlpEntity } from "../schemas/nlp-entity.schema";
 import {
   NlpValue,
   NlpValueFull,
   NlpValuePopulate,
   TNlpValueCount,
-} from '../schemas/nlp-value.schema';
-import { NlpSampleEntityValue } from '../schemas/types';
+} from "../schemas/nlp-value.schema";
+import { NlpSampleEntityValue } from "../schemas/types";
 
-import { NlpEntityService } from './nlp-entity.service';
+import { NlpEntityService } from "./nlp-entity.service";
 
 @Injectable()
 export class NlpValueService extends BaseService<
@@ -118,7 +118,7 @@ export class NlpValueService extends BaseService<
           expressions: [],
         };
         // Deal with synonym case
-        if ('start' in e && 'end' in e) {
+        if ("start" in e && "end" in e) {
           const word = sampleText.slice(e.start, e.end);
           if (word !== e.value) {
             newValue.expressions = [word];
@@ -140,7 +140,7 @@ export class NlpValueService extends BaseService<
     // Store new synonyms for existing values
     const synonymsToAdd = sampleEntities
       .filter((e) => {
-        if ('start' in e && 'end' in e) {
+        if ("start" in e && "end" in e) {
           const word = sampleText.slice(e.start, e.end);
           return (
             word !== e.value && vMap[e.value].expressions?.indexOf(word) === -1
@@ -196,10 +196,10 @@ export class NlpValueService extends BaseService<
       let expressions: string[] = [];
       // Deal with synonym case
       if (
-        'start' in e &&
+        "start" in e &&
         e.start &&
         e.start >= 0 &&
-        'end' in e &&
+        "end" in e &&
         e.end &&
         e.end > 0
       ) {

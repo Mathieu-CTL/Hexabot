@@ -11,8 +11,8 @@ import {
   ApiPropertyOptional,
   OmitType,
   PartialType,
-} from '@nestjs/swagger';
-import { Transform, Type } from 'class-transformer';
+} from "@nestjs/swagger";
+import { Transform, Type } from "class-transformer";
 import {
   IsArray,
   IsBoolean,
@@ -23,31 +23,31 @@ import {
   IsString,
   Max,
   Min,
-} from 'class-validator';
-import { z } from 'zod';
+} from "class-validator";
+import { z } from "zod";
 
-import { Validate } from '@/utils/decorators/validate.decorator';
-import { SanitizeQueryPipe } from '@/utils/pipes/sanitize-query.pipe';
-import { DtoConfig } from '@/utils/types/dto.types';
-import { IsObjectId } from '@/utils/validation-rules/is-object-id';
+import { Validate } from "@/utils/decorators/validate.decorator";
+import { SanitizeQueryPipe } from "@/utils/pipes/sanitize-query.pipe";
+import { DtoConfig } from "@/utils/types/dto.types";
+import { IsObjectId } from "@/utils/validation-rules/is-object-id";
 
-import { DEFAULT_BLOCK_SEARCH_LIMIT } from '../constants/block';
-import { CaptureVar, captureVarSchema } from '../schemas/types/capture-var';
+import { DEFAULT_BLOCK_SEARCH_LIMIT } from "../constants/block";
+import { CaptureVar, captureVarSchema } from "../schemas/types/capture-var";
 import {
   BlockMessage,
   blockMessageObjectSchema,
-} from '../schemas/types/message';
-import { BlockOptions, BlockOptionsSchema } from '../schemas/types/options';
-import { Pattern, patternSchema } from '../schemas/types/pattern';
-import { Position, positionSchema } from '../schemas/types/position';
+} from "../schemas/types/message";
+import { BlockOptions, BlockOptionsSchema } from "../schemas/types/options";
+import { Pattern, patternSchema } from "../schemas/types/pattern";
+import { Position, positionSchema } from "../schemas/types/position";
 
 export class BlockCreateDto {
-  @ApiProperty({ description: 'Block name', type: String })
+  @ApiProperty({ description: "Block name", type: String })
   @IsNotEmpty()
   @IsString()
   name: string;
 
-  @ApiPropertyOptional({ description: 'Block patterns', type: Array })
+  @ApiPropertyOptional({ description: "Block patterns", type: Array })
   @IsOptional()
   @Validate(z.array(patternSchema))
   patterns?: Pattern[] = [];
@@ -57,59 +57,59 @@ export class BlockCreateDto {
     type: Array,
   })
   @IsOptional()
-  @IsArray({ message: 'Outcomes are invalid' })
+  @IsArray({ message: "Outcomes are invalid" })
   outcomes?: string[] = [];
 
-  @ApiPropertyOptional({ description: 'Block trigger labels', type: Array })
+  @ApiPropertyOptional({ description: "Block trigger labels", type: Array })
   @IsOptional()
   @IsArray()
-  @IsObjectId({ each: true, message: 'Trigger label must be a valid objectId' })
+  @IsObjectId({ each: true, message: "Trigger label must be a valid objectId" })
   trigger_labels?: string[] = [];
 
-  @ApiPropertyOptional({ description: 'Block assign labels', type: Array })
+  @ApiPropertyOptional({ description: "Block assign labels", type: Array })
   @IsOptional()
   @IsArray()
-  @IsObjectId({ each: true, message: 'Assign label must be a valid objectId' })
+  @IsObjectId({ each: true, message: "Assign label must be a valid objectId" })
   assign_labels?: string[] = [];
 
-  @ApiPropertyOptional({ description: 'Block trigger channels', type: Array })
+  @ApiPropertyOptional({ description: "Block trigger channels", type: Array })
   @IsOptional()
   @IsArray()
   trigger_channels?: string[] = [];
 
-  @ApiPropertyOptional({ description: 'Block options', type: Object })
+  @ApiPropertyOptional({ description: "Block options", type: Object })
   @IsOptional()
   @IsObject()
   @Validate(BlockOptionsSchema)
   options?: BlockOptions;
 
-  @ApiProperty({ description: 'Block message', type: Object })
+  @ApiProperty({ description: "Block message", type: Object })
   @IsNotEmpty()
   @Validate(blockMessageObjectSchema)
   message: BlockMessage;
 
-  @ApiPropertyOptional({ description: 'next blocks', type: Array })
+  @ApiPropertyOptional({ description: "next blocks", type: Array })
   @IsOptional()
   @IsArray()
-  @IsObjectId({ each: true, message: 'Next block must be a valid objectId' })
+  @IsObjectId({ each: true, message: "Next block must be a valid objectId" })
   nextBlocks?: string[];
 
-  @ApiPropertyOptional({ description: 'attached blocks', type: String })
+  @ApiPropertyOptional({ description: "attached blocks", type: String })
   @IsOptional()
   @IsString()
   @IsObjectId({
-    message: 'Attached block must be a valid objectId',
+    message: "Attached block must be a valid objectId",
   })
   attachedBlock?: string | null;
 
-  @ApiProperty({ description: 'Block category', type: String })
+  @ApiProperty({ description: "Block category", type: String })
   @IsNotEmpty()
   @IsString()
-  @IsObjectId({ message: 'Category must be a valid objectId' })
+  @IsObjectId({ message: "Category must be a valid objectId" })
   category: string | null;
 
   @ApiPropertyOptional({
-    description: 'Block has started conversation',
+    description: "Block has started conversation",
     type: Boolean,
   })
   @IsBoolean()
@@ -117,7 +117,7 @@ export class BlockCreateDto {
   starts_conversation?: boolean;
 
   @ApiPropertyOptional({
-    description: 'Block capture vars',
+    description: "Block capture vars",
     type: Array,
   })
   @IsOptional()
@@ -125,7 +125,7 @@ export class BlockCreateDto {
   capture_vars?: CaptureVar[];
 
   @ApiProperty({
-    description: 'Block position',
+    description: "Block position",
     type: Object,
   })
   @IsNotEmpty()
@@ -135,14 +135,14 @@ export class BlockCreateDto {
 
 export class BlockUpdateDto extends PartialType(
   OmitType(BlockCreateDto, [
-    'patterns',
-    'outcomes',
-    'trigger_labels',
-    'assign_labels',
-    'trigger_channels',
+    "patterns",
+    "outcomes",
+    "trigger_labels",
+    "assign_labels",
+    "trigger_channels",
   ]),
 ) {
-  @ApiPropertyOptional({ description: 'Block patterns', type: Array })
+  @ApiPropertyOptional({ description: "Block patterns", type: Array })
   @IsOptional()
   @Validate(z.array(patternSchema))
   patterns?: Pattern[];
@@ -152,22 +152,22 @@ export class BlockUpdateDto extends PartialType(
     type: Array,
   })
   @IsOptional()
-  @IsArray({ message: 'Outcomes are invalid' })
+  @IsArray({ message: "Outcomes are invalid" })
   outcomes?: string[];
 
-  @ApiPropertyOptional({ description: 'Block trigger labels', type: Array })
+  @ApiPropertyOptional({ description: "Block trigger labels", type: Array })
   @IsOptional()
   @IsArray()
-  @IsObjectId({ each: true, message: 'Trigger label must be a valid objectId' })
+  @IsObjectId({ each: true, message: "Trigger label must be a valid objectId" })
   trigger_labels?: string[];
 
-  @ApiPropertyOptional({ description: 'Block assign labels', type: Array })
+  @ApiPropertyOptional({ description: "Block assign labels", type: Array })
   @IsOptional()
   @IsArray()
-  @IsObjectId({ each: true, message: 'Assign label must be a valid objectId' })
+  @IsObjectId({ each: true, message: "Assign label must be a valid objectId" })
   assign_labels?: string[];
 
-  @ApiPropertyOptional({ description: 'Block trigger channels', type: Array })
+  @ApiPropertyOptional({ description: "Block trigger channels", type: Array })
   @IsArray()
   @IsOptional()
   trigger_channels?: string[];
@@ -179,7 +179,7 @@ export type BlockDto = DtoConfig<{
 
 export class BlockSearchQueryDto {
   @ApiPropertyOptional({
-    description: 'Search term to filter blocks',
+    description: "Search term to filter blocks",
     type: String,
   })
   @IsOptional()
@@ -202,12 +202,12 @@ export class BlockSearchQueryDto {
   limit: number = DEFAULT_BLOCK_SEARCH_LIMIT;
 
   @ApiPropertyOptional({
-    description: 'Category to filter search results',
+    description: "Category to filter search results",
     type: String,
   })
   @IsOptional()
   @IsNotEmpty()
   @IsString()
-  @IsObjectId({ message: 'Category must be a valid objectId' })
+  @IsObjectId({ message: "Category must be a valid objectId" })
   category?: string;
 }

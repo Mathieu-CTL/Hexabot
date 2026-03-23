@@ -7,6 +7,6 @@
  */
 
 export type UserProvider = {
-  strategy: 'local';
+  strategy: "local";
   sub?: string;
 };

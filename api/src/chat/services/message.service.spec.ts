@@ -6,31 +6,31 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { UserRepository } from '@/user/repositories/user.repository';
-import { User } from '@/user/schemas/user.schema';
+import { UserRepository } from "@/user/repositories/user.repository";
+import { User } from "@/user/schemas/user.schema";
 import {
   installMessageFixtures,
   messageFixtures,
-} from '@/utils/test/fixtures/message';
-import { getPageQuery } from '@/utils/test/pagination';
-import { sortRowsBy } from '@/utils/test/sort';
+} from "@/utils/test/fixtures/message";
+import { getPageQuery } from "@/utils/test/pagination";
+import { sortRowsBy } from "@/utils/test/sort";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
-import { IOOutgoingSubscribeMessage } from '@/websocket/pipes/io-message.pipe';
-import { Room } from '@/websocket/types';
-import { WebsocketGateway } from '@/websocket/websocket.gateway';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
+import { IOOutgoingSubscribeMessage } from "@/websocket/pipes/io-message.pipe";
+import { Room } from "@/websocket/types";
+import { WebsocketGateway } from "@/websocket/websocket.gateway";
 
-import { MessageRepository } from '../repositories/message.repository';
-import { Message } from '../schemas/message.schema';
-import { Subscriber } from '../schemas/subscriber.schema';
+import { MessageRepository } from "../repositories/message.repository";
+import { Message } from "../schemas/message.schema";
+import { Subscriber } from "../schemas/subscriber.schema";
 
-import { SubscriberRepository } from './../repositories/subscriber.repository';
-import { MessageService } from './message.service';
+import { SubscriberRepository } from "./../repositories/subscriber.repository";
+import { MessageService } from "./message.service";
 
-describe('MessageService', () => {
+describe("MessageService", () => {
   let messageRepository: MessageRepository;
   let messageService: MessageService;
   let subscriberRepository: SubscriberRepository;
@@ -45,7 +45,7 @@ describe('MessageService', () => {
   let user: User;
   let mockGateway: Partial<WebsocketGateway>;
   let mockMessageService: MessageService;
-  const SESSION_ID = 'session-123';
+  const SESSION_ID = "session-123";
   const SUCCESS_PAYLOAD: IOOutgoingSubscribeMessage = {
     success: true,
     subscribe: Room.MESSAGE,
@@ -53,7 +53,7 @@ describe('MessageService', () => {
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['providers'],
+      autoInjectFrom: ["providers"],
       imports: [rootMongooseTestModule(installMessageFixtures)],
       providers: [MessageService, SubscriberRepository, UserRepository],
     });
@@ -67,7 +67,7 @@ describe('MessageService', () => {
     allSubscribers = await subscriberRepository.findAll();
     allUsers = await userRepository.findAll();
     allMessages = await messageRepository.findAll();
-    message = (await messageRepository.findOne({ mid: 'mid-1' }))!;
+    message = (await messageRepository.findOne({ mid: "mid-1" }))!;
     sender = (await subscriberRepository.findOne(message.sender!))!;
     recipient = (await subscriberRepository.findOne(message.recipient!))!;
     user = (await userRepository.findOne(message.sentBy!))!;
@@ -86,8 +86,8 @@ describe('MessageService', () => {
   afterEach(jest.clearAllMocks);
   afterAll(closeInMongodConnection);
 
-  describe('subscribe', () => {
-    it('should join Notification sockets message room and return a success response', async () => {
+  describe("subscribe", () => {
+    it("should join Notification sockets message room and return a success response", async () => {
       const req = {
         request: {
           session: { passport: { user: { id: SESSION_ID } } },
@@ -109,9 +109,9 @@ describe('MessageService', () => {
     });
   });
 
-  describe('findOneAndPopulate', () => {
-    it('should find message by id, and populate its corresponding sender and recipient', async () => {
-      jest.spyOn(messageRepository, 'findOneAndPopulate');
+  describe("findOneAndPopulate", () => {
+    it("should find message by id, and populate its corresponding sender and recipient", async () => {
+      jest.spyOn(messageRepository, "findOneAndPopulate");
       const result = await messageService.findOneAndPopulate(message.id);
 
       expect(messageRepository.findOneAndPopulate).toHaveBeenCalledWith(
@@ -127,10 +127,10 @@ describe('MessageService', () => {
     });
   });
 
-  describe('findAndPopulate', () => {
+  describe("findAndPopulate", () => {
     const pageQuery = getPageQuery<Message>();
-    it('should find messages, and foreach message populate the corresponding sender and recipient', async () => {
-      jest.spyOn(messageRepository, 'findAndPopulate');
+    it("should find messages, and foreach message populate the corresponding sender and recipient", async () => {
+      jest.spyOn(messageRepository, "findAndPopulate");
       const result = await messageService.findAndPopulate({}, pageQuery);
       const messagesWithSenderAndRecipient = allMessages.map((message) => ({
         ...message,
@@ -148,8 +148,8 @@ describe('MessageService', () => {
     });
   });
 
-  describe('findHistoryUntilDate', () => {
-    it('should return history until given date', async () => {
+  describe("findHistoryUntilDate", () => {
+    it("should return history until given date", async () => {
       const until: Date = new Date(
         new Date().setMonth(new Date().getMonth() + 1),
       );
@@ -166,8 +166,8 @@ describe('MessageService', () => {
     });
   });
 
-  describe('findHistorySinceDate', () => {
-    it('should return history since given date', async () => {
+  describe("findHistorySinceDate", () => {
+    it("should return history since given date", async () => {
       const since: Date = new Date();
       const result = await messageService.findHistorySinceDate(
         sender!,
@@ -187,7 +187,7 @@ describe('MessageService', () => {
 
       expect(result).toEqual(
         historyMessages.sort((message1, message2) =>
-          sortRowsBy(message1, message2, 'createdAt', 'asc'),
+          sortRowsBy(message1, message2, "createdAt", "asc"),
         ),
       );
     });

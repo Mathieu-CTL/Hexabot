@@ -6,23 +6,23 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-import { DummyCreateDto } from '@/utils/test/dummy/dto/dummy.dto';
-import { DummyModel } from '@/utils/test/dummy/schemas/dummy.schema';
+import { DummyCreateDto } from "@/utils/test/dummy/dto/dummy.dto";
+import { DummyModel } from "@/utils/test/dummy/schemas/dummy.schema";
 
 export const dummyFixtures: DummyCreateDto[] = [
   {
-    dummy: 'dummy test 1',
+    dummy: "dummy test 1",
   },
   {
-    dummy: 'dummy test 2',
+    dummy: "dummy test 2",
   },
   {
-    dummy: 'dummy test 3',
+    dummy: "dummy test 3",
   },
   {
-    dummy: 'dummy test 4',
+    dummy: "dummy test 4",
   },
 ];
 

@@ -6,15 +6,15 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { LoggerModule } from '@/logger/logger.module';
-import { DummyPlugin } from '@/utils/test/dummy/dummy.plugin';
-import { buildTestingMocks } from '@/utils/test/utils';
+import { LoggerModule } from "@/logger/logger.module";
+import { DummyPlugin } from "@/utils/test/dummy/dummy.plugin";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { BaseBlockPlugin } from './base-block-plugin';
-import { PluginService } from './plugins.service';
-import { PluginType } from './types';
+import { BaseBlockPlugin } from "./base-block-plugin";
+import { PluginService } from "./plugins.service";
+import { PluginType } from "./types";
 
-describe('PluginsService', () => {
+describe("PluginsService", () => {
   let pluginsService: PluginService;
   let dummyPlugin: DummyPlugin;
 
@@ -31,16 +31,16 @@ describe('PluginsService', () => {
   });
 
   afterAll(jest.clearAllMocks);
-  describe('getAll', () => {
-    it('should return an array of instances of base plugin', () => {
+  describe("getAll", () => {
+    it("should return an array of instances of base plugin", () => {
       const result = pluginsService.getAllByType(PluginType.block);
       expect(result.every((p) => p instanceof BaseBlockPlugin)).toBeTruthy();
     });
   });
 
-  describe('getPlugin', () => {
-    it('should return the required plugin', () => {
-      const result = pluginsService.getPlugin(PluginType.block, 'dummy-plugin');
+  describe("getPlugin", () => {
+    it("should return the required plugin", () => {
+      const result = pluginsService.getPlugin(PluginType.block, "dummy-plugin");
       expect(result).toBeInstanceOf(DummyPlugin);
     });
   });

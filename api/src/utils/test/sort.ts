@@ -9,8 +9,8 @@
 type TSortProps<T> = {
   row1: T;
   row2: T;
-  field?: keyof T | 'createdAt';
-  order?: 'desc' | 'asc';
+  field?: keyof T | "createdAt";
+  order?: "desc" | "asc";
 };
 
 type TCreatedAt = { createdAt?: string | Date };
@@ -18,9 +18,9 @@ type TCreatedAt = { createdAt?: string | Date };
 const sort = <R extends TCreatedAt, S, T extends TCreatedAt = R & S>({
   row1,
   row2,
-  field = 'createdAt',
-  order = 'desc',
-}: TSortProps<T>) => (order === 'asc' && row1[field] > row2[field] ? 1 : -1);
+  field = "createdAt",
+  order = "desc",
+}: TSortProps<T>) => (order === "asc" && row1[field] > row2[field] ? 1 : -1);
 
 export const sortRowsBy = <
   R extends TCreatedAt,
@@ -30,5 +30,5 @@ export const sortRowsBy = <
   row1: T,
   row2: T,
   field?: keyof T,
-  order?: TSortProps<T>['order'],
+  order?: TSortProps<T>["order"],
 ) => sort({ row1, row2, field, order });

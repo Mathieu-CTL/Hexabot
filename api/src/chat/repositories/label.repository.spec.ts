@@ -6,26 +6,26 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { getModelToken } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { getModelToken } from "@nestjs/mongoose";
+import { Model } from "mongoose";
 
-import { labelFixtures } from '@/utils/test/fixtures/label';
-import { installSubscriberFixtures } from '@/utils/test/fixtures/subscriber';
-import { getPageQuery } from '@/utils/test/pagination';
-import { sortRowsBy } from '@/utils/test/sort';
+import { labelFixtures } from "@/utils/test/fixtures/label";
+import { installSubscriberFixtures } from "@/utils/test/fixtures/subscriber";
+import { getPageQuery } from "@/utils/test/pagination";
+import { sortRowsBy } from "@/utils/test/sort";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { Label, LabelFull } from '../schemas/label.schema';
-import { Subscriber } from '../schemas/subscriber.schema';
+import { Label, LabelFull } from "../schemas/label.schema";
+import { Subscriber } from "../schemas/subscriber.schema";
 
-import { LabelRepository } from './label.repository';
-import { SubscriberRepository } from './subscriber.repository';
+import { LabelRepository } from "./label.repository";
+import { SubscriberRepository } from "./subscriber.repository";
 
-describe('LabelRepository', () => {
+describe("LabelRepository", () => {
   let labelRepository: LabelRepository;
   let labelModel: Model<Label>;
   let subscriberRepository: SubscriberRepository;
@@ -33,7 +33,7 @@ describe('LabelRepository', () => {
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['providers'],
+      autoInjectFrom: ["providers"],
       imports: [rootMongooseTestModule(installSubscriberFixtures)],
       providers: [LabelRepository, SubscriberRepository],
     });
@@ -48,11 +48,11 @@ describe('LabelRepository', () => {
   afterEach(jest.clearAllMocks);
   afterAll(closeInMongodConnection);
 
-  describe('findOneAndPopulate', () => {
-    it('should find one label by id, and populate its users', async () => {
-      jest.spyOn(labelModel, 'findById');
+  describe("findOneAndPopulate", () => {
+    it("should find one label by id, and populate its users", async () => {
+      jest.spyOn(labelModel, "findById");
       const label = (await labelRepository.findOne({
-        name: 'TEST_TITLE_2',
+        name: "TEST_TITLE_2",
       })) as Label;
       const result = (await labelRepository.findOneAndPopulate(
         label.id,
@@ -66,9 +66,9 @@ describe('LabelRepository', () => {
     });
   });
 
-  describe('findAllAndPopulate', () => {
-    it('should find all labels, and foreach label populate its corresponding users', async () => {
-      jest.spyOn(labelModel, 'find');
+  describe("findAllAndPopulate", () => {
+    it("should find all labels, and foreach label populate its corresponding users", async () => {
+      jest.spyOn(labelModel, "find");
       const result = await labelRepository.findAllAndPopulate();
       const labelsWithUsers = labelFixtures.map((label) => ({
         ...label,
@@ -80,10 +80,10 @@ describe('LabelRepository', () => {
     });
   });
 
-  describe('findAndPopulate', () => {
-    it('should find labels, and foreach label populate its corresponding users', async () => {
+  describe("findAndPopulate", () => {
+    it("should find labels, and foreach label populate its corresponding users", async () => {
       const pageQuery = getPageQuery<Label>();
-      jest.spyOn(labelModel, 'find');
+      jest.spyOn(labelModel, "find");
       const result = await labelRepository.findAndPopulate({}, pageQuery);
       const labelsWithUsers = labelFixtures.map((label) => ({
         ...label,

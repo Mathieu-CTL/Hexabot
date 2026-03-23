@@ -23,29 +23,29 @@ import {
   UploadedFiles,
   UseGuards,
   UseInterceptors,
-} from '@nestjs/common';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { Request } from 'express';
-import { diskStorage, memoryStorage } from 'multer';
+} from "@nestjs/common";
+import { FileFieldsInterceptor } from "@nestjs/platform-express";
+import { Request } from "express";
+import { diskStorage, memoryStorage } from "multer";
 
-import { config } from '@/config';
-import { Roles } from '@/utils/decorators/roles.decorator';
-import { BaseController } from '@/utils/generics/base-controller';
-import { PageQueryDto } from '@/utils/pagination/pagination-query.dto';
-import { PageQueryPipe } from '@/utils/pagination/pagination-query.pipe';
-import { SearchFilterPipe } from '@/utils/pipes/search-filter.pipe';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { config } from "@/config";
+import { Roles } from "@/utils/decorators/roles.decorator";
+import { BaseController } from "@/utils/generics/base-controller";
+import { PageQueryDto } from "@/utils/pagination/pagination-query.dto";
+import { PageQueryPipe } from "@/utils/pagination/pagination-query.pipe";
+import { SearchFilterPipe } from "@/utils/pipes/search-filter.pipe";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
 import {
   AttachmentContextParamDto,
   AttachmentDownloadDto,
-} from '../dto/attachment.dto';
-import { AttachmentGuard } from '../guards/attachment-ability.guard';
-import { Attachment } from '../schemas/attachment.schema';
-import { AttachmentService } from '../services/attachment.service';
-import { AttachmentAccess, AttachmentCreatedByRef } from '../types';
+} from "../dto/attachment.dto";
+import { AttachmentGuard } from "../guards/attachment-ability.guard";
+import { Attachment } from "../schemas/attachment.schema";
+import { AttachmentService } from "../services/attachment.service";
+import { AttachmentAccess, AttachmentCreatedByRef } from "../types";
 
-@Controller('attachment')
+@Controller("attachment")
 @UseGuards(AttachmentGuard)
 export class AttachmentController extends BaseController<Attachment> {
   constructor(private readonly attachmentService: AttachmentService) {
@@ -57,11 +57,11 @@ export class AttachmentController extends BaseController<Attachment> {
    *
    * @returns A promise that resolves to an object representing the filtered number of attachments.
    */
-  @Get('count')
+  @Get("count")
   async filterCount(
     @Query(
       new SearchFilterPipe<Attachment>({
-        allowedFields: ['name', 'type', 'resourceRef'],
+        allowedFields: ["name", "type", "resourceRef"],
       }),
     )
     filters?: TFilterQuery<Attachment>,
@@ -69,8 +69,8 @@ export class AttachmentController extends BaseController<Attachment> {
     return await this.count(filters);
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Attachment> {
+  @Get(":id")
+  async findOne(@Param("id") id: string): Promise<Attachment> {
     const doc = await this.attachmentService.findOne(id);
     if (!doc) {
       this.logger.warn(`Unable to find Attachment by id ${id}`);
@@ -91,7 +91,7 @@ export class AttachmentController extends BaseController<Attachment> {
     @Query(PageQueryPipe) pageQuery: PageQueryDto<Attachment>,
     @Query(
       new SearchFilterPipe<Attachment>({
-        allowedFields: ['name', 'type', 'resourceRef'],
+        allowedFields: ["name", "type", "resourceRef"],
       }),
     )
     filters: TFilterQuery<Attachment>,
@@ -105,14 +105,14 @@ export class AttachmentController extends BaseController<Attachment> {
    * @param files - An array of files to upload.
    * @returns A promise that resolves to an array of uploaded attachments.
    */
-  @Post('upload')
+  @Post("upload")
   @UseInterceptors(
-    FileFieldsInterceptor([{ name: 'file' }], {
+    FileFieldsInterceptor([{ name: "file" }], {
       limits: {
         fileSize: config.parameters.maxUploadSize,
       },
       storage: (() => {
-        if (config.parameters.storageMode === 'memory') {
+        if (config.parameters.storageMode === "memory") {
           return memoryStorage();
         } else {
           return diskStorage({});
@@ -130,13 +130,13 @@ export class AttachmentController extends BaseController<Attachment> {
     }: AttachmentContextParamDto,
   ): Promise<Attachment[]> {
     if (!files || !Array.isArray(files?.file) || files.file.length === 0) {
-      throw new BadRequestException('No file was selected');
+      throw new BadRequestException("No file was selected");
     }
 
     const userId = req.session.passport?.user?.id;
     if (!userId) {
       throw new ForbiddenException(
-        'Unexpected Error: Only authenticated users are allowed to upload',
+        "Unexpected Error: Only authenticated users are allowed to upload",
       );
     }
 
@@ -166,15 +166,15 @@ export class AttachmentController extends BaseController<Attachment> {
    * @param  params - The parameters identifying the attachment to download.
    * @returns A promise that resolves to a StreamableFile representing the downloaded attachment.
    */
-  @Roles('public')
-  @Get('download/:id/:filename?')
+  @Roles("public")
+  @Get("download/:id/:filename?")
   async download(
     @Param() params: AttachmentDownloadDto,
   ): Promise<StreamableFile> {
     const attachment = await this.attachmentService.findOne(params.id);
 
     if (!attachment) {
-      throw new NotFoundException('Attachment not found');
+      throw new NotFoundException("Attachment not found");
     }
 
     return await this.attachmentService.download(attachment);
@@ -188,13 +188,13 @@ export class AttachmentController extends BaseController<Attachment> {
    * @param id - The ID of the attachment (not used since deletion is not allowed).
    * @throws MethodNotAllowedException - Always thrown to indicate deletion is not permitted.
    */
-  @Delete(':id')
+  @Delete(":id")
   @HttpCode(405)
-  async deleteOne(@Param('id') id: string): Promise<void> {
+  async deleteOne(@Param("id") id: string): Promise<void> {
     // Deletion is explicitly disallowed due to potential reference issues.
     this.logger.warn(`Attempted deletion of attachment ${id} is not allowed.`);
     throw new MethodNotAllowedException(
-      'Deletion of attachments is not permitted to avoid data inconsistency.',
+      "Deletion of attachments is not permitted to avoid data inconsistency.",
     );
   }
 }

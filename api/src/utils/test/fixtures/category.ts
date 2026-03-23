@@ -6,36 +6,36 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-import { CategoryCreateDto } from '@/chat/dto/category.dto';
-import { Category, CategoryModel } from '@/chat/schemas/category.schema';
+import { CategoryCreateDto } from "@/chat/dto/category.dto";
+import { Category, CategoryModel } from "@/chat/schemas/category.schema";
 
-import { getFixturesWithDefaultValues } from '../defaultValues';
-import { FixturesTypeBuilder } from '../types';
+import { getFixturesWithDefaultValues } from "../defaultValues";
+import { FixturesTypeBuilder } from "../types";
 
 export type TCategoryFixtures = FixturesTypeBuilder<
   Category,
   CategoryCreateDto
 >;
 
-export const categoryDefaultValues: TCategoryFixtures['defaultValues'] = {
+export const categoryDefaultValues: TCategoryFixtures["defaultValues"] = {
   builtin: false,
   zoom: 100,
   offset: [0, 0],
 };
 
-export const categories: TCategoryFixtures['values'][] = [
+export const categories: TCategoryFixtures["values"][] = [
   {
-    label: 'test category 1',
+    label: "test category 1",
   },
   {
-    label: 'test category 2',
+    label: "test category 2",
   },
 ];
 
 export const categoryFixtures = getFixturesWithDefaultValues<
-  TCategoryFixtures['values']
+  TCategoryFixtures["values"]
 >({
   fixtures: categories,
   defaultValues: categoryDefaultValues,

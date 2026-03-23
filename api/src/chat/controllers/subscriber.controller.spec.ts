@@ -6,28 +6,28 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { User } from '@/user/schemas/user.schema';
+import { User } from "@/user/schemas/user.schema";
 import {
   installSubscriberFixtures,
   subscriberFixtures,
-} from '@/utils/test/fixtures/subscriber';
-import { getPageQuery } from '@/utils/test/pagination';
-import { sortRowsBy } from '@/utils/test/sort';
+} from "@/utils/test/fixtures/subscriber";
+import { getPageQuery } from "@/utils/test/pagination";
+import { sortRowsBy } from "@/utils/test/sort";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { Label } from '../schemas/label.schema';
-import { Subscriber } from '../schemas/subscriber.schema';
-import { SubscriberService } from '../services/subscriber.service';
+import { Label } from "../schemas/label.schema";
+import { Subscriber } from "../schemas/subscriber.schema";
+import { SubscriberService } from "../services/subscriber.service";
 
-import { UserService } from './../../user/services/user.service';
-import { LabelService } from './../services/label.service';
-import { SubscriberController } from './subscriber.controller';
+import { UserService } from "./../../user/services/user.service";
+import { LabelService } from "./../services/label.service";
+import { SubscriberController } from "./subscriber.controller";
 
-describe('SubscriberController', () => {
+describe("SubscriberController", () => {
   let subscriberController: SubscriberController;
   let subscriberService: SubscriberService;
   let labelService: LabelService;
@@ -39,7 +39,7 @@ describe('SubscriberController', () => {
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['controllers', 'providers'],
+      autoInjectFrom: ["controllers", "providers"],
       controllers: [SubscriberController],
       imports: [rootMongooseTestModule(installSubscriberFixtures)],
       providers: [LabelService, UserService],
@@ -52,7 +52,7 @@ describe('SubscriberController', () => {
         SubscriberController,
       ]);
     subscriber = (await subscriberService.findOne({
-      first_name: 'Jhon',
+      first_name: "Jhon",
     }))!;
     allLabels = await labelService.findAll();
     allSubscribers = await subscriberService.findAll();
@@ -63,9 +63,9 @@ describe('SubscriberController', () => {
 
   afterAll(closeInMongodConnection);
 
-  describe('count', () => {
-    it('should count subscribers', async () => {
-      jest.spyOn(subscriberService, 'count');
+  describe("count", () => {
+    it("should count subscribers", async () => {
+      jest.spyOn(subscriberService, "count");
       const result = await subscriberController.filterCount();
 
       expect(subscriberService.count).toHaveBeenCalled();
@@ -73,9 +73,9 @@ describe('SubscriberController', () => {
     });
   });
 
-  describe('findOne', () => {
-    it('should find one subscriber by id', async () => {
-      jest.spyOn(subscriberService, 'findOne');
+  describe("findOne", () => {
+    it("should find one subscriber by id", async () => {
+      jest.spyOn(subscriberService, "findOne");
       const result = await subscriberService.findOne(subscriber.id);
       const labelIDs = allLabels
         .filter((label) => subscriber.labels.includes(label.id))
@@ -92,10 +92,10 @@ describe('SubscriberController', () => {
       });
     });
 
-    it('should find one subscriber by id, and populate its corresponding labels', async () => {
-      jest.spyOn(subscriberService, 'findOneAndPopulate');
+    it("should find one subscriber by id, and populate its corresponding labels", async () => {
+      jest.spyOn(subscriberService, "findOneAndPopulate");
       const result = await subscriberController.findOne(subscriber.id, [
-        'labels',
+        "labels",
       ]);
 
       expect(subscriberService.findOneAndPopulate).toHaveBeenCalledWith(
@@ -114,10 +114,10 @@ describe('SubscriberController', () => {
     });
   });
 
-  describe('findPage', () => {
+  describe("findPage", () => {
     const pageQuery = getPageQuery<Subscriber>();
-    it('should find subscribers', async () => {
-      jest.spyOn(subscriberService, 'find');
+    it("should find subscribers", async () => {
+      jest.spyOn(subscriberService, "find");
       const result = await subscriberController.findPage(pageQuery, [], {});
       const subscribersWithIds = allSubscribers.map(({ labels, ...rest }) => ({
         ...rest,
@@ -130,11 +130,11 @@ describe('SubscriberController', () => {
       expect(result).toEqualPayload(subscribersWithIds.sort(sortRowsBy));
     });
 
-    it('should find subscribers, and foreach subscriber populate the corresponding labels', async () => {
-      jest.spyOn(subscriberService, 'findAndPopulate');
+    it("should find subscribers, and foreach subscriber populate the corresponding labels", async () => {
+      jest.spyOn(subscriberService, "findAndPopulate");
       const result = await subscriberController.findPage(
         pageQuery,
-        ['labels'],
+        ["labels"],
         {},
       );
       const subscribersWithLabels = allSubscribers.map(

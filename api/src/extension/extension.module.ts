@@ -6,12 +6,12 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Global, Module, OnApplicationBootstrap } from '@nestjs/common';
+import { Global, Module, OnApplicationBootstrap } from "@nestjs/common";
 
-import { AppInstance } from '@/app.instance';
-import { LoggerService } from '@/logger/logger.service';
+import { AppInstance } from "@/app.instance";
+import { LoggerService } from "@/logger/logger.service";
 
-import { CleanupService } from './cleanup.service';
+import { CleanupService } from "./cleanup.service";
 
 @Global()
 @Module({
@@ -33,7 +33,7 @@ export class ExtensionModule implements OnApplicationBootstrap {
     try {
       await this.cleanupService.pruneExtensionSettings();
     } catch (error) {
-      this.loggerService.error('Unable to delete unused settings', error);
+      this.loggerService.error("Unable to delete unused settings", error);
     }
   }
 }

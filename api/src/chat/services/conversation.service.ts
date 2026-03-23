@@ -6,25 +6,25 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
-import EventWrapper from '@/channel/lib/EventWrapper';
-import { BaseService } from '@/utils/generics/base-service';
+import EventWrapper from "@/channel/lib/EventWrapper";
+import { BaseService } from "@/utils/generics/base-service";
 
-import { ConversationDto } from '../dto/conversation.dto';
-import { VIEW_MORE_PAYLOAD } from '../helpers/constants';
-import { ConversationRepository } from '../repositories/conversation.repository';
-import { Block, BlockFull } from '../schemas/block.schema';
+import { ConversationDto } from "../dto/conversation.dto";
+import { VIEW_MORE_PAYLOAD } from "../helpers/constants";
+import { ConversationRepository } from "../repositories/conversation.repository";
+import { Block, BlockFull } from "../schemas/block.schema";
 import {
   Conversation,
   ConversationFull,
   ConversationPopulate,
-} from '../schemas/conversation.schema';
-import { OutgoingMessageFormat } from '../schemas/types/message';
-import { Payload } from '../schemas/types/quick-reply';
+} from "../schemas/conversation.schema";
+import { OutgoingMessageFormat } from "../schemas/types/message";
+import { Payload } from "../schemas/types/quick-reply";
 
-import { ContextVarService } from './context-var.service';
-import { SubscriberService } from './subscriber.service';
+import { ContextVarService } from "./context-var.service";
+import { SubscriberService } from "./subscriber.service";
 
 @Injectable()
 export class ConversationService extends BaseService<
@@ -105,7 +105,7 @@ export class ConversationService extends BaseService<
         if (capture.entity === -1) {
           // Capture the whole message
           contextValue =
-            msgType && ['message', 'quick_reply'].indexOf(msgType) !== -1
+            msgType && ["message", "quick_reply"].indexOf(msgType) !== -1
               ? event.getText()
               : event.getPayload();
         } else if (capture.entity === -2) {
@@ -113,7 +113,7 @@ export class ConversationService extends BaseService<
           contextValue = event.getPayload();
         }
         contextValue =
-          typeof contextValue === 'string' ? contextValue.trim() : contextValue;
+          typeof contextValue === "string" ? contextValue.trim() : contextValue;
 
         if (contextValue) {
           convo.context.vars[capture.context_var] = contextValue;
@@ -125,8 +125,8 @@ export class ConversationService extends BaseService<
     if (profile) {
       // @ts-expect-error : id needs to remain readonly
       convo.context.user.id = profile.id;
-      convo.context.user.first_name = profile.first_name || '';
-      convo.context.user.last_name = profile.last_name || '';
+      convo.context.user.first_name = profile.first_name || "";
+      convo.context.user.last_name = profile.last_name || "";
       if (profile.language) {
         convo.context.user.language = profile.language;
       }
@@ -134,7 +134,7 @@ export class ConversationService extends BaseService<
 
     // Handle attachments (location, ...)
     const msg = event.getMessage();
-    if (msgType === 'location' && 'coordinates' in msg) {
+    if (msgType === "location" && "coordinates" in msg) {
       const coordinates = msg.coordinates;
       convo.context.user_location = {
         lat: parseFloat(coordinates.lat.toString()),
@@ -165,7 +165,7 @@ export class ConversationService extends BaseService<
 
       //TODO: add check if nothing changed don't update
       const criteria =
-        typeof convo.sender === 'object' ? convo.sender.id : convo.sender;
+        typeof convo.sender === "object" ? convo.sender.id : convo.sender;
 
       // Store permanent context vars at the subscriber level
       const permanentContextVars = Object.entries(contextVars)
@@ -193,7 +193,7 @@ export class ConversationService extends BaseService<
 
       return updatedConversation;
     } catch (err) {
-      this.logger.error('Conversation Model : Unable to store context', err);
+      this.logger.error("Conversation Model : Unable to store context", err);
       throw err;
     }
   }

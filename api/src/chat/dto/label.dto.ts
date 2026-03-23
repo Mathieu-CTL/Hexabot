@@ -6,46 +6,46 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, PartialType } from "@nestjs/swagger";
 import {
   IsNotEmpty,
   IsObject,
   IsOptional,
   IsString,
   Matches,
-} from 'class-validator';
+} from "class-validator";
 
-import { DtoConfig } from '@/utils/types/dto.types';
-import { IsObjectId } from '@/utils/validation-rules/is-object-id';
+import { DtoConfig } from "@/utils/types/dto.types";
+import { IsObjectId } from "@/utils/validation-rules/is-object-id";
 
 export class LabelCreateDto {
-  @ApiProperty({ description: 'Label title', type: String })
+  @ApiProperty({ description: "Label title", type: String })
   @IsNotEmpty()
   @IsString()
   title: string;
 
-  @ApiProperty({ description: 'Label name', type: String })
+  @ApiProperty({ description: "Label name", type: String })
   @IsNotEmpty()
   @IsString()
   @Matches(/^[A-Z_0-9]+$/)
   name: string;
 
   @ApiPropertyOptional({
-    description: 'Label group',
+    description: "Label group",
     type: String,
     default: null,
   })
   @IsOptional()
   @IsString()
-  @IsObjectId({ message: 'group must be a valid ObjectId' })
+  @IsObjectId({ message: "group must be a valid ObjectId" })
   group?: string | null;
 
-  @ApiPropertyOptional({ description: 'Label description', type: String })
+  @ApiPropertyOptional({ description: "Label description", type: String })
   @IsOptional()
   @IsString()
   description?: string;
 
-  @ApiPropertyOptional({ description: 'Label id', type: Object })
+  @ApiPropertyOptional({ description: "Label id", type: Object })
   @IsOptional()
   @IsObject()
   label_id?: Record<string, any>;

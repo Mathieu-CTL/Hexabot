@@ -6,8 +6,8 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { ApiProperty, ApiPropertyOptional, PartialType } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import {
   IsArray,
   IsEnum,
@@ -16,13 +16,13 @@ import {
   IsString,
   Validate,
   ValidateNested,
-} from 'class-validator';
+} from "class-validator";
 
-import { FieldType } from '@/setting/schemas/types';
-import { DtoConfig } from '@/utils/types/dto.types';
+import { FieldType } from "@/setting/schemas/types";
+import { DtoConfig } from "@/utils/types/dto.types";
 
-import { UniqueFieldNames } from '../decorators/unique-field-names.decorator';
-import { ValidateRequiredFields } from '../validators/validate-required-fields.validator';
+import { UniqueFieldNames } from "../decorators/unique-field-names.decorator";
+import { ValidateRequiredFields } from "../validators/validate-required-fields.validator";
 
 export class ContentField {
   @IsString()
@@ -43,13 +43,13 @@ export class ContentField {
 }
 
 export class ContentTypeCreateDto {
-  @ApiProperty({ description: 'Content type name', type: String })
+  @ApiProperty({ description: "Content type name", type: String })
   @IsString()
   @IsNotEmpty()
   name: string;
 
   @ApiPropertyOptional({
-    description: 'Content type fields',
+    description: "Content type fields",
     type: ContentField,
   })
   @IsOptional()

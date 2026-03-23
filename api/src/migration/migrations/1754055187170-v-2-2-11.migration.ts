@@ -6,19 +6,19 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-import { ModelCreateDto } from '@/user/dto/model.dto';
-import { PermissionCreateDto } from '@/user/dto/permission.dto';
-import ModelSchema, { Model } from '@/user/schemas/model.schema';
-import PermissionSchema, { Permission } from '@/user/schemas/permission.schema';
-import roleSchema, { Role, RoleDocument } from '@/user/schemas/role.schema';
-import userSchema, { User } from '@/user/schemas/user.schema';
-import { Action } from '@/user/types/action.type';
+import { ModelCreateDto } from "@/user/dto/model.dto";
+import { PermissionCreateDto } from "@/user/dto/permission.dto";
+import ModelSchema, { Model } from "@/user/schemas/model.schema";
+import PermissionSchema, { Permission } from "@/user/schemas/permission.schema";
+import roleSchema, { Role, RoleDocument } from "@/user/schemas/role.schema";
+import userSchema, { User } from "@/user/schemas/user.schema";
+import { Action } from "@/user/types/action.type";
 
-import { MigrationServices } from '../types';
+import { MigrationServices } from "../types";
 
-const actions: PermissionCreateDto['action'][] = Object.values(Action);
+const actions: PermissionCreateDto["action"][] = Object.values(Action);
 
 /**
  *
@@ -26,7 +26,7 @@ const actions: PermissionCreateDto['action'][] = Object.values(Action);
  */
 const getAdminRole = async () => {
   const RoleModel = mongoose.model<Role>(Role.name, roleSchema);
-  const adminRole = await RoleModel.findOne({ name: 'admin' });
+  const adminRole = await RoleModel.findOne({ name: "admin" });
 
   return adminRole;
 };
@@ -38,7 +38,7 @@ const getAdminUser = async (role: RoleDocument) => {
   const UserModel = mongoose.model<User>(User.name, userSchema);
 
   const user = await UserModel.findOne({ roles: { $in: [role._id] } }).sort({
-    createdAt: 'asc',
+    createdAt: "asc",
   });
 
   return user;
@@ -50,13 +50,13 @@ const migrateLabelGroupModelAndPermissions = async (
   const adminRole = await getAdminRole();
 
   if (!adminRole) {
-    throw new Error('Unable to process labelGroup: no admin role found');
+    throw new Error("Unable to process labelGroup: no admin role found");
   }
 
   const adminUser = await getAdminUser(adminRole);
 
   if (!adminUser) {
-    throw new Error('Unable to process labelGroup: no admin user found');
+    throw new Error("Unable to process labelGroup: no admin user found");
   }
 
   const ModelModel = mongoose.model<Model>(Model.name, ModelSchema);
@@ -67,14 +67,14 @@ const migrateLabelGroupModelAndPermissions = async (
 
   try {
     const hasLabelGroup = await ModelModel.findOne({
-      identity: 'labelgroup',
+      identity: "labelgroup",
     });
 
     if (!hasLabelGroup) {
       const modelPayload = {
-        name: 'LabelGroup',
-        identity: 'labelgroup',
-        relation: 'role',
+        name: "LabelGroup",
+        identity: "labelgroup",
+        relation: "role",
         attributes: {},
       } satisfies ModelCreateDto;
 
@@ -85,7 +85,7 @@ const migrateLabelGroupModelAndPermissions = async (
             role: adminRole._id.toString(),
             model: createdModel._id.toString(),
             action,
-            relation: 'role',
+            relation: "role",
           }) satisfies PermissionCreateDto,
       );
 
@@ -120,14 +120,14 @@ module.exports = {
       );
 
       const labelGroupModel = await ModelModel.findOne({
-        identity: 'labelgroup',
+        identity: "labelgroup",
       });
 
       if (labelGroupModel) {
         await PermissionModel.deleteMany({ model: labelGroupModel._id });
         await ModelModel.deleteOne({ _id: labelGroupModel._id });
 
-        services.logger.log('Successfully rolled back labelGroup migration');
+        services.logger.log("Successfully rolled back labelGroup migration");
       }
 
       return true;

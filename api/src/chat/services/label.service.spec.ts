@@ -9,23 +9,23 @@
 import {
   installLabelFixtures,
   labelFixtures,
-} from '@/utils/test/fixtures/label';
-import { getPageQuery } from '@/utils/test/pagination';
-import { sortRowsBy } from '@/utils/test/sort';
+} from "@/utils/test/fixtures/label";
+import { getPageQuery } from "@/utils/test/pagination";
+import { sortRowsBy } from "@/utils/test/sort";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { LabelRepository } from '../repositories/label.repository';
-import { Label, LabelFull } from '../schemas/label.schema';
-import { Subscriber } from '../schemas/subscriber.schema';
+import { LabelRepository } from "../repositories/label.repository";
+import { Label, LabelFull } from "../schemas/label.schema";
+import { Subscriber } from "../schemas/subscriber.schema";
 
-import { SubscriberRepository } from './../repositories/subscriber.repository';
-import { LabelService } from './label.service';
+import { SubscriberRepository } from "./../repositories/subscriber.repository";
+import { LabelService } from "./label.service";
 
-describe('LabelService', () => {
+describe("LabelService", () => {
   let labelRepository: LabelRepository;
   let labelService: LabelService;
   let subscriberRepository: SubscriberRepository;
@@ -35,7 +35,7 @@ describe('LabelService', () => {
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['providers'],
+      autoInjectFrom: ["providers"],
       imports: [rootMongooseTestModule(installLabelFixtures)],
       providers: [LabelService, SubscriberRepository],
     });
@@ -55,9 +55,9 @@ describe('LabelService', () => {
   afterEach(jest.clearAllMocks);
   afterAll(closeInMongodConnection);
 
-  describe('findAllAndPopulate', () => {
-    it('should find all labels, and foreach label populate its corresponding users', async () => {
-      jest.spyOn(labelRepository, 'findAllAndPopulate');
+  describe("findAllAndPopulate", () => {
+    it("should find all labels, and foreach label populate its corresponding users", async () => {
+      jest.spyOn(labelRepository, "findAllAndPopulate");
       const result = await labelService.findAllAndPopulate();
 
       expect(labelRepository.findAllAndPopulate).toHaveBeenCalled();
@@ -65,10 +65,10 @@ describe('LabelService', () => {
     });
   });
 
-  describe('findAndPopulate', () => {
+  describe("findAndPopulate", () => {
     const pageQuery = getPageQuery<Label>();
-    it('should find labels, and foreach label populate its corresponding users', async () => {
-      jest.spyOn(labelRepository, 'findAndPopulate');
+    it("should find labels, and foreach label populate its corresponding users", async () => {
+      jest.spyOn(labelRepository, "findAndPopulate");
       const result = await labelService.findAndPopulate({}, pageQuery);
 
       expect(labelRepository.findAndPopulate).toHaveBeenCalled();
@@ -76,11 +76,11 @@ describe('LabelService', () => {
     });
   });
 
-  describe('findOneAndPopulate', () => {
-    it('should find one label by id, and populate its corresponding users', async () => {
-      jest.spyOn(labelRepository, 'findOneAndPopulate');
+  describe("findOneAndPopulate", () => {
+    it("should find one label by id, and populate its corresponding users", async () => {
+      jest.spyOn(labelRepository, "findOneAndPopulate");
       const label = (await labelRepository.findOne({
-        name: 'TEST_TITLE_1',
+        name: "TEST_TITLE_1",
       })) as Label;
       const result = await labelService.findOneAndPopulate(label.id);
 

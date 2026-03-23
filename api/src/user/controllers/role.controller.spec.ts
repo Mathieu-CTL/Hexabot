@@ -6,27 +6,27 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ForbiddenException, NotFoundException } from '@nestjs/common';
-import { Request } from 'express';
+import { ForbiddenException, NotFoundException } from "@nestjs/common";
+import { Request } from "express";
 
-import { installPermissionFixtures } from '@/utils/test/fixtures/permission';
-import { roleFixtures } from '@/utils/test/fixtures/role';
-import { getPageQuery } from '@/utils/test/pagination';
+import { installPermissionFixtures } from "@/utils/test/fixtures/permission";
+import { roleFixtures } from "@/utils/test/fixtures/role";
+import { getPageQuery } from "@/utils/test/pagination";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { RoleCreateDto, RoleUpdateDto } from '../dto/role.dto';
-import { Role, RoleFull } from '../schemas/role.schema';
-import { PermissionService } from '../services/permission.service';
-import { RoleService } from '../services/role.service';
-import { UserService } from '../services/user.service';
+import { RoleCreateDto, RoleUpdateDto } from "../dto/role.dto";
+import { Role, RoleFull } from "../schemas/role.schema";
+import { PermissionService } from "../services/permission.service";
+import { RoleService } from "../services/role.service";
+import { UserService } from "../services/user.service";
 
-import { RoleController } from './role.controller';
+import { RoleController } from "./role.controller";
 
-describe('RoleController', () => {
+describe("RoleController", () => {
   let roleController: RoleController;
   let roleService: RoleService;
   let permissionService: PermissionService;
@@ -36,8 +36,8 @@ describe('RoleController', () => {
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      models: ['InvitationModel'],
-      autoInjectFrom: ['controllers', 'providers'],
+      models: ["InvitationModel"],
+      autoInjectFrom: ["controllers", "providers"],
       controllers: [RoleController],
       imports: [rootMongooseTestModule(installPermissionFixtures)],
       providers: [PermissionService],
@@ -49,31 +49,31 @@ describe('RoleController', () => {
         PermissionService,
         UserService,
       ]);
-    roleAdmin = (await roleService.findOne({ name: 'admin' })) as Role;
-    rolePublic = (await roleService.findOne({ name: 'public' })) as Role;
+    roleAdmin = (await roleService.findOne({ name: "admin" })) as Role;
+    rolePublic = (await roleService.findOne({ name: "public" })) as Role;
   });
 
   afterAll(closeInMongodConnection);
 
   afterEach(jest.clearAllMocks);
 
-  describe('findPage', () => {
-    const pageQuery = getPageQuery<Role>({ sort: ['_id', 'asc'] });
-    it('should find roles', async () => {
-      jest.spyOn(roleService, 'find');
+  describe("findPage", () => {
+    const pageQuery = getPageQuery<Role>({ sort: ["_id", "asc"] });
+    it("should find roles", async () => {
+      jest.spyOn(roleService, "find");
       const result = await roleController.findPage(pageQuery, [], {});
       expect(roleService.find).toHaveBeenCalledWith({}, pageQuery);
       expect(result).toEqualPayload(roleFixtures);
     });
 
-    it('should find roles, and for each role populate the corresponding users and permissions', async () => {
-      jest.spyOn(roleService, 'findAndPopulate');
+    it("should find roles, and for each role populate the corresponding users and permissions", async () => {
+      jest.spyOn(roleService, "findAndPopulate");
       const allRoles = await roleService.findAll();
       const allPermissions = await permissionService.findAll();
       const allUsers = await userService.findAll();
       const result = await roleController.findPage(
         pageQuery,
-        ['users', 'permissions'],
+        ["users", "permissions"],
         {},
       );
 
@@ -97,18 +97,18 @@ describe('RoleController', () => {
     });
   });
 
-  describe('findOne', () => {
-    it('should find one role', async () => {
-      jest.spyOn(roleService, 'findOne');
+  describe("findOne", () => {
+    it("should find one role", async () => {
+      jest.spyOn(roleService, "findOne");
       const result = (await roleController.findOne(roleAdmin.id, [])) as Role;
       expect(roleService.findOne).toHaveBeenCalledWith(roleAdmin.id);
       expect(result).toEqualPayload(
-        roleFixtures.find((role) => role.name === 'admin') as Role,
+        roleFixtures.find((role) => role.name === "admin") as Role,
       );
     });
 
-    it('should find one role and populate its permissions and users ', async () => {
-      jest.spyOn(roleService, 'findOneAndPopulate');
+    it("should find one role and populate its permissions and users ", async () => {
+      jest.spyOn(roleService, "findOneAndPopulate");
       const users = (await userService.findAll()).filter((user) =>
         user.roles.includes(roleAdmin.id),
       );
@@ -117,31 +117,31 @@ describe('RoleController', () => {
         role: roleAdmin.id,
       });
       const result = await roleController.findOne(roleAdmin.id, [
-        'users',
-        'permissions',
+        "users",
+        "permissions",
       ]);
 
       expect(roleService.findOneAndPopulate).toHaveBeenCalledWith(roleAdmin.id);
       expect(result).toEqualPayload({
-        ...roleFixtures.find((role) => role.name === 'admin'),
+        ...roleFixtures.find((role) => role.name === "admin"),
         users,
         permissions,
       });
     });
   });
 
-  describe('count', () => {
-    it('should count the roles', async () => {
+  describe("count", () => {
+    it("should count the roles", async () => {
       const result = await roleController.filterCount();
       expect(result).toEqual({ count: roleFixtures.length });
     });
   });
 
-  describe('create', () => {
-    it('should return created role', async () => {
-      jest.spyOn(roleService, 'create');
+  describe("create", () => {
+    it("should return created role", async () => {
+      jest.spyOn(roleService, "create");
       const roleDto: RoleCreateDto = {
-        name: 'testRole',
+        name: "testRole",
         active: true,
       };
       const result = await roleController.create(roleDto);
@@ -150,10 +150,10 @@ describe('RoleController', () => {
     });
   });
 
-  describe('deleteOne', () => {
+  describe("deleteOne", () => {
     it("should throw ForbiddenException if the role is part of the user's roles", async () => {
-      const req = { user: { roles: ['role1'] } } as unknown as Request;
-      const roleId = 'role1';
+      const req = { user: { roles: ["role1"] } } as unknown as Request;
+      const roleId = "role1";
 
       userService.findOne = jest.fn().mockResolvedValue(null);
 
@@ -162,20 +162,20 @@ describe('RoleController', () => {
       );
     });
 
-    it('should throw ForbiddenException if the role is associated with other users', async () => {
-      const req = { user: { roles: ['role2'] } } as unknown as Request;
-      const roleId = 'role1';
+    it("should throw ForbiddenException if the role is associated with other users", async () => {
+      const req = { user: { roles: ["role2"] } } as unknown as Request;
+      const roleId = "role1";
 
-      userService.findOne = jest.fn().mockResolvedValue({ id: 'user2' });
+      userService.findOne = jest.fn().mockResolvedValue({ id: "user2" });
 
       await expect(roleController.deleteOne(roleId, req)).rejects.toThrow(
         ForbiddenException,
       );
     });
 
-    it('should throw NotFoundException if the role is not found', async () => {
-      const req = { user: { roles: ['role2'] } } as unknown as Request;
-      const roleId = 'role1';
+    it("should throw NotFoundException if the role is not found", async () => {
+      const req = { user: { roles: ["role2"] } } as unknown as Request;
+      const roleId = "role1";
 
       userService.findOne = jest.fn().mockResolvedValue(null);
       roleService.deleteOne = jest.fn().mockResolvedValue({ deletedCount: 0 });
@@ -185,9 +185,9 @@ describe('RoleController', () => {
       );
     });
 
-    it('should return the result if the role is successfully deleted', async () => {
-      const req = { user: { roles: ['role2'] } } as unknown as Request;
-      const roleId = 'role1';
+    it("should return the result if the role is successfully deleted", async () => {
+      const req = { user: { roles: ["role2"] } } as unknown as Request;
+      const roleId = "role1";
 
       userService.findOne = jest.fn().mockResolvedValue(null);
       const deleteResult = { deletedCount: 1 };
@@ -198,13 +198,13 @@ describe('RoleController', () => {
     });
   });
 
-  describe('updateOne', () => {
+  describe("updateOne", () => {
     const roleUpdateDto: RoleUpdateDto = {
       active: false,
     };
 
-    it('should return updated role', async () => {
-      jest.spyOn(roleService, 'updateOne');
+    it("should return updated role", async () => {
+      jest.spyOn(roleService, "updateOne");
       const result = await roleController.updateOne(
         rolePublic.id,
         roleUpdateDto,
@@ -214,14 +214,14 @@ describe('RoleController', () => {
         roleUpdateDto,
       );
       expect(result).toEqualPayload({
-        ...roleFixtures.find((role) => role.name === 'public'),
+        ...roleFixtures.find((role) => role.name === "public"),
         ...roleUpdateDto,
       });
     });
 
-    it('should throw a NotFoundException when attempting to modify a role', async () => {
-      const notFoundId = 'nonexistentRoleId';
-      const roleUpdateDto = { name: 'newRoleName' };
+    it("should throw a NotFoundException when attempting to modify a role", async () => {
+      const notFoundId = "nonexistentRoleId";
+      const roleUpdateDto = { name: "newRoleName" };
 
       roleService.updateOne = jest
         .fn()

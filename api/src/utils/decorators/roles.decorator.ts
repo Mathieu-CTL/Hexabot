@@ -6,8 +6,8 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { SetMetadata } from '@nestjs/common';
+import { SetMetadata } from "@nestjs/common";
 
-import { TRole } from '@/user/schemas/role.schema';
+import { TRole } from "@/user/schemas/role.schema";
 
-export const Roles = (...roles: TRole[]) => SetMetadata('roles', roles);
+export const Roles = (...roles: TRole[]) => SetMetadata("roles", roles);

@@ -6,8 +6,8 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import {
   IsIn,
   IsMimeType,
@@ -17,23 +17,23 @@ import {
   IsOptional,
   IsString,
   MaxLength,
-} from 'class-validator';
+} from "class-validator";
 
-import { ChannelName } from '@/channel/types';
-import { ObjectIdDto } from '@/utils/dto/object-id.dto';
-import { IsObjectId } from '@/utils/validation-rules/is-object-id';
+import { ChannelName } from "@/channel/types";
+import { ObjectIdDto } from "@/utils/dto/object-id.dto";
+import { IsObjectId } from "@/utils/validation-rules/is-object-id";
 
 import {
   AttachmentAccess,
   AttachmentCreatedByRef,
   AttachmentResourceRef,
-} from '../types';
+} from "../types";
 
 export class AttachmentMetadataDto {
   /**
    * Attachment original file name
    */
-  @ApiProperty({ description: 'Attachment original file name', type: String })
+  @ApiProperty({ description: "Attachment original file name", type: String })
   @IsNotEmpty()
   @IsString()
   name: string;
@@ -41,7 +41,7 @@ export class AttachmentMetadataDto {
   /**
    * Attachment size in bytes
    */
-  @ApiProperty({ description: 'Attachment size in bytes', type: Number })
+  @ApiProperty({ description: "Attachment size in bytes", type: Number })
   @IsNotEmpty()
   @IsNumber()
   size: number;
@@ -49,7 +49,7 @@ export class AttachmentMetadataDto {
   /**
    * Attachment MIME type
    */
-  @ApiProperty({ description: 'Attachment MIME type', type: String })
+  @ApiProperty({ description: "Attachment MIME type", type: String })
   @IsNotEmpty()
   @IsString()
   @IsMimeType()
@@ -58,7 +58,7 @@ export class AttachmentMetadataDto {
   /**
    * Attachment specia channel(s) metadata
    */
-  @ApiPropertyOptional({ description: 'Attachment channel', type: Object })
+  @ApiPropertyOptional({ description: "Attachment channel", type: Object })
   @IsNotEmpty()
   @IsObject()
   channel?: Partial<Record<ChannelName, any>>;
@@ -67,7 +67,7 @@ export class AttachmentMetadataDto {
    * Attachment resource reference
    */
   @ApiProperty({
-    description: 'Attachment Resource Ref',
+    description: "Attachment Resource Ref",
     enum: Object.values(AttachmentResourceRef),
   })
   @IsString()
@@ -79,7 +79,7 @@ export class AttachmentMetadataDto {
    * Attachment Owner Type
    */
   @ApiProperty({
-    description: 'Attachment Owner Type',
+    description: "Attachment Owner Type",
     enum: Object.values(AttachmentCreatedByRef),
   })
   @IsString()
@@ -91,7 +91,7 @@ export class AttachmentMetadataDto {
    * Attachment Access
    */
   @ApiProperty({
-    description: 'Attachment Access',
+    description: "Attachment Access",
     enum: Object.values(AttachmentAccess),
   })
   @IsString()
@@ -103,12 +103,12 @@ export class AttachmentMetadataDto {
    * Attachment Owner : Subscriber or User ID
    */
   @ApiProperty({
-    description: 'Attachment Owner : Subscriber / User ID',
+    description: "Attachment Owner : Subscriber / User ID",
     type: String,
   })
   @IsString()
   @IsNotEmpty()
-  @IsObjectId({ message: 'Owner must be a valid ObjectId' })
+  @IsObjectId({ message: "Owner must be a valid ObjectId" })
   createdBy: string;
 }
 
@@ -116,7 +116,7 @@ export class AttachmentCreateDto extends AttachmentMetadataDto {
   /**
    * Attachment location (file would/should be stored under a unique name)
    */
-  @ApiProperty({ description: 'Attachment location', type: String })
+  @ApiProperty({ description: "Attachment location", type: String })
   @IsNotEmpty()
   @IsString()
   location: string;
@@ -127,7 +127,7 @@ export class AttachmentDownloadDto extends ObjectIdDto {
    * Attachment file name
    */
   @ApiPropertyOptional({
-    description: 'Attachment download filename',
+    description: "Attachment download filename",
     type: String,
   })
   @Type(() => String)
@@ -138,7 +138,7 @@ export class AttachmentDownloadDto extends ObjectIdDto {
 
 export class AttachmentContextParamDto {
   @ApiProperty({
-    description: 'Attachment Resource Reference',
+    description: "Attachment Resource Reference",
     enum: Object.values(AttachmentResourceRef),
   })
   @IsString()
@@ -147,7 +147,7 @@ export class AttachmentContextParamDto {
   resourceRef: AttachmentResourceRef;
 
   @ApiPropertyOptional({
-    description: 'Attachment Access',
+    description: "Attachment Access",
     enum: Object.values(AttachmentAccess),
   })
   @IsString()

@@ -6,17 +6,17 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ExtensionName } from '@/utils/types/extension';
+import { ExtensionName } from "@/utils/types/extension";
 
-type TExcludedExtension = 'plugin';
+type TExcludedExtension = "plugin";
 
 type TExcludeSuffix<
   T,
-  S extends string = '_',
+  S extends string = "_",
   Suffix extends string = `${S}${TExcludedExtension}`,
 > = T extends `${infer _Base}${Suffix}` ? never : T;
 
-export type TExtensionName = TExcludeSuffix<ExtensionName, '-'>;
+export type TExtensionName = TExcludeSuffix<ExtensionName, "-">;
 
 export type TExtension =
   Extract<TExtensionName, `${string}-${string}`> extends `${string}-${infer S}`

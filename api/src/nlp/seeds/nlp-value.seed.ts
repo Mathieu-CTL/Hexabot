@@ -6,18 +6,18 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
-import { BaseSeeder } from '@/utils/generics/base-seeder';
+import { BaseSeeder } from "@/utils/generics/base-seeder";
 
-import { NlpValueCreateDto, NlpValueDto } from '../dto/nlp-value.dto';
-import { NlpEntityRepository } from '../repositories/nlp-entity.repository';
-import { NlpValueRepository } from '../repositories/nlp-value.repository';
+import { NlpValueCreateDto, NlpValueDto } from "../dto/nlp-value.dto";
+import { NlpEntityRepository } from "../repositories/nlp-entity.repository";
+import { NlpValueRepository } from "../repositories/nlp-value.repository";
 import {
   NlpValue,
   NlpValueFull,
   NlpValuePopulate,
-} from '../schemas/nlp-value.schema';
+} from "../schemas/nlp-value.schema";
 
 @Injectable()
 export class NlpValueSeeder extends BaseSeeder<

@@ -11,18 +11,18 @@ import {
   BadRequestException,
   Injectable,
   PipeTransform,
-} from '@nestjs/common';
-import { plainToClass } from 'class-transformer';
-import { validate } from 'class-validator';
-import { Types } from 'mongoose';
+} from "@nestjs/common";
+import { plainToClass } from "class-transformer";
+import { validate } from "class-validator";
+import { Types } from "mongoose";
 
-import { ObjectIdDto } from '../dto/object-id.dto';
+import { ObjectIdDto } from "../dto/object-id.dto";
 
 @Injectable()
 export class ObjectIdPipe implements PipeTransform<string, Promise<string>> {
   async getErrors(value: string) {
     const options = {
-      id: Types.ObjectId.isValid(String(value)) ? String(value) : '',
+      id: Types.ObjectId.isValid(String(value)) ? String(value) : "",
     };
     const dtoObject = plainToClass(ObjectIdDto, options);
     const [errors] = await validate(dtoObject);
@@ -31,7 +31,7 @@ export class ObjectIdPipe implements PipeTransform<string, Promise<string>> {
   }
 
   async transform(value: string, { type, data }: ArgumentMetadata) {
-    if (typeof value === 'string' && data === 'id' && type === 'param') {
+    if (typeof value === "string" && data === "id" && type === "param") {
       const errors = await this.getErrors(value);
       if (errors) {
         throw new BadRequestException(
@@ -41,13 +41,13 @@ export class ObjectIdPipe implements PipeTransform<string, Promise<string>> {
         );
       }
     } else if (
-      typeof value === 'object' &&
+      typeof value === "object" &&
       Object.keys(value).length > 1 &&
-      type === 'param'
+      type === "param"
     ) {
       await Promise.all(
         Object.entries(value).map(async ([param, paramValue]) => {
-          if (param.startsWith('id')) {
+          if (param.startsWith("id")) {
             const errors = await this.getErrors(String(paramValue));
 
             if (errors) {

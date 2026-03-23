@@ -6,28 +6,28 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
 import {
   Document,
   Model,
   Query,
   UpdateQuery,
   UpdateWithAggregationPipeline,
-} from 'mongoose';
+} from "mongoose";
 
-import { BaseRepository } from '@/utils/generics/base-repository';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { BaseRepository } from "@/utils/generics/base-repository";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
-import { UserDto, UserEditProfileDto } from '../dto/user.dto';
+import { UserDto, UserEditProfileDto } from "../dto/user.dto";
 import {
   User,
   USER_POPULATE,
   UserDocument,
   UserFull,
   UserPopulate,
-} from '../schemas/user.schema';
-import { hash } from '../utilities/bcryptjs';
+} from "../schemas/user.schema";
+import { hash } from "../utilities/bcryptjs";
 
 @Injectable()
 export class UserRepository extends BaseRepository<
@@ -50,7 +50,7 @@ export class UserRepository extends BaseRepository<
     if (_doc?.password) {
       _doc.password = hash(_doc.password);
     } else {
-      throw new Error('No password provided');
+      throw new Error("No password provided");
     }
     if (_doc?.resetToken) _doc.resetToken = hash(_doc.resetToken);
   }
@@ -68,7 +68,7 @@ export class UserRepository extends BaseRepository<
       Document<User, any, any>,
       unknown,
       User,
-      'findOneAndUpdate'
+      "findOneAndUpdate"
     >,
     _criteria: TFilterQuery<User>,
     _updates:
@@ -77,7 +77,7 @@ export class UserRepository extends BaseRepository<
   ) {
     const updates: UserEditProfileDto & {
       resetToken?: string;
-    } = _updates?.['$set'];
+    } = _updates?.["$set"];
 
     if (updates?.password) {
       _query.setUpdate({

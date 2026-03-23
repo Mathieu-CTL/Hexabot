@@ -6,15 +6,15 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { ModuleMetadata, Provider } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ModelDefinition, MongooseModule } from '@nestjs/mongoose';
-import { Test, TestingModule } from '@nestjs/testing';
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
+import { ModuleMetadata, Provider } from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
+import { ModelDefinition, MongooseModule } from "@nestjs/mongoose";
+import { Test, TestingModule } from "@nestjs/testing";
 
-import { LoggerService } from '@/logger/logger.service';
+import { LoggerService } from "@/logger/logger.service";
 
-import { LifecycleHookManager } from '../generics/lifecycle-hook-manager';
+import { LifecycleHookManager } from "../generics/lifecycle-hook-manager";
 
 type TTypeOrToken = [
   new (...args: any[]) => any,
@@ -28,23 +28,23 @@ type TModel = ModelDefinition | `${string}Model`;
 type ToUnionArray<T> = (NonNullable<T> extends (infer U)[] ? U : never)[];
 
 type buildTestingMocksProps<
-  P extends ModuleMetadata['providers'] = ModuleMetadata['providers'],
-  C extends ModuleMetadata['controllers'] = ModuleMetadata['controllers'],
+  P extends ModuleMetadata["providers"] = ModuleMetadata["providers"],
+  C extends ModuleMetadata["controllers"] = ModuleMetadata["controllers"],
 > = ModuleMetadata & {
   models?: TModel[];
 } & (
     | {
         providers: NonNullable<P>;
         controllers: NonNullable<C>;
-        autoInjectFrom: ('providers' | 'controllers')[];
+        autoInjectFrom: ("providers" | "controllers")[];
       }
     | {
         providers: NonNullable<P>;
-        autoInjectFrom?: 'providers'[];
+        autoInjectFrom?: "providers"[];
       }
     | {
         controllers: NonNullable<C>;
-        autoInjectFrom?: 'controllers'[];
+        autoInjectFrom?: "controllers"[];
       }
     | {
         providers?: never;
@@ -77,7 +77,7 @@ const extractInstances =
  * @returns An array of parameter types representing the constructor dependencies.
  */
 const getParamTypes = (provider: Provider) =>
-  Reflect.getMetadata('design:paramtypes', provider) || [];
+  Reflect.getMetadata("design:paramtypes", provider) || [];
 
 /**
  * Recursively resolves all unique dependencies required by a NestJS provider.
@@ -121,8 +121,8 @@ const getClassDependencies = (parentClass: Provider): Provider[] => {
  * @returns The model definition.
  * @throws If the model cannot be found.
  */
-const getModel = (name: string, suffix = ''): ModelDefinition => {
-  const modelName = name.replace(suffix, '');
+const getModel = (name: string, suffix = ""): ModelDefinition => {
+  const modelName = name.replace(suffix, "");
   const model = LifecycleHookManager.getModel(modelName);
 
   if (!model) {
@@ -142,10 +142,10 @@ const getModel = (name: string, suffix = ''): ModelDefinition => {
  */
 const getNestedModels = (
   extendedProviders: Provider[],
-  suffix = '',
+  suffix = "",
 ): ModelDefinition[] =>
   extendedProviders.reduce((acc, extendedProvider) => {
-    if ('name' in extendedProvider && extendedProvider.name.endsWith(suffix)) {
+    if ("name" in extendedProvider && extendedProvider.name.endsWith(suffix)) {
       const model = getModel(extendedProvider.name, suffix);
       acc.push(model);
     }
@@ -154,7 +154,7 @@ const getNestedModels = (
   }, [] as ModelDefinition[]);
 
 const filterNestedDependencies = (dependency: Provider) =>
-  dependency.valueOf().toString().slice(0, 6) === 'class ';
+  dependency.valueOf().toString().slice(0, 6) === "class ";
 
 /**
  * Identifies nested class-based dependencies to be automatically injected into test modules.
@@ -173,7 +173,7 @@ const getNestedDependencies = (providers: Provider[]): Provider[] => {
           !providers.includes(dependency) &&
           !providers.find(
             (provider) =>
-              'provide' in provider && provider.provide === dependency,
+              "provide" in provider && provider.provide === dependency,
           )
         ) {
           nestedDependencies.add(dependency);
@@ -191,9 +191,9 @@ const getNestedDependencies = (providers: Provider[]): Provider[] => {
  * @param imports - Modules imported in the test context.
  * @returns True if MongooseModule is included, enabling automatic model injection.
  */
-const canInjectModels = (imports: buildTestingMocksProps['imports']): boolean =>
+const canInjectModels = (imports: buildTestingMocksProps["imports"]): boolean =>
   (imports || []).some(
-    (module) => 'module' in module && module.module.name === 'MongooseModule',
+    (module) => "module" in module && module.module.name === "MongooseModule",
   );
 
 /**
@@ -205,7 +205,7 @@ const canInjectModels = (imports: buildTestingMocksProps['imports']): boolean =>
  */
 const getModels = (models: TModel[]): ModelDefinition[] =>
   models.map((model) =>
-    typeof model === 'string' ? getModel(model, 'Model') : model,
+    typeof model === "string" ? getModel(model, "Model") : model,
   );
 
 const defaultProviders = [
@@ -261,13 +261,13 @@ export const buildTestingMocks = async ({
   const dynamicProviders = new Set<Provider>();
   const injectionFrom = autoInjectFrom as ToUnionArray<typeof autoInjectFrom>;
 
-  if (injectionFrom?.includes('providers')) {
+  if (injectionFrom?.includes("providers")) {
     [...getNestedDependencies(providers)].forEach((provider) =>
       extendedProviders.add(provider),
     );
   }
 
-  if (injectionFrom?.includes('controllers')) {
+  if (injectionFrom?.includes("controllers")) {
     [...getNestedDependencies(controllers)].forEach((controller) =>
       extendedProviders.add(controller),
     );
@@ -285,7 +285,7 @@ export const buildTestingMocks = async ({
             MongooseModule.forFeature([
               ...getModels(models),
               ...(autoInjectFrom
-                ? getNestedModels([...dynamicProviders], 'Repository')
+                ? getNestedModels([...dynamicProviders], "Repository")
                 : []),
             ]),
           ]
@@ -299,7 +299,7 @@ export const buildTestingMocks = async ({
 
   return {
     module,
-    getMocks: extractInstances('get', module),
-    resolveMocks: extractInstances('resolve', module),
+    getMocks: extractInstances("get", module),
+    resolveMocks: extractInstances("resolve", module),
   };
 };

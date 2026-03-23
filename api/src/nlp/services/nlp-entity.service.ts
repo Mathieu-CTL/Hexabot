@@ -6,25 +6,25 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
-import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
+import { BadRequestException, Inject, Injectable } from "@nestjs/common";
+import { OnEvent } from "@nestjs/event-emitter";
+import { Cache } from "cache-manager";
 
-import { NLP_MAP_CACHE_KEY } from '@/utils/constants/cache';
-import { Cacheable } from '@/utils/decorators/cacheable.decorator';
-import { BaseService } from '@/utils/generics/base-service';
+import { NLP_MAP_CACHE_KEY } from "@/utils/constants/cache";
+import { Cacheable } from "@/utils/decorators/cacheable.decorator";
+import { BaseService } from "@/utils/generics/base-service";
 
-import { NlpEntityDto } from '../dto/nlp-entity.dto';
-import { NlpEntityRepository } from '../repositories/nlp-entity.repository';
+import { NlpEntityDto } from "../dto/nlp-entity.dto";
+import { NlpEntityRepository } from "../repositories/nlp-entity.repository";
 import {
   NlpEntity,
   NlpEntityFull,
   NlpEntityPopulate,
-} from '../schemas/nlp-entity.schema';
-import { Lookup, NlpCacheMap, NlpSampleEntityValue } from '../schemas/types';
+} from "../schemas/nlp-entity.schema";
+import { Lookup, NlpCacheMap, NlpSampleEntityValue } from "../schemas/types";
 
-import { NlpValueService } from './nlp-value.service';
+import { NlpValueService } from "./nlp-value.service";
 
 @Injectable()
 export class NlpEntityService extends BaseService<
@@ -65,7 +65,7 @@ export class NlpEntityService extends BaseService<
   async updateWeight(id: string, updatedWeight: number): Promise<NlpEntity> {
     if (updatedWeight <= 0) {
       throw new BadRequestException(
-        'Weight must be a strictly positive number',
+        "Weight must be a strictly positive number",
       );
     }
 
@@ -86,7 +86,7 @@ export class NlpEntityService extends BaseService<
   async storeNewEntities(
     sampleText: string,
     sampleEntities: NlpSampleEntityValue[],
-    lookups: Lookup[] = ['keywords'],
+    lookups: Lookup[] = ["keywords"],
   ) {
     // Extract entity names from sampleEntities
     const entities = sampleEntities.map((e) => e.entity);
@@ -135,12 +135,12 @@ export class NlpEntityService extends BaseService<
    * Event handler for Nlp Entity updates. Listens to 'hook:nlpEntity:*' events
    * and invalidates the cache for nlp entities when triggered.
    */
-  @OnEvent('hook:nlpEntity:*')
+  @OnEvent("hook:nlpEntity:*")
   async handleNlpEntityUpdateEvent() {
     try {
       await this.clearCache();
     } catch (error) {
-      this.logger.error('Failed to clear NLP entity cache', error);
+      this.logger.error("Failed to clear NLP entity cache", error);
     }
   }
 
@@ -148,12 +148,12 @@ export class NlpEntityService extends BaseService<
    * Event handler for Nlp Value updates. Listens to 'hook:nlpValue:*' events
    * and invalidates the cache for nlp values when triggered.
    */
-  @OnEvent('hook:nlpValue:*')
+  @OnEvent("hook:nlpValue:*")
   async handleNlpValueUpdateEvent() {
     try {
       await this.clearCache();
     } catch (error) {
-      this.logger.error('Failed to clear NLP value cache', error);
+      this.logger.error("Failed to clear NLP value cache", error);
     }
   }
 

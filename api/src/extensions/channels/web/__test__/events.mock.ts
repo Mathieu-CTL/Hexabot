@@ -6,33 +6,33 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { FileType } from '@/chat/schemas/types/attachment';
+import { FileType } from "@/chat/schemas/types/attachment";
 import {
   IncomingMessageType,
   StdEventType,
-} from '@/chat/schemas/types/message';
+} from "@/chat/schemas/types/message";
 
-import { Web } from '../types';
+import { Web } from "../types";
 
 // Web events
 const webEventPayload: Web.Event = {
   type: Web.IncomingMessageType.postback,
   data: {
-    text: 'Get Started',
-    payload: 'GET_STARTED',
+    text: "Get Started",
+    payload: "GET_STARTED",
   },
-  author: 'web-9be7aq09-b45a-452q-bcs0-f145b9qce1cad',
-  mid: 'web-event-payload',
+  author: "web-9be7aq09-b45a-452q-bcs0-f145b9qce1cad",
+  mid: "web-event-payload",
   read: true,
 };
 
 export const webEventText: Web.IncomingMessage<Web.IncomingTextMessage> = {
   type: Web.IncomingMessageType.text,
   data: {
-    text: 'Hello',
+    text: "Hello",
   },
-  author: 'web-9qsdfgqxac09-f83a-452d-bca0-f1qsdqg457c1ad',
-  mid: 'web-event-text',
+  author: "web-9qsdfgqxac09-f83a-452d-bca0-f1qsdqg457c1ad",
+  mid: "web-event-text",
   read: true,
 };
 
@@ -44,47 +44,47 @@ const webEventLocation: Web.IncomingMessage = {
       lng: 12.2558,
     },
   },
-  author: 'web-9beqsdqa09-b489a-438c-bqd0-f11buykkhl851ad',
-  mid: 'web-event-location',
+  author: "web-9beqsdqa09-b489a-438c-bqd0-f11buykkhl851ad",
+  mid: "web-event-location",
   read: true,
 };
 
 const webEventFile: Web.Event = {
   type: Web.IncomingMessageType.file,
   data: {
-    type: 'image/png',
+    type: "image/png",
     size: 500,
-    name: 'filename.extension',
-    file: Buffer.from('my-image', 'utf-8'),
+    name: "filename.extension",
+    file: Buffer.from("my-image", "utf-8"),
   },
-  author: 'web-9be8ac09-b43a-432d-bca0-f11b98cec1ad',
-  mid: 'web-event-file',
+  author: "web-9be8ac09-b43a-432d-bca0-f11b98cec1ad",
+  mid: "web-event-file",
   read: true,
 };
 
 const payloadChannelData = {
   isSocket: true,
-  ipAddress: '0.0.0.0',
+  ipAddress: "0.0.0.0",
 };
 
 const textChannelData = {
   isSocket: false,
-  ipAddress: '1.1.1.1',
+  ipAddress: "1.1.1.1",
 };
 
 const locationChannelData = {
   isSocket: true,
-  ipAddress: '2.2.2.2',
+  ipAddress: "2.2.2.2",
 };
 
 const fileChannelData = {
   isSocket: false,
-  ipAddress: '3.3.3.3',
+  ipAddress: "3.3.3.3",
 };
 
 export const webEvents: [string, Web.IncomingMessage, any][] = [
   [
-    'Payload Event',
+    "Payload Event",
     webEventPayload,
     {
       channelData: payloadChannelData,
@@ -99,7 +99,7 @@ export const webEvents: [string, Web.IncomingMessage, any][] = [
     },
   ],
   [
-    'Text Event',
+    "Text Event",
     webEventText,
     {
       channelData: textChannelData,
@@ -113,7 +113,7 @@ export const webEvents: [string, Web.IncomingMessage, any][] = [
     },
   ],
   [
-    'Location Event',
+    "Location Event",
     webEventLocation,
     {
       channelData: locationChannelData,
@@ -137,7 +137,7 @@ export const webEvents: [string, Web.IncomingMessage, any][] = [
     },
   ],
   [
-    'File Event',
+    "File Event",
     webEventFile,
     {
       channelData: fileChannelData,
@@ -149,18 +149,18 @@ export const webEvents: [string, Web.IncomingMessage, any][] = [
         attachment: {
           type: FileType.image,
           payload: {
-            id: '9'.repeat(24),
+            id: "9".repeat(24),
           },
         },
       },
       message: {
         attachment: {
           payload: {
-            id: '9'.repeat(24),
+            id: "9".repeat(24),
           },
           type: FileType.image,
         },
-        serialized_text: 'attachment:image:filename.extension',
+        serialized_text: "attachment:image:filename.extension",
         type: IncomingMessageType.attachments,
       },
     },

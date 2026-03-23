@@ -6,13 +6,13 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 
-import { LoggerService } from '@/logger/logger.service';
-import { SettingService } from '@/setting/services/setting.service';
+import { LoggerService } from "@/logger/logger.service";
+import { SettingService } from "@/setting/services/setting.service";
 
-import BaseHelper from './lib/base-helper';
-import { HelperName, HelperRegistry, HelperType, TypeOfHelper } from './types';
+import BaseHelper from "./lib/base-helper";
+import { HelperName, HelperRegistry, HelperType, TypeOfHelper } from "./types";
 
 @Injectable()
 export class HelperService {
@@ -56,7 +56,7 @@ export class HelperService {
     const helpers = this.registry.get(type) as Map<string, BaseHelper>;
 
     if (!helpers.has(name)) {
-      throw new Error('Uknown type of helpers');
+      throw new Error("Uknown type of helpers");
     }
     return helpers.get(name) as TypeOfHelper<T>;
   }

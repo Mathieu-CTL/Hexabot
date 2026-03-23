@@ -9,22 +9,22 @@
 import {
   installMenuFixtures,
   rootMenuFixtures,
-} from '@/utils/test/fixtures/menu';
+} from "@/utils/test/fixtures/menu";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { MenuType } from '../schemas/types/menu';
+import { MenuType } from "../schemas/types/menu";
 
-import { MenuRepository } from './menu.repository';
+import { MenuRepository } from "./menu.repository";
 
-describe('MenuRepository', () => {
+describe("MenuRepository", () => {
   let menuRepository: MenuRepository;
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['providers'],
+      autoInjectFrom: ["providers"],
       imports: [rootMongooseTestModule(installMenuFixtures)],
       providers: [MenuRepository],
     });
@@ -35,10 +35,10 @@ describe('MenuRepository', () => {
 
   afterEach(jest.clearAllMocks);
 
-  describe('findOneAndPopulate', () => {
-    it('should return a populated version of the document', async () => {
+  describe("findOneAndPopulate", () => {
+    it("should return a populated version of the document", async () => {
       const parent = await menuRepository.create({
-        title: 'Test1',
+        title: "Test1",
         type: MenuType.nested,
       });
       const child = await menuRepository.create({

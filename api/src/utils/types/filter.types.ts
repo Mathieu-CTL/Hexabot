@@ -11,7 +11,7 @@ import {
   QueryOptions,
   QuerySelector,
   RootQuerySelector,
-} from 'mongoose';
+} from "mongoose";
 
 export type TFilterKeysOfType<T, U> = {
   [K in keyof T]: T[K] extends U ? K : never;
@@ -28,7 +28,7 @@ export type NestedKeys<T> = T extends object
           ? Exclude<K, symbol>
           : K extends symbol
             ? Exclude<K, symbol>
-            : `${Exclude<K, symbol>}${'' | `.${NestedKeys<T[K]>}`}`;
+            : `${Exclude<K, symbol>}${"" | `.${NestedKeys<T[K]>}`}`;
     }[keyof T]
   : never;
 
@@ -108,14 +108,14 @@ type TAndField<T> = {
 
 type TNorField<T> = {
   where?: {
-    [key in T & string]: { '!=': string };
+    [key in T & string]: { "!=": string };
   };
 };
 
 export type TSearchFilterValue<T> = TOrField<T> | TAndField<T> | TNorField<T>;
 
-type TOperator = 'eq' | 'iLike' | 'neq' | 'in';
-type TContext = 'and' | 'or';
+type TOperator = "eq" | "iLike" | "neq" | "in";
+type TContext = "and" | "or";
 
 export type TTransformFieldProps = {
   _id?: string;
@@ -127,7 +127,7 @@ export type TTransformFieldProps = {
 };
 
 /* mongoose */
-type TOmitId<T> = Omit<T, 'id'>;
+type TOmitId<T> = Omit<T, "id">;
 type TReplaceId<T> = TOmitId<T> & { _id?: string };
 
 // Enforce the typing with an alternative type to FilterQuery compatible with mongoose: version 8.0.0

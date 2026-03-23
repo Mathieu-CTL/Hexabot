@@ -6,34 +6,34 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { NOT_FOUND_ID } from '@/utils/constants/mock';
-import { getUpdateOneError } from '@/utils/test/errors/messages';
+import { NOT_FOUND_ID } from "@/utils/constants/mock";
+import { getUpdateOneError } from "@/utils/test/errors/messages";
 import {
   installTranslationFixtures,
   translationFixtures,
-} from '@/utils/test/fixtures/translation';
-import { getPageQuery } from '@/utils/test/pagination';
+} from "@/utils/test/fixtures/translation";
+import { getPageQuery } from "@/utils/test/pagination";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { TranslationUpdateDto } from '../dto/translation.dto';
-import { Translation } from '../schemas/translation.schema';
-import { I18nService } from '../services/i18n.service';
-import { TranslationService } from '../services/translation.service';
+import { TranslationUpdateDto } from "../dto/translation.dto";
+import { Translation } from "../schemas/translation.schema";
+import { I18nService } from "../services/i18n.service";
+import { TranslationService } from "../services/translation.service";
 
-import { TranslationController } from './translation.controller';
+import { TranslationController } from "./translation.controller";
 
-describe('TranslationController', () => {
+describe("TranslationController", () => {
   let translationController: TranslationController;
   let translationService: TranslationService;
   let translation: Translation;
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['controllers'],
+      autoInjectFrom: ["controllers"],
       controllers: [TranslationController],
       imports: [rootMongooseTestModule(installTranslationFixtures)],
       providers: [
@@ -51,16 +51,16 @@ describe('TranslationController', () => {
       TranslationController,
     ]);
     translation = (await translationService.findOne({
-      str: 'Welcome',
+      str: "Welcome",
     })) as Translation;
   });
 
   afterEach(jest.clearAllMocks);
   afterAll(closeInMongodConnection);
 
-  describe('count', () => {
-    it('should count translations', async () => {
-      jest.spyOn(translationService, 'count');
+  describe("count", () => {
+    it("should count translations", async () => {
+      jest.spyOn(translationService, "count");
       const result = await translationController.filterCount();
 
       expect(translationService.count).toHaveBeenCalled();
@@ -68,9 +68,9 @@ describe('TranslationController', () => {
     });
   });
 
-  describe('findOne', () => {
-    it('should find one translation by id', async () => {
-      jest.spyOn(translationService, 'findOne');
+  describe("findOne", () => {
+    it("should find one translation by id", async () => {
+      jest.spyOn(translationService, "findOne");
       const result = await translationController.findOne(translation.id);
 
       expect(translationService.findOne).toHaveBeenCalledWith(translation.id);
@@ -82,10 +82,10 @@ describe('TranslationController', () => {
     });
   });
 
-  describe('find', () => {
+  describe("find", () => {
     const pageQuery = getPageQuery<Translation>();
-    it('should find translations', async () => {
-      jest.spyOn(translationService, 'find');
+    it("should find translations", async () => {
+      jest.spyOn(translationService, "find");
       const result = await translationController.findPage(pageQuery, {});
 
       expect(translationService.find).toHaveBeenCalledWith({}, pageQuery);
@@ -93,12 +93,12 @@ describe('TranslationController', () => {
     });
   });
 
-  describe('updateOne', () => {
+  describe("updateOne", () => {
     const translationUpdateDto: TranslationUpdateDto = {
-      str: 'Welcome !',
+      str: "Welcome !",
     };
-    it('should update one translation by id', async () => {
-      jest.spyOn(translationService, 'updateOne');
+    it("should update one translation by id", async () => {
+      jest.spyOn(translationService, "updateOne");
       const result = await translationController.updateOne(
         translation.id,
         translationUpdateDto,
@@ -114,8 +114,8 @@ describe('TranslationController', () => {
       });
     });
 
-    it('should throw a NotFoundException when attempting to update a translation by id', async () => {
-      jest.spyOn(translationService, 'updateOne');
+    it("should throw a NotFoundException when attempting to update a translation by id", async () => {
+      jest.spyOn(translationService, "updateOne");
       await expect(
         translationController.updateOne(NOT_FOUND_ID, translationUpdateDto),
       ).rejects.toThrow(getUpdateOneError(Translation.name, NOT_FOUND_ID));

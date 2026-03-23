@@ -6,47 +6,47 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-import { NlpSampleCreateDto } from '@/nlp/dto/nlp-sample.dto';
-import { NlpSample, NlpSampleModel } from '@/nlp/schemas/nlp-sample.schema';
-import { NlpSampleState } from '@/nlp/schemas/types';
+import { NlpSampleCreateDto } from "@/nlp/dto/nlp-sample.dto";
+import { NlpSample, NlpSampleModel } from "@/nlp/schemas/nlp-sample.schema";
+import { NlpSampleState } from "@/nlp/schemas/types";
 
-import { getFixturesWithDefaultValues } from '../defaultValues';
-import { FixturesTypeBuilder } from '../types';
+import { getFixturesWithDefaultValues } from "../defaultValues";
+import { FixturesTypeBuilder } from "../types";
 
-import { installLanguageFixtures } from './language';
+import { installLanguageFixtures } from "./language";
 
 type TNlpSampleFixtures = FixturesTypeBuilder<NlpSample, NlpSampleCreateDto>;
 
-export const nlpSampleDefaultValues: TNlpSampleFixtures['defaultValues'] = {
+export const nlpSampleDefaultValues: TNlpSampleFixtures["defaultValues"] = {
   type: NlpSampleState.train,
   trained: false,
 };
 
-const nlpSamples: TNlpSampleFixtures['values'][] = [
+const nlpSamples: TNlpSampleFixtures["values"][] = [
   {
-    text: 'yess',
-    language: '0',
+    text: "yess",
+    language: "0",
   },
   {
-    text: 'No',
-    language: '0',
+    text: "No",
+    language: "0",
   },
   {
-    text: 'Hello',
+    text: "Hello",
     trained: true,
-    language: '0',
+    language: "0",
   },
   {
-    text: 'Bye Jhon',
+    text: "Bye Jhon",
     trained: true,
-    language: '0',
+    language: "0",
   },
 ];
 
 export const nlpSampleFixtures = getFixturesWithDefaultValues<
-  TNlpSampleFixtures['values']
+  TNlpSampleFixtures["values"]
 >({
   fixtures: nlpSamples,
   defaultValues: nlpSampleDefaultValues,

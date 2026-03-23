@@ -6,26 +6,26 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Subscriber } from '@/chat/schemas/subscriber.schema';
+import { Subscriber } from "@/chat/schemas/subscriber.schema";
 
-import { modelInstance } from './base.mock';
-import { customerLabelsMock } from './label.mock';
+import { modelInstance } from "./base.mock";
+import { customerLabelsMock } from "./label.mock";
 
 export const subscriberInstance: Subscriber = {
-  foreign_id: 'foreign-id-for-jhon-doe',
-  first_name: 'John',
-  last_name: 'Doe',
-  language: 'fr',
-  locale: 'fr_FR',
-  gender: 'male',
+  foreign_id: "foreign-id-for-jhon-doe",
+  first_name: "John",
+  last_name: "Doe",
+  language: "fr",
+  locale: "fr_FR",
+  gender: "male",
   timezone: -1,
-  country: 'TN',
+  country: "TN",
   assignedTo: null,
   assignedAt: null,
   lastvisit: new Date(),
   retainedFrom: new Date(),
   channel: {
-    name: 'web-channel',
+    name: "web-channel",
   },
   labels: [],
   avatar: null,

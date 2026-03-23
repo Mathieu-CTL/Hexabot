@@ -6,12 +6,12 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit } from "@nestjs/common";
 
-import { Extension } from '@/utils/generics/extension';
+import { Extension } from "@/utils/generics/extension";
 
-import { PluginService } from './plugins.service';
-import { PluginName, PluginType } from './types';
+import { PluginService } from "./plugins.service";
+import { PluginName, PluginType } from "./types";
 
 @Injectable()
 export abstract class BasePlugin extends Extension implements OnModuleInit {

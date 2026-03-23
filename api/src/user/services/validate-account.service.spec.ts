@@ -6,27 +6,27 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ISendMailOptions } from '@nestjs-modules/mailer';
-import { SentMessageInfo } from 'nodemailer';
+import { ISendMailOptions } from "@nestjs-modules/mailer";
+import { SentMessageInfo } from "nodemailer";
 
-import { I18nService } from '@/i18n/services/i18n.service';
-import { MailerService } from '@/mailer/mailer.service';
-import { installLanguageFixtures } from '@/utils/test/fixtures/language';
-import { installUserFixtures, users } from '@/utils/test/fixtures/user';
+import { I18nService } from "@/i18n/services/i18n.service";
+import { MailerService } from "@/mailer/mailer.service";
+import { installLanguageFixtures } from "@/utils/test/fixtures/language";
+import { installUserFixtures, users } from "@/utils/test/fixtures/user";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { ValidateAccountService } from './validate-account.service';
+import { ValidateAccountService } from "./validate-account.service";
 
-describe('ValidateAccountService', () => {
+describe("ValidateAccountService", () => {
   let validateAccountService: ValidateAccountService;
   let mailerService: MailerService;
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['providers'],
+      autoInjectFrom: ["providers"],
       imports: [
         rootMongooseTestModule(async () => {
           await installLanguageFixtures();
@@ -41,7 +41,7 @@ describe('ValidateAccountService', () => {
           useValue: {
             sendMail: jest.fn(
               (_options: ISendMailOptions): Promise<SentMessageInfo> =>
-                Promise.resolve('Mail sent successfully'),
+                Promise.resolve("Mail sent successfully"),
             ),
           },
         },
@@ -63,10 +63,10 @@ describe('ValidateAccountService', () => {
 
   afterEach(jest.clearAllMocks);
 
-  describe('sendConfirmationEmail', () => {
-    it('should send an email with a token', async () => {
-      const sendMailSpy = jest.spyOn(mailerService, 'sendMail');
-      const signSpy = jest.spyOn(validateAccountService, 'sign');
+  describe("sendConfirmationEmail", () => {
+    it("should send an email with a token", async () => {
+      const sendMailSpy = jest.spyOn(mailerService, "sendMail");
+      const signSpy = jest.spyOn(validateAccountService, "sign");
       const promise = validateAccountService.sendConfirmationEmail({
         email: users[0].email,
         first_name: users[0].first_name,

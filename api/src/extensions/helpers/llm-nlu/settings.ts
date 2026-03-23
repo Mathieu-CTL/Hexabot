@@ -6,23 +6,23 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { HelperSetting } from '@/helper/types';
-import { SettingType } from '@/setting/schemas/types';
+import { HelperSetting } from "@/helper/types";
+import { SettingType } from "@/setting/schemas/types";
 
-export const LLM_NLU_HELPER_NAME = 'llm-nlu-helper';
+export const LLM_NLU_HELPER_NAME = "llm-nlu-helper";
 
-export const LLM_NLU_HELPER_NAMESPACE = 'llm_nlu_helper';
+export const LLM_NLU_HELPER_NAMESPACE = "llm_nlu_helper";
 
 export default [
   {
     group: LLM_NLU_HELPER_NAMESPACE,
-    label: 'model',
-    value: '',
+    label: "model",
+    value: "",
     type: SettingType.text,
   },
   {
     group: LLM_NLU_HELPER_NAMESPACE,
-    label: 'language_classifier_prompt_template',
+    label: "language_classifier_prompt_template",
     value: `You are an advanced language detection assistant. Your task is to identify the language of the given input text from the following supported languages:
 
 {{#each languages}}
@@ -34,7 +34,7 @@ Provide a concise result by stating the language code only. If the language is n
   },
   {
     group: LLM_NLU_HELPER_NAMESPACE,
-    label: 'trait_classifier_prompt_template',
+    label: "trait_classifier_prompt_template",
     value: `You are an advanced text classification assistant. Your task is to classify the given input text provided in the following {{entity.name}} values:
 
 {{#each entity.values}}

@@ -6,20 +6,20 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import path from 'path';
+import path from "path";
 
-import { Global, Module } from '@nestjs/common';
+import { Global, Module } from "@nestjs/common";
 import {
   ISendMailOptions,
   MAILER_OPTIONS,
   MailerModule as NestjsMailerModule,
-} from '@nestjs-modules/mailer';
-import { MjmlAdapter } from '@nestjs-modules/mailer/dist/adapters/mjml.adapter';
-import SMTPTransport from 'nodemailer/lib/smtp-transport';
+} from "@nestjs-modules/mailer";
+import { MjmlAdapter } from "@nestjs-modules/mailer/dist/adapters/mjml.adapter";
+import SMTPTransport from "nodemailer/lib/smtp-transport";
 
-import { config } from '@/config';
+import { config } from "@/config";
 
-import { MailerService } from './mailer.service';
+import { MailerService } from "./mailer.service";
 
 const mailerOptions = {
   transport: new SMTPTransport({
@@ -29,7 +29,7 @@ const mailerOptions = {
   }),
   template: {
     adapter: new MjmlAdapter(
-      'handlebars',
+      "handlebars",
       {
         inlineCssEnabled: false,
       },
@@ -37,7 +37,7 @@ const mailerOptions = {
         handlebar: {},
       },
     ),
-    dir: path.join(process.cwd(), 'dist', 'templates'),
+    dir: path.join(process.cwd(), "dist", "templates"),
     options: {
       context: {
         appName: config.parameters.appName,
@@ -67,7 +67,7 @@ const mailerOptions = {
             provide: MailerService,
             useValue: {
               sendMail(_options: ISendMailOptions) {
-                throw new Error('Email Service is not enabled');
+                throw new Error("Email Service is not enabled");
               },
             },
           },

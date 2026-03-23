@@ -18,21 +18,21 @@ import {
   Patch,
   Post,
   Query,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
-import { BaseController } from '@/utils/generics/base-controller';
-import { DeleteResult } from '@/utils/generics/base-repository';
-import { PageQueryDto } from '@/utils/pagination/pagination-query.dto';
-import { PageQueryPipe } from '@/utils/pagination/pagination-query.pipe';
-import { SearchFilterPipe } from '@/utils/pipes/search-filter.pipe';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { BaseController } from "@/utils/generics/base-controller";
+import { DeleteResult } from "@/utils/generics/base-repository";
+import { PageQueryDto } from "@/utils/pagination/pagination-query.dto";
+import { PageQueryPipe } from "@/utils/pagination/pagination-query.pipe";
+import { SearchFilterPipe } from "@/utils/pipes/search-filter.pipe";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
-import { TranslationUpdateDto } from '../dto/translation.dto';
-import { Translation } from '../schemas/translation.schema';
-import { LanguageService } from '../services/language.service';
-import { TranslationService } from '../services/translation.service';
+import { TranslationUpdateDto } from "../dto/translation.dto";
+import { Translation } from "../schemas/translation.schema";
+import { LanguageService } from "../services/language.service";
+import { TranslationService } from "../services/translation.service";
 
-@Controller('translation')
+@Controller("translation")
 export class TranslationController extends BaseController<Translation> {
   constructor(
     private readonly languageService: LanguageService,
@@ -44,7 +44,7 @@ export class TranslationController extends BaseController<Translation> {
   @Get()
   async findPage(
     @Query(PageQueryPipe) pageQuery: PageQueryDto<Translation>,
-    @Query(new SearchFilterPipe<Translation>({ allowedFields: ['str'] }))
+    @Query(new SearchFilterPipe<Translation>({ allowedFields: ["str"] }))
     filters: TFilterQuery<Translation>,
   ) {
     return await this.translationService.find(filters, pageQuery);
@@ -54,11 +54,11 @@ export class TranslationController extends BaseController<Translation> {
    * Counts the filtered number of translations.
    * @returns A promise that resolves to an object representing the filtered number of translations.
    */
-  @Get('count')
+  @Get("count")
   async filterCount(
     @Query(
       new SearchFilterPipe<Translation>({
-        allowedFields: ['str'],
+        allowedFields: ["str"],
       }),
     )
     filters?: TFilterQuery<Translation>,
@@ -66,8 +66,8 @@ export class TranslationController extends BaseController<Translation> {
     return await this.count(filters);
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
+  @Get(":id")
+  async findOne(@Param("id") id: string) {
     const doc = await this.translationService.findOne(id);
     if (!doc) {
       this.logger.warn(`Unable to find Translation by id ${id}`);
@@ -76,9 +76,9 @@ export class TranslationController extends BaseController<Translation> {
     return doc;
   }
 
-  @Patch(':id')
+  @Patch(":id")
   async updateOne(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body() translationUpdate: TranslationUpdateDto,
   ) {
     return await this.translationService.updateOne(id, translationUpdate);
@@ -88,15 +88,15 @@ export class TranslationController extends BaseController<Translation> {
    * Refresh translations : Add new strings and remove old ones
    * @returns {Promise<any>}
    */
-  @Post('refresh')
+  @Post("refresh")
   async refresh(): Promise<any> {
     const defaultLanguage = await this.languageService.getDefaultLanguage();
     const languages = await this.languageService.getLanguages();
-    const defaultTrans: Translation['translations'] = Object.keys(languages)
+    const defaultTrans: Translation["translations"] = Object.keys(languages)
       .filter((lang) => lang !== defaultLanguage.code)
       .reduce(
         (acc, curr) => {
-          acc[curr] = '';
+          acc[curr] = "";
           return acc;
         },
         {} as { [key: string]: string },
@@ -129,9 +129,9 @@ export class TranslationController extends BaseController<Translation> {
    * @param id - The ID of the translation to be deleted.
    * @returns A Promise that resolves to the deletion result.
    */
-  @Delete(':id')
+  @Delete(":id")
   @HttpCode(204)
-  async deleteOne(@Param('id') id: string): Promise<DeleteResult> {
+  async deleteOne(@Param("id") id: string): Promise<DeleteResult> {
     const result = await this.translationService.deleteOne(id);
     if (result.deletedCount === 0) {
       this.logger.warn(`Unable to delete Translation by id ${id}`);

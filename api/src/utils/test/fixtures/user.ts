@@ -6,33 +6,33 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-import { UserCreateDto } from '@/user/dto/user.dto';
-import { User, UserModel } from '@/user/schemas/user.schema';
-import { hash } from '@/user/utilities/bcryptjs';
+import { UserCreateDto } from "@/user/dto/user.dto";
+import { User, UserModel } from "@/user/schemas/user.schema";
+import { hash } from "@/user/utilities/bcryptjs";
 
-import { getFixturesWithDefaultValues } from '../defaultValues';
-import { TFixturesDefaultValues } from '../types';
+import { getFixturesWithDefaultValues } from "../defaultValues";
+import { TFixturesDefaultValues } from "../types";
 
-import { installRoleFixtures } from './role';
+import { installRoleFixtures } from "./role";
 
 export const users: UserCreateDto[] = [
   {
-    username: 'admin',
-    first_name: 'admin',
-    last_name: 'admin',
-    email: 'admin@admin.admin',
-    password: 'adminadmin',
-    roles: ['0', '1'],
+    username: "admin",
+    first_name: "admin",
+    last_name: "admin",
+    email: "admin@admin.admin",
+    password: "adminadmin",
+    roles: ["0", "1"],
     avatar: null,
   },
 ];
 
 export const userDefaultValues: TFixturesDefaultValues<User> = {
   state: true,
-  language: 'en',
-  timezone: 'Europe/Berlin',
+  language: "en",
+  timezone: "Europe/Berlin",
   sendEmail: false,
   resetCount: 0,
 };

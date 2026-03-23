@@ -6,13 +6,13 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
-import { BaseService } from '@/utils/generics/base-service';
+import { BaseService } from "@/utils/generics/base-service";
 
-import { LabelGroupDto } from '../dto/label-group.dto';
-import { LabelGroupRepository } from '../repositories/label-group.repository';
-import { LabelGroup } from '../schemas/label-group.schema';
+import { LabelGroupDto } from "../dto/label-group.dto";
+import { LabelGroupRepository } from "../repositories/label-group.repository";
+import { LabelGroup } from "../schemas/label-group.schema";
 
 @Injectable()
 export class LabelGroupService extends BaseService<

@@ -8,19 +8,19 @@
 
 // Import required modules and configurations
 
-import { Socket } from 'socket.io';
+import { Socket } from "socket.io";
 
-import { config } from '@/config';
-import { User } from '@/user/schemas/user.schema';
+import { config } from "@/config";
+import { User } from "@/user/schemas/user.schema";
 
-import { IOIncomingMessage } from '../pipes/io-message.pipe';
+import { IOIncomingMessage } from "../pipes/io-message.pipe";
 
 // Define the SocketRequest class for managing incoming socket requests
 export class SocketRequest {
   // Default properties related to the connection type and protocols
-  transport: string = 'socket.io';
+  transport: string = "socket.io";
 
-  protocol: string = 'ws';
+  protocol: string = "ws";
 
   isSocket: boolean = true;
 
@@ -50,7 +50,7 @@ export class SocketRequest {
     cookie?: string;
     nosession?: boolean;
     origin?: string;
-    ['user-agent']?: string;
+    ["user-agent"]?: string;
     [key: string]: string | boolean | undefined;
   };
 
@@ -68,9 +68,9 @@ export class SocketRequest {
     incomingMessage: IOIncomingMessage,
   ) {
     // Set IP and possible IPs list from the socket handshake information
-    this.ip = socket.handshake?.address || '';
+    this.ip = socket.handshake?.address || "";
     this.ips =
-      socket.handshake && 'ips' in socket.handshake
+      socket.handshake && "ips" in socket.handshake
         ? (socket.handshake.ips as string[])
         : [this.ip];
 
@@ -80,11 +80,11 @@ export class SocketRequest {
 
     // Resolve the URL and path
     const urlObj = new URL(
-      this.url.startsWith('http')
+      this.url.startsWith("http")
         ? this.url
         : `${config.apiBaseUrl}${this.url}`,
     );
-    this.path = urlObj.pathname || '/';
+    this.path = urlObj.pathname || "/";
 
     // Combine query parameters from URL and socket handshake
     const urlQuery = Array.from(urlObj.searchParams).reduce(

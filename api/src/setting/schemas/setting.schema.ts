@@ -6,14 +6,14 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Transform } from 'class-transformer';
-import { IsArray, IsIn } from 'class-validator';
+import { ModelDefinition, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Transform } from "class-transformer";
+import { IsArray, IsIn } from "class-validator";
 
-import { BaseSchema } from '@/utils/generics/base-schema';
-import { LifecycleHookManager } from '@/utils/generics/lifecycle-hook-manager';
+import { BaseSchema } from "@/utils/generics/base-schema";
+import { LifecycleHookManager } from "@/utils/generics/lifecycle-hook-manager";
 
-import { SettingType } from './types';
+import { SettingType } from "./types";
 
 @Schema({ timestamps: true })
 export class Setting extends BaseSchema {
@@ -26,7 +26,7 @@ export class Setting extends BaseSchema {
 
   @Prop({
     type: String,
-    default: '',
+    default: "",
   })
   @Transform(({ obj }) => obj.subgroup || undefined)
   subgroup?: string;

@@ -11,25 +11,25 @@ import {
   Injectable,
   InternalServerErrorException,
   UnauthorizedException,
-} from '@nestjs/common';
-import { JwtService, JwtSignOptions } from '@nestjs/jwt';
+} from "@nestjs/common";
+import { JwtService, JwtSignOptions } from "@nestjs/jwt";
 
-import { config } from '@/config';
-import { I18nService } from '@/i18n/services/i18n.service';
-import { LanguageService } from '@/i18n/services/language.service';
-import { LoggerService } from '@/logger/logger.service';
-import { MailerService } from '@/mailer/mailer.service';
+import { config } from "@/config";
+import { I18nService } from "@/i18n/services/i18n.service";
+import { LanguageService } from "@/i18n/services/language.service";
+import { LoggerService } from "@/logger/logger.service";
+import { MailerService } from "@/mailer/mailer.service";
 
-import { UserCreateDto } from '../dto/user.dto';
+import { UserCreateDto } from "../dto/user.dto";
 
-import { UserService } from './user.service';
+import { UserService } from "./user.service";
 
 @Injectable()
 export class ValidateAccountService {
   public readonly jwtSignOptions: JwtSignOptions = {
     secret: config.confirm_account.jwtOptions.secret,
     expiresIn: config.confirm_account.jwtOptions.expiresIn,
-    encoding: 'utf-8',
+    encoding: "utf-8",
   };
 
   constructor(
@@ -71,7 +71,7 @@ export class ValidateAccountService {
    * @param dto - An object containing the user's email and first name.
    */
   async sendConfirmationEmail(
-    dto: Pick<UserCreateDto, 'email' | 'first_name'>,
+    dto: Pick<UserCreateDto, "email" | "first_name">,
   ) {
     const confirmationToken = await this.sign({ email: dto.email });
 
@@ -79,7 +79,7 @@ export class ValidateAccountService {
       const defaultLanguage = await this.languageService.getDefaultLanguage();
       await this.mailerService.sendMail({
         to: dto.email,
-        template: 'account_confirmation.mjml',
+        template: "account_confirmation.mjml",
         context: {
           appName: config.parameters.appName,
           appUrl: config.uiBaseUrl,
@@ -87,16 +87,16 @@ export class ValidateAccountService {
           first_name: dto.first_name,
           t: (key: string) => this.i18n.t(key, { lang: defaultLanguage.code }),
         },
-        subject: this.i18n.t('account_confirmation_subject'),
+        subject: this.i18n.t("account_confirmation_subject"),
       });
     } catch (e) {
       this.logger.error(
-        'Could not send email',
+        "Could not send email",
         e.message,
         e.stack,
-        'ValidateAccount',
+        "ValidateAccount",
       );
-      throw new InternalServerErrorException('Could not send email');
+      throw new InternalServerErrorException("Could not send email");
     }
   }
 
@@ -121,7 +121,7 @@ export class ValidateAccountService {
     );
     try {
     } catch (e) {
-      throw new InternalServerErrorException('Could confirm email');
+      throw new InternalServerErrorException("Could confirm email");
     }
     return {};
   }

@@ -6,30 +6,30 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { NOT_FOUND_ID } from '@/utils/constants/mock';
-import { nlpEntityFixtures } from '@/utils/test/fixtures/nlpentity';
-import { installNlpValueFixtures } from '@/utils/test/fixtures/nlpvalue';
-import { getPageQuery } from '@/utils/test/pagination';
+import { NOT_FOUND_ID } from "@/utils/constants/mock";
+import { nlpEntityFixtures } from "@/utils/test/fixtures/nlpentity";
+import { installNlpValueFixtures } from "@/utils/test/fixtures/nlpvalue";
+import { getPageQuery } from "@/utils/test/pagination";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { NlpEntityRepository } from '../repositories/nlp-entity.repository';
-import { NlpValueRepository } from '../repositories/nlp-value.repository';
-import { NlpEntity } from '../schemas/nlp-entity.schema';
+import { NlpEntityRepository } from "../repositories/nlp-entity.repository";
+import { NlpValueRepository } from "../repositories/nlp-value.repository";
+import { NlpEntity } from "../schemas/nlp-entity.schema";
 
-import { NlpEntityService } from './nlp-entity.service';
+import { NlpEntityService } from "./nlp-entity.service";
 
-describe('NlpEntityService', () => {
+describe("NlpEntityService", () => {
   let nlpEntityService: NlpEntityService;
   let nlpEntityRepository: NlpEntityRepository;
   let nlpValueRepository: NlpValueRepository;
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['providers'],
+      autoInjectFrom: ["providers"],
       imports: [rootMongooseTestModule(installNlpValueFixtures)],
       providers: [NlpEntityService],
     });
@@ -45,10 +45,10 @@ describe('NlpEntityService', () => {
 
   afterEach(jest.clearAllMocks);
 
-  describe('The deleteCascadeOne function', () => {
-    it('should delete a nlp entity', async () => {
+  describe("The deleteCascadeOne function", () => {
+    it("should delete a nlp entity", async () => {
       const intentNlpEntity = await nlpEntityRepository.findOne({
-        name: 'intent',
+        name: "intent",
       });
       const result = await nlpEntityService.deleteCascadeOne(
         intentNlpEntity!.id,
@@ -57,10 +57,10 @@ describe('NlpEntityService', () => {
     });
   });
 
-  describe('findOneAndPopulate', () => {
-    it('should return a nlp entity with populate', async () => {
+  describe("findOneAndPopulate", () => {
+    it("should return a nlp entity with populate", async () => {
       const firstNameNlpEntity = await nlpEntityRepository.findOne({
-        name: 'firstname',
+        name: "firstname",
       });
       const result = await nlpEntityService.findOneAndPopulate(
         firstNameNlpEntity!.id,
@@ -77,11 +77,11 @@ describe('NlpEntityService', () => {
     });
   });
 
-  describe('findAndPopulate', () => {
-    it('should return all nlp entities with populate', async () => {
-      const pageQuery = getPageQuery<NlpEntity>({ sort: ['name', 'desc'] });
+  describe("findAndPopulate", () => {
+    it("should return all nlp entities with populate", async () => {
+      const pageQuery = getPageQuery<NlpEntity>({ sort: ["name", "desc"] });
       const firstNameNlpEntity = await nlpEntityRepository.findOne({
-        name: 'firstname',
+        name: "firstname",
       });
       const result = await nlpEntityService.findAndPopulate(
         { _id: firstNameNlpEntity!.id },
@@ -100,17 +100,17 @@ describe('NlpEntityService', () => {
       expect(result).toEqualPayload(entitiesWithValues);
     });
   });
-  describe('NlpEntityService - updateWeight', () => {
+  describe("NlpEntityService - updateWeight", () => {
     let createdEntity: NlpEntity;
     beforeEach(async () => {
       createdEntity = await nlpEntityRepository.create({
-        name: 'testentity',
+        name: "testentity",
         builtin: false,
         weight: 3,
       });
     });
 
-    it('should update the weight of an NLP entity', async () => {
+    it("should update the weight of an NLP entity", async () => {
       const newWeight = 8;
 
       const updatedEntity = await nlpEntityService.updateWeight(
@@ -121,20 +121,20 @@ describe('NlpEntityService', () => {
       expect(updatedEntity.weight).toBe(newWeight);
     });
 
-    it('should handle updating weight of non-existent entity', async () => {
+    it("should handle updating weight of non-existent entity", async () => {
       const nonExistentId = NOT_FOUND_ID;
 
       try {
         await nlpEntityService.updateWeight(nonExistentId, 5);
-        fail('Expected error was not thrown');
+        fail("Expected error was not thrown");
       } catch (error) {
         expect(error).toBeDefined();
       }
     });
 
-    it('should use default weight of 1 when creating entity without weight', async () => {
+    it("should use default weight of 1 when creating entity without weight", async () => {
       const createdEntity = await nlpEntityRepository.create({
-        name: 'entityWithoutWeight',
+        name: "entityWithoutWeight",
         builtin: true,
         // weight not specified
       });
@@ -142,12 +142,12 @@ describe('NlpEntityService', () => {
       expect(createdEntity.weight).toBe(1);
     });
 
-    it('should throw an error if weight is negative', async () => {
+    it("should throw an error if weight is negative", async () => {
       const invalidWeight = -3;
 
       await expect(
         nlpEntityService.updateWeight(createdEntity.id, invalidWeight),
-      ).rejects.toThrow('Weight must be a strictly positive number');
+      ).rejects.toThrow("Weight must be a strictly positive number");
     });
 
     afterEach(async () => {
@@ -156,24 +156,24 @@ describe('NlpEntityService', () => {
     });
   });
 
-  describe('storeNewEntities', () => {
-    it('should store new entities', async () => {
+  describe("storeNewEntities", () => {
+    it("should store new entities", async () => {
       const result = await nlpEntityService.storeNewEntities(
-        'Mein Name ist Hexabot',
+        "Mein Name ist Hexabot",
         [
-          { entity: 'intent', value: 'Name' },
-          { entity: 'language', value: 'de' },
+          { entity: "intent", value: "Name" },
+          { entity: "language", value: "de" },
         ],
-        ['trait'],
+        ["trait"],
       );
       const intentEntity = await nlpEntityRepository.findOne({
-        name: 'intent',
+        name: "intent",
       });
       const languageEntity = await nlpEntityRepository.findOne({
-        name: 'language',
+        name: "language",
       });
-      const nameValue = await nlpValueRepository.findOne({ value: 'Name' });
-      const deValue = await nlpValueRepository.findOne({ value: 'de' });
+      const nameValue = await nlpValueRepository.findOne({ value: "Name" });
+      const deValue = await nlpValueRepository.findOne({ value: "de" });
       const storedEntites = [
         {
           entity: intentEntity!.id,
@@ -188,53 +188,53 @@ describe('NlpEntityService', () => {
       expect(result).toEqualPayload(storedEntites);
     });
   });
-  describe('getNlpMap', () => {
-    it('should return a NlpCacheMap with the correct structure', async () => {
+  describe("getNlpMap", () => {
+    it("should return a NlpCacheMap with the correct structure", async () => {
       // Act
       const result = await nlpEntityService.getNlpMap();
 
       expect(result).toBeInstanceOf(Map);
-      expect(result.get('firstname')).toEqualPayload(
+      expect(result.get("firstname")).toEqualPayload(
         {
-          name: 'firstname',
-          lookups: ['keywords'],
-          doc: '',
+          name: "firstname",
+          lookups: ["keywords"],
+          doc: "",
           builtin: false,
           weight: 0.85,
           values: [
             {
-              value: 'jhon',
-              expressions: ['john', 'joohn', 'jhonny'],
+              value: "jhon",
+              expressions: ["john", "joohn", "jhonny"],
               builtin: false,
-              doc: '',
+              doc: "",
             },
           ],
         },
-        ['id', 'createdAt', 'updatedAt', 'metadata', 'entity'],
+        ["id", "createdAt", "updatedAt", "metadata", "entity"],
       );
-      expect(result.get('subject')).toEqualPayload(
+      expect(result.get("subject")).toEqualPayload(
         {
-          name: 'subject',
-          lookups: ['trait'],
-          doc: '',
+          name: "subject",
+          lookups: ["trait"],
+          doc: "",
           builtin: false,
           weight: 0.95,
           values: [
             {
-              value: 'product',
+              value: "product",
               expressions: [],
               builtin: false,
-              doc: '',
+              doc: "",
             },
             {
-              value: 'claim',
+              value: "claim",
               expressions: [],
               builtin: false,
-              doc: '',
+              doc: "",
             },
           ],
         },
-        ['id', 'createdAt', 'updatedAt', 'metadata', 'entity'],
+        ["id", "createdAt", "updatedAt", "metadata", "entity"],
       );
     });
   });

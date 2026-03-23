@@ -6,43 +6,43 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
-import mime from 'mime';
-import { v4 as uuidv4 } from 'uuid';
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { OnEvent } from "@nestjs/event-emitter";
+import mime from "mime";
+import { v4 as uuidv4 } from "uuid";
 
-import { AttachmentService } from '@/attachment/services/attachment.service';
+import { AttachmentService } from "@/attachment/services/attachment.service";
 import {
   AttachmentAccess,
   AttachmentCreatedByRef,
   AttachmentFile,
   AttachmentResourceRef,
-} from '@/attachment/types';
-import { config } from '@/config';
-import { BaseService } from '@/utils/generics/base-service';
-import { TFilterQuery } from '@/utils/types/filter.types';
+} from "@/attachment/types";
+import { config } from "@/config";
+import { BaseService } from "@/utils/generics/base-service";
+import { TFilterQuery } from "@/utils/types/filter.types";
 import {
   SocketGet,
   SocketPost,
-} from '@/websocket/decorators/socket-method.decorator';
-import { SocketReq } from '@/websocket/decorators/socket-req.decorator';
-import { SocketRes } from '@/websocket/decorators/socket-res.decorator';
-import { IOOutgoingSubscribeMessage } from '@/websocket/pipes/io-message.pipe';
-import { Room } from '@/websocket/types';
-import { SocketRequest } from '@/websocket/utils/socket-request';
-import { SocketResponse } from '@/websocket/utils/socket-response';
-import { WebsocketGateway } from '@/websocket/websocket.gateway';
+} from "@/websocket/decorators/socket-method.decorator";
+import { SocketReq } from "@/websocket/decorators/socket-req.decorator";
+import { SocketRes } from "@/websocket/decorators/socket-res.decorator";
+import { IOOutgoingSubscribeMessage } from "@/websocket/pipes/io-message.pipe";
+import { Room } from "@/websocket/types";
+import { SocketRequest } from "@/websocket/utils/socket-request";
+import { SocketResponse } from "@/websocket/utils/socket-response";
+import { WebsocketGateway } from "@/websocket/websocket.gateway";
 
-import { SubscriberDto, SubscriberUpdateDto } from '../dto/subscriber.dto';
-import { SubscriberRepository } from '../repositories/subscriber.repository';
-import { Label } from '../schemas/label.schema';
+import { SubscriberDto, SubscriberUpdateDto } from "../dto/subscriber.dto";
+import { SubscriberRepository } from "../repositories/subscriber.repository";
+import { Label } from "../schemas/label.schema";
 import {
   Subscriber,
   SubscriberFull,
   SubscriberPopulate,
-} from '../schemas/subscriber.schema';
+} from "../schemas/subscriber.schema";
 
-import { LabelService } from './label.service';
+import { LabelService } from "./label.service";
 
 @Injectable()
 export class SubscriberService extends BaseService<
@@ -67,8 +67,8 @@ export class SubscriberService extends BaseService<
    * @param req - The socket request object
    * @param res - The socket response object
    */
-  @SocketGet('/subscriber/subscribe/')
-  @SocketPost('/subscriber/subscribe/')
+  @SocketGet("/subscriber/subscribe/")
+  @SocketPost("/subscriber/subscribe/")
   async subscribe(
     @SocketReq() req: SocketRequest,
     @SocketRes() res: SocketResponse,
@@ -81,7 +81,7 @@ export class SubscriberService extends BaseService<
         subscribe: Room.SUBSCRIBER,
       });
     } catch (e) {
-      this.logger.error('Websocket subscription');
+      this.logger.error("Websocket subscription");
       throw new InternalServerErrorException(e);
     }
   }
@@ -192,7 +192,7 @@ export class SubscriberService extends BaseService<
     labelsToPush: string[],
   ): Promise<Subscriber> {
     if (!labelsToPush || labelsToPush.length === 0) {
-      throw new Error('No labels to be assigned!');
+      throw new Error("No labels to be assigned!");
     }
 
     let labelsToPull: string[] = [];
@@ -238,7 +238,7 @@ export class SubscriberService extends BaseService<
    */
   async handOver(profile: Subscriber, assignTo: string): Promise<Subscriber> {
     if (!assignTo) {
-      throw new Error('Cannot handover to undefined user!');
+      throw new Error("Cannot handover to undefined user!");
     }
 
     const updated = await this.updateOne(profile.id, { assignedTo: assignTo });
@@ -278,13 +278,13 @@ export class SubscriberService extends BaseService<
         current = await this.handOver(current, assignTo);
       }
 
-      this.logger.debug('Block updates have been applied!', {
+      this.logger.debug("Block updates have been applied!", {
         labels,
         assignTo,
       });
       return current;
     } catch (err) {
-      this.logger.error('Unable to perform block updates!', err);
+      this.logger.error("Unable to perform block updates!", err);
       throw err;
     }
   }
@@ -300,7 +300,7 @@ export class SubscriberService extends BaseService<
    *
    * @param subscriber The subscriber whose is being handled.
    */
-  @OnEvent('hook:user:lastvisit')
+  @OnEvent("hook:user:lastvisit")
   async handleLastVisit(subscriber: Subscriber) {
     if (subscriber.lastvisit) {
       try {
@@ -315,7 +315,7 @@ export class SubscriberService extends BaseService<
           lastvisit: new Date(),
         });
         this.logger.debug(
-          'lastVisit Hook : user retainedFrom/lastvisit updated !',
+          "lastVisit Hook : user retainedFrom/lastvisit updated !",
           JSON.stringify(user),
         );
       } catch (err) {
@@ -330,7 +330,7 @@ export class SubscriberService extends BaseService<
    * @param _query - The Mongoose query object used for deletion.
    * @param criteria - The filter criteria for finding the labels to be deleted.
    */
-  @OnEvent('hook:label:preDelete')
+  @OnEvent("hook:label:preDelete")
   async handleLabelDelete(
     _query: unknown,
     criteria: TFilterQuery<Label>,
@@ -341,7 +341,7 @@ export class SubscriberService extends BaseService<
         { $pull: { labels: criteria._id } },
       );
     } else {
-      throw new Error('Attempted to delete label using unknown criteria');
+      throw new Error("Attempted to delete label using unknown criteria");
     }
   }
 }

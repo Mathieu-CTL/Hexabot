@@ -6,17 +6,17 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Transform, Type } from 'class-transformer';
-import mongoose, { Document } from 'mongoose';
+import { ModelDefinition, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Transform, Type } from "class-transformer";
+import mongoose, { Document } from "mongoose";
 
-import { ContentElement } from '@/chat/schemas/types/message';
-import { config } from '@/config';
-import { BaseSchema } from '@/utils/generics/base-schema';
-import { LifecycleHookManager } from '@/utils/generics/lifecycle-hook-manager';
-import { TFilterPopulateFields } from '@/utils/types/filter.types';
+import { ContentElement } from "@/chat/schemas/types/message";
+import { config } from "@/config";
+import { BaseSchema } from "@/utils/generics/base-schema";
+import { LifecycleHookManager } from "@/utils/generics/lifecycle-hook-manager";
+import { TFilterPopulateFields } from "@/utils/types/filter.types";
 
-import { ContentType } from './content-type.schema';
+import { ContentType } from "./content-type.schema";
 
 export type ContentDocument = Document<Content>;
 
@@ -27,7 +27,7 @@ export class ContentStub extends BaseSchema {
    */
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'ContentType',
+    ref: "ContentType",
   })
   entity: unknown;
 
@@ -53,14 +53,14 @@ export class ContentStub extends BaseSchema {
    * Helper to return the internal url of this content.
    */
   static getUrl(item: ContentElement): string {
-    return new URL('/content/view/' + item.id, config.apiBaseUrl).toString();
+    return new URL("/content/view/" + item.id, config.apiBaseUrl).toString();
   }
 
   /**
    * Helper that returns the relative chatbot payload for this content.
    */
   static getPayload(item: ContentElement): string {
-    return 'postback' in item ? (item.postback as string) : item.title;
+    return "postback" in item ? (item.postback as string) : item.title;
   }
 }
 
@@ -93,8 +93,8 @@ export class ContentFull extends ContentStub {
 const ContentSchema = SchemaFactory.createForClass(ContentStub);
 ContentSchema.index(
   {
-    title: 'text',
-    rag: 'text',
+    title: "text",
+    rag: "text",
   },
   {
     weights: {
@@ -113,4 +113,4 @@ export default ContentModel.schema;
 
 export type ContentPopulate = keyof TFilterPopulateFields<Content, ContentStub>;
 
-export const CONTENT_POPULATE: ContentPopulate[] = ['entity'];
+export const CONTENT_POPULATE: ContentPopulate[] = ["entity"];

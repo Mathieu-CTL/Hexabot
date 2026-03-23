@@ -6,33 +6,33 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from "@nestjs/common";
 
-import { NOT_FOUND_ID } from '@/utils/constants/mock';
+import { NOT_FOUND_ID } from "@/utils/constants/mock";
 import {
   installLabelGroupFixtures,
   labelGroupFixtures,
-} from '@/utils/test/fixtures/label-group';
-import { getPageQuery } from '@/utils/test/pagination';
+} from "@/utils/test/fixtures/label-group";
+import { getPageQuery } from "@/utils/test/pagination";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { LabelGroupCreateDto } from '../dto/label-group.dto';
-import { LabelGroup } from '../schemas/label-group.schema';
-import { LabelGroupService } from '../services/label-group.service';
+import { LabelGroupCreateDto } from "../dto/label-group.dto";
+import { LabelGroup } from "../schemas/label-group.schema";
+import { LabelGroupService } from "../services/label-group.service";
 
-import { LabelGroupController } from './label-group.controller';
+import { LabelGroupController } from "./label-group.controller";
 
-describe('LabelGroupController', () => {
+describe("LabelGroupController", () => {
   let labelGroupController: LabelGroupController;
   let labelGroupService: LabelGroupService;
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['controllers', 'providers'],
+      autoInjectFrom: ["controllers", "providers"],
       controllers: [LabelGroupController],
       imports: [rootMongooseTestModule(installLabelGroupFixtures)],
       providers: [],
@@ -46,9 +46,9 @@ describe('LabelGroupController', () => {
   afterEach(jest.clearAllMocks);
   afterAll(closeInMongodConnection);
 
-  describe('count', () => {
-    it('should count label groups', async () => {
-      jest.spyOn(labelGroupService, 'count');
+  describe("count", () => {
+    it("should count label groups", async () => {
+      jest.spyOn(labelGroupService, "count");
       const result = await labelGroupController.filterCount();
 
       expect(labelGroupService.count).toHaveBeenCalled();
@@ -56,10 +56,10 @@ describe('LabelGroupController', () => {
     });
   });
 
-  describe('findPage', () => {
+  describe("findPage", () => {
     const pageQuery = getPageQuery<LabelGroup>();
-    it('should find label groups', async () => {
-      jest.spyOn(labelGroupService, 'find');
+    it("should find label groups", async () => {
+      jest.spyOn(labelGroupService, "find");
       const result = await labelGroupController.findPage(pageQuery, {});
 
       expect(labelGroupService.find).toHaveBeenCalledWith({}, pageQuery);
@@ -67,11 +67,11 @@ describe('LabelGroupController', () => {
     });
   });
 
-  describe('findOne', () => {
-    it('should find one label by id', async () => {
+  describe("findOne", () => {
+    it("should find one label by id", async () => {
       const { name } = labelGroupFixtures[0];
       const label = (await labelGroupService.findOne({ name }))!;
-      jest.spyOn(labelGroupService, 'findOne');
+      jest.spyOn(labelGroupService, "findOne");
       const result = await labelGroupController.findOne(label.id);
 
       expect(labelGroupService.findOne).toHaveBeenCalledWith(label.id);
@@ -79,11 +79,11 @@ describe('LabelGroupController', () => {
     });
   });
 
-  describe('create', () => {
-    it('should create a label group', async () => {
-      jest.spyOn(labelGroupService, 'create');
+  describe("create", () => {
+    it("should create a label group", async () => {
+      jest.spyOn(labelGroupService, "create");
       const labelGroupDto: LabelGroupCreateDto = {
-        name: 'Sector',
+        name: "Sector",
       };
       const result = await labelGroupController.create(labelGroupDto);
 
@@ -92,12 +92,12 @@ describe('LabelGroupController', () => {
     });
   });
 
-  describe('deleteOne', () => {
-    it('should delete one label by id', async () => {
+  describe("deleteOne", () => {
+    it("should delete one label by id", async () => {
       const labelGroupToDelete = await labelGroupService.create({
-        name: 'To Be Deleted',
+        name: "To Be Deleted",
       });
-      jest.spyOn(labelGroupService, 'deleteOne');
+      jest.spyOn(labelGroupService, "deleteOne");
       const result = await labelGroupController.deleteOne(
         labelGroupToDelete.id,
       );
@@ -111,42 +111,42 @@ describe('LabelGroupController', () => {
       });
     });
 
-    it('should throw a NotFoundException when attempting to delete a non existing label by id', async () => {
+    it("should throw a NotFoundException when attempting to delete a non existing label by id", async () => {
       await expect(
         labelGroupController.deleteOne(NOT_FOUND_ID),
       ).rejects.toThrow();
     });
   });
 
-  describe('updateOne', () => {
-    it('should update a label by id', async () => {
+  describe("updateOne", () => {
+    it("should update a label by id", async () => {
       const labelGroupToBeUpdated = await labelGroupService.create({
-        name: 'To Be Updated',
+        name: "To Be Updated",
       });
-      jest.spyOn(labelGroupService, 'updateOne');
+      jest.spyOn(labelGroupService, "updateOne");
       const result = await labelGroupController.updateOne(
         labelGroupToBeUpdated.id,
-        { name: 'Updated' },
+        { name: "Updated" },
       );
-      expect(result).toEqualPayload({ name: 'Updated' });
+      expect(result).toEqualPayload({ name: "Updated" });
     });
 
-    it('should throw a NotFoundException when attempting to update a non existing label by id', async () => {
+    it("should throw a NotFoundException when attempting to update a non existing label by id", async () => {
       await expect(
-        labelGroupController.updateOne(NOT_FOUND_ID, { name: 'Foo Bar' }),
+        labelGroupController.updateOne(NOT_FOUND_ID, { name: "Foo Bar" }),
       ).rejects.toThrow();
     });
   });
 
-  describe('deleteMany', () => {
-    it('should delete multiple labels', async () => {
+  describe("deleteMany", () => {
+    it("should delete multiple labels", async () => {
       const labelGroups = (
         await labelGroupService.createMany([
           {
-            name: 'Group 1',
+            name: "Group 1",
           },
           {
-            name: 'Group 2',
+            name: "Group 2",
           },
         ])
       ).map(({ id }) => id);
@@ -160,14 +160,14 @@ describe('LabelGroupController', () => {
       expect(remainingValues.length).toBe(0);
     });
 
-    it('should throw BadRequestException when no IDs are provided', async () => {
+    it("should throw BadRequestException when no IDs are provided", async () => {
       await expect(labelGroupController.deleteMany([])).rejects.toThrow(
         BadRequestException,
       );
     });
 
-    it('should throw NotFoundException when provided IDs do not exist', async () => {
-      const nonExistentIds = [NOT_FOUND_ID, NOT_FOUND_ID.replace(/9/g, '8')];
+    it("should throw NotFoundException when provided IDs do not exist", async () => {
+      const nonExistentIds = [NOT_FOUND_ID, NOT_FOUND_ID.replace(/9/g, "8")];
 
       await expect(
         labelGroupController.deleteMany(nonExistentIds),

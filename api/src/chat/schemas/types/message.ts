@@ -6,42 +6,42 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { z } from 'zod';
+import { z } from "zod";
 
-import { PluginName } from '@/plugins/types';
+import { PluginName } from "@/plugins/types";
 
-import { Message } from '../message.schema';
+import { Message } from "../message.schema";
 
-import { attachmentPayloadSchema } from './attachment';
-import { buttonSchema, PayloadType } from './button';
-import { contentOptionsSchema } from './options';
-import { QuickReplyType, stdQuickReplySchema } from './quick-reply';
+import { attachmentPayloadSchema } from "./attachment";
+import { buttonSchema, PayloadType } from "./button";
+import { contentOptionsSchema } from "./options";
+import { QuickReplyType, stdQuickReplySchema } from "./quick-reply";
 
 /**
  * StdEventType enum is declared, and currently not used
  **/
 
 export enum StdEventType {
-  message = 'message',
-  delivery = 'delivery',
-  read = 'read',
-  typing = 'typing',
-  follow = 'follow',
-  echo = 'echo',
-  error = 'error',
-  unknown = '',
+  message = "message",
+  delivery = "delivery",
+  read = "read",
+  typing = "typing",
+  follow = "follow",
+  echo = "echo",
+  error = "error",
+  unknown = "",
 }
 
 /**
  * IncomingMessageType enum is declared, and currently not used
  **/
 export enum IncomingMessageType {
-  message = 'message',
-  postback = 'postback',
-  quick_reply = 'quick_reply',
-  location = 'location',
-  attachments = 'attachments',
-  unknown = '',
+  message = "message",
+  postback = "postback",
+  quick_reply = "quick_reply",
+  location = "location",
+  attachments = "attachments",
+  unknown = "",
 }
 
 export const incomingMessageType = z.nativeEnum(IncomingMessageType);
@@ -49,13 +49,13 @@ export const incomingMessageType = z.nativeEnum(IncomingMessageType);
 export type IncomingMessageTypeLiteral = z.infer<typeof incomingMessageType>;
 
 export enum OutgoingMessageFormat {
-  text = 'text',
-  quickReplies = 'quickReplies',
-  buttons = 'buttons',
-  attachment = 'attachment',
-  list = 'list',
-  carousel = 'carousel',
-  system = 'system',
+  text = "text",
+  quickReplies = "quickReplies",
+  buttons = "buttons",
+  attachment = "attachment",
+  list = "list",
+  carousel = "carousel",
+  system = "system",
 }
 
 export const outgoingMessageFormatSchema = z.nativeEnum(OutgoingMessageFormat);
@@ -68,11 +68,11 @@ export type OutgoingMessageFormatLiteral = z.infer<
  * FileType enum is declared, and currently not used
  **/
 export enum FileType {
-  image = 'image',
-  video = 'video',
-  audio = 'audio',
-  file = 'file',
-  unknown = 'unknown',
+  image = "image",
+  video = "video",
+  audio = "audio",
+  file = "file",
+  unknown = "unknown",
 }
 
 export const fileTypeSchema = z.nativeEnum(FileType);
@@ -238,12 +238,12 @@ export const stdIncomingMessageSchema = z.union([
 
 export type StdIncomingMessage = z.infer<typeof stdIncomingMessageSchema>;
 
-export interface IncomingMessage extends Omit<Message, 'recipient' | 'sentBy'> {
+export interface IncomingMessage extends Omit<Message, "recipient" | "sentBy"> {
   message: StdIncomingMessage;
   sender: string;
 }
 
-export interface OutgoingMessage extends Omit<Message, 'sender'> {
+export interface OutgoingMessage extends Omit<Message, "sender"> {
   message: StdOutgoingMessage;
   recipient: string;
   sentBy?: string;
@@ -280,7 +280,7 @@ export type StdOutgoingButtonsEnvelope = z.infer<
 >;
 
 export const stdOutgoingListEnvelopeSchema = z.object({
-  format: z.enum(['list', 'carousel']),
+  format: z.enum(["list", "carousel"]),
   message: stdOutgoingListMessageSchema,
 });
 
@@ -345,14 +345,14 @@ const quickReplySchema = z
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Title is required when content_type is 'text'",
-          path: ['title'],
+          path: ["title"],
         });
       }
       if (data.payload == null) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Payload is required when content_type is 'text'",
-          path: ['payload'],
+          path: ["payload"],
         });
       }
     }
@@ -362,11 +362,11 @@ const quickReplySchema = z
 export const pluginBlockMessageSchema = z
   .record(z.any())
   .superRefine((data, ctx) => {
-    if (!('plugin' in data)) {
+    if (!("plugin" in data)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "The object must contain the 'plugin' attribute",
-        path: ['plugin'],
+        path: ["plugin"],
       });
     }
   });

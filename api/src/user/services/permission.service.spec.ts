@@ -9,24 +9,24 @@
 import {
   installPermissionFixtures,
   permissionFixtures,
-} from '@/utils/test/fixtures/permission';
+} from "@/utils/test/fixtures/permission";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { ModelRepository } from '../repositories/model.repository';
-import { PermissionRepository } from '../repositories/permission.repository';
-import { RoleRepository } from '../repositories/role.repository';
-import { Model as ModelSchema } from '../schemas/model.schema';
-import { Permission, PermissionFull } from '../schemas/permission.schema';
-import { Role } from '../schemas/role.schema';
-import { Action } from '../types/action.type';
+import { ModelRepository } from "../repositories/model.repository";
+import { PermissionRepository } from "../repositories/permission.repository";
+import { RoleRepository } from "../repositories/role.repository";
+import { Model as ModelSchema } from "../schemas/model.schema";
+import { Permission, PermissionFull } from "../schemas/permission.schema";
+import { Role } from "../schemas/role.schema";
+import { Action } from "../types/action.type";
 
-import { PermissionService } from './permission.service';
+import { PermissionService } from "./permission.service";
 
-describe('PermissionService', () => {
+describe("PermissionService", () => {
   let permissionService: PermissionService;
   let modelRepository: ModelRepository;
   let roleRepository: RoleRepository;
@@ -35,8 +35,8 @@ describe('PermissionService', () => {
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      models: ['InvitationModel'],
-      autoInjectFrom: ['providers'],
+      models: ["InvitationModel"],
+      autoInjectFrom: ["providers"],
       imports: [rootMongooseTestModule(installPermissionFixtures)],
       providers: [PermissionService, RoleRepository, ModelRepository],
     });
@@ -56,9 +56,9 @@ describe('PermissionService', () => {
 
   afterEach(jest.clearAllMocks);
 
-  describe('findOneAndPopulate', () => {
-    it('should find a permission and populate its role and model', async () => {
-      jest.spyOn(permissionRepository, 'findOneAndPopulate');
+  describe("findOneAndPopulate", () => {
+    it("should find a permission and populate its role and model", async () => {
+      jest.spyOn(permissionRepository, "findOneAndPopulate");
       const role = await roleRepository.findOne(permission.role);
       const model = await modelRepository.findOne(permission.model);
       const result = await permissionService.findOneAndPopulate(permission.id);
@@ -67,16 +67,16 @@ describe('PermissionService', () => {
         undefined,
       );
       expect(result).toEqualPayload({
-        ...permissionFixtures.find(({ action }) => action === 'create'),
+        ...permissionFixtures.find(({ action }) => action === "create"),
         role,
         model,
       });
     });
   });
 
-  describe('findAndPopulate', () => {
-    it('should find permissions, and for each permission, populate the corresponding role and model', async () => {
-      jest.spyOn(permissionRepository, 'findAllAndPopulate');
+  describe("findAndPopulate", () => {
+    it("should find permissions, and for each permission, populate the corresponding role and model", async () => {
+      jest.spyOn(permissionRepository, "findAllAndPopulate");
       const allModels = await modelRepository.findAll();
       const allRoles = await roleRepository.findAll();
       const allPermissions = await permissionRepository.findAll();
@@ -103,8 +103,8 @@ describe('PermissionService', () => {
     });
   });
 
-  describe('getPermissions', () => {
-    it('should get a permission tree', async () => {
+  describe("getPermissions", () => {
+    it("should get a permission tree", async () => {
       const currentModels = await permissionService.findAllAndPopulate();
       const permissionTree = permissionService.buildTree(currentModels);
       const result = await permissionService.getPermissions();
@@ -112,61 +112,61 @@ describe('PermissionService', () => {
     });
   });
 
-  describe('buildTree', () => {
-    it('should return an empty object when permissions are empty', () => {
+  describe("buildTree", () => {
+    it("should return an empty object when permissions are empty", () => {
       expect(permissionService.buildTree([])).toEqual({});
     });
 
-    it('should correctly organize permissions into a tree structure', () => {
+    it("should correctly organize permissions into a tree structure", () => {
       const permissions = [
         {
-          role: { id: 'admin' },
-          model: { identity: 'user' },
+          role: { id: "admin" },
+          model: { identity: "user" },
           action: Action.CREATE,
         },
         {
-          role: { id: 'admin' },
-          model: { identity: 'user' },
+          role: { id: "admin" },
+          model: { identity: "user" },
           action: Action.DELETE,
         },
         {
-          role: { id: 'user' },
-          model: { identity: 'profile' },
+          role: { id: "user" },
+          model: { identity: "profile" },
           action: Action.READ,
         },
       ] as PermissionFull[];
       expect(permissionService.buildTree(permissions)).toEqual({
         admin: {
-          user: ['create', 'delete'],
+          user: ["create", "delete"],
         },
         user: {
-          profile: ['read'],
+          profile: ["read"],
         },
       });
     });
 
-    it('should handle roles with multiple models and actions', () => {
+    it("should handle roles with multiple models and actions", () => {
       const permissions = [
         {
-          role: { id: 'admin' },
-          model: { identity: 'user' },
+          role: { id: "admin" },
+          model: { identity: "user" },
           action: Action.CREATE,
         },
         {
-          role: { id: 'admin' },
-          model: { identity: 'settings' },
+          role: { id: "admin" },
+          model: { identity: "settings" },
           action: Action.UPDATE,
         },
         {
-          role: { id: 'admin' },
-          model: { identity: 'user' },
+          role: { id: "admin" },
+          model: { identity: "user" },
           action: Action.UPDATE,
         },
       ] as PermissionFull[];
       expect(permissionService.buildTree(permissions)).toEqual({
         admin: {
-          user: ['create', 'update'],
-          settings: ['update'],
+          user: ["create", "update"],
+          settings: ["update"],
         },
       });
     });

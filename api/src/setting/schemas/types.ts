@@ -6,29 +6,29 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { BaseSchema } from '@/utils/generics/base-schema';
+import { BaseSchema } from "@/utils/generics/base-schema";
 
-import { Setting } from './setting.schema';
+import { Setting } from "./setting.schema";
 
 export enum SettingType {
-  text = 'text',
-  textarea = 'textarea',
-  secret = 'secret',
-  multiple_text = 'multiple_text',
-  checkbox = 'checkbox',
-  select = 'select',
-  number = 'number',
-  attachment = 'attachment',
-  multiple_attachment = 'multiple_attachment',
+  text = "text",
+  textarea = "textarea",
+  secret = "secret",
+  multiple_text = "multiple_text",
+  checkbox = "checkbox",
+  select = "select",
+  number = "number",
+  attachment = "attachment",
+  multiple_attachment = "multiple_attachment",
 }
 
 export enum FieldType {
-  text = 'text',
-  url = 'url',
-  textarea = 'textarea',
-  checkbox = 'checkbox',
-  file = 'file',
-  html = 'html',
+  text = "text",
+  url = "url",
+  textarea = "textarea",
+  checkbox = "checkbox",
+  file = "file",
+  html = "html",
 }
 
 export interface TextSetting extends Setting {

@@ -6,14 +6,14 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
-import { BaseService } from '@/utils/generics/base-service';
+import { BaseService } from "@/utils/generics/base-service";
 
-import { ContextVarDto } from '../dto/context-var.dto';
-import { ContextVarRepository } from '../repositories/context-var.repository';
-import { Block, BlockFull } from '../schemas/block.schema';
-import { ContextVar } from '../schemas/context-var.schema';
+import { ContextVarDto } from "../dto/context-var.dto";
+import { ContextVarRepository } from "../repositories/context-var.repository";
+import { Block, BlockFull } from "../schemas/block.schema";
+import { ContextVar } from "../schemas/context-var.schema";
 
 @Injectable()
 export class ContextVarService extends BaseService<

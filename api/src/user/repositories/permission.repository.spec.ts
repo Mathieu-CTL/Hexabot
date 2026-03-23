@@ -6,28 +6,28 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { getModelToken } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { getModelToken } from "@nestjs/mongoose";
+import { Model } from "mongoose";
 
 import {
   installPermissionFixtures,
   permissionFixtures,
-} from '@/utils/test/fixtures/permission';
+} from "@/utils/test/fixtures/permission";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { ModelRepository } from '../repositories/model.repository';
-import { PermissionRepository } from '../repositories/permission.repository';
-import { RoleRepository } from '../repositories/role.repository';
-import { Model as ModelSchema } from '../schemas/model.schema';
-import { Permission, PermissionFull } from '../schemas/permission.schema';
-import { Role } from '../schemas/role.schema';
-import { Action } from '../types/action.type';
+import { ModelRepository } from "../repositories/model.repository";
+import { PermissionRepository } from "../repositories/permission.repository";
+import { RoleRepository } from "../repositories/role.repository";
+import { Model as ModelSchema } from "../schemas/model.schema";
+import { Permission, PermissionFull } from "../schemas/permission.schema";
+import { Role } from "../schemas/role.schema";
+import { Action } from "../types/action.type";
 
-describe('PermissionRepository', () => {
+describe("PermissionRepository", () => {
   let modelRepository: ModelRepository;
   let roleRepository: RoleRepository;
   let permissionRepository: PermissionRepository;
@@ -37,8 +37,8 @@ describe('PermissionRepository', () => {
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      models: ['InvitationModel'],
-      autoInjectFrom: ['providers'],
+      models: ["InvitationModel"],
+      autoInjectFrom: ["providers"],
       imports: [rootMongooseTestModule(installPermissionFixtures)],
       providers: [ModelRepository, RoleRepository, PermissionRepository],
     });
@@ -61,9 +61,9 @@ describe('PermissionRepository', () => {
 
   afterEach(jest.clearAllMocks);
 
-  describe('findOneAndPopulate', () => {
-    it('should find a permission and populate its role and model', async () => {
-      jest.spyOn(permissionModel, 'findById');
+  describe("findOneAndPopulate", () => {
+    it("should find a permission and populate its role and model", async () => {
+      jest.spyOn(permissionModel, "findById");
       const role = await roleRepository.findOne(permission.role);
       const model = await modelRepository.findOne(permission.model);
       const result = await permissionRepository.findOneAndPopulate(
@@ -75,16 +75,16 @@ describe('PermissionRepository', () => {
         undefined,
       );
       expect(result).toEqualPayload({
-        ...permissionFixtures.find(({ action }) => action === 'create'),
+        ...permissionFixtures.find(({ action }) => action === "create"),
         role,
         model,
       });
     });
   });
 
-  describe('findAndPopulate', () => {
-    it('should find permissions, and for each permission, populate the corresponding role and model', async () => {
-      jest.spyOn(permissionModel, 'find');
+  describe("findAndPopulate", () => {
+    it("should find permissions, and for each permission, populate the corresponding role and model", async () => {
+      jest.spyOn(permissionModel, "find");
       const allModels = await modelRepository.findAll();
       const allRoles = await roleRepository.findAll();
       const allPermissions = await permissionRepository.findAll();
@@ -111,9 +111,9 @@ describe('PermissionRepository', () => {
     });
   });
 
-  describe('deleteOne', () => {
-    it('should delete a permission by id', async () => {
-      jest.spyOn(permissionModel, 'deleteOne');
+  describe("deleteOne", () => {
+    it("should delete a permission by id", async () => {
+      jest.spyOn(permissionModel, "deleteOne");
       const result = await permissionRepository.deleteOne(
         permissionToDelete.id,
       );
@@ -134,7 +134,7 @@ describe('PermissionRepository', () => {
       expect(permissions.length).toEqual(0);
     });
 
-    it('should fail to delete a permission that does not exist', async () => {
+    it("should fail to delete a permission that does not exist", async () => {
       expect(
         await permissionRepository.deleteOne(permissionToDelete.id),
       ).toEqual({

@@ -6,9 +6,9 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import MongoStore from 'connect-mongo';
+import MongoStore from "connect-mongo";
 
-import { config } from '@/config';
+import { config } from "@/config";
 
 let sessionStore: MongoStore | null = null;
 
@@ -17,7 +17,7 @@ export const getSessionStore = () => {
     sessionStore = MongoStore.create({
       mongoUrl: config.mongo.uri,
       dbName: config.mongo.dbName,
-      collectionName: 'sessions',
+      collectionName: "sessions",
     });
   }
   return sessionStore;

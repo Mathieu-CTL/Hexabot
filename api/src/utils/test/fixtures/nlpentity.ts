@@ -6,37 +6,37 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-import { NlpEntityCreateDto } from '@/nlp/dto/nlp-entity.dto';
-import { NlpEntityModel } from '@/nlp/schemas/nlp-entity.schema';
+import { NlpEntityCreateDto } from "@/nlp/dto/nlp-entity.dto";
+import { NlpEntityModel } from "@/nlp/schemas/nlp-entity.schema";
 
 export const nlpEntityFixtures: NlpEntityCreateDto[] = [
   {
-    name: 'intent',
-    lookups: ['trait'],
-    doc: '',
+    name: "intent",
+    lookups: ["trait"],
+    doc: "",
     builtin: false,
     weight: 1,
   },
   {
-    name: 'firstname',
-    lookups: ['keywords'],
-    doc: '',
+    name: "firstname",
+    lookups: ["keywords"],
+    doc: "",
     builtin: false,
     weight: 0.85,
   },
   {
-    name: 'built_in',
-    lookups: ['trait'],
-    doc: '',
+    name: "built_in",
+    lookups: ["trait"],
+    doc: "",
     builtin: true,
     weight: 1,
   },
   {
-    name: 'subject',
-    lookups: ['trait'],
-    doc: '',
+    name: "subject",
+    lookups: ["trait"],
+    doc: "",
     builtin: false,
     weight: 0.95,
   },

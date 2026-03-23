@@ -6,13 +6,13 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-import blockSchema, { Block } from '@/chat/schemas/block.schema';
-import roleSchema, { Role } from '@/user/schemas/role.schema';
-import userSchema, { User } from '@/user/schemas/user.schema';
+import blockSchema, { Block } from "@/chat/schemas/block.schema";
+import roleSchema, { Role } from "@/user/schemas/role.schema";
+import userSchema, { User } from "@/user/schemas/user.schema";
 
-import { MigrationServices } from '../types';
+import { MigrationServices } from "../types";
 
 /**
  * @returns The admin user or null
@@ -21,9 +21,9 @@ const getAdminUser = async () => {
   const RoleModel = mongoose.model<Role>(Role.name, roleSchema);
   const UserModel = mongoose.model<User>(User.name, userSchema);
 
-  const adminRole = await RoleModel.findOne({ name: 'admin' });
+  const adminRole = await RoleModel.findOne({ name: "admin" });
   const user = await UserModel.findOne({ roles: [adminRole!._id] }).sort({
-    createdAt: 'asc',
+    createdAt: "asc",
   });
 
   return user!;
@@ -35,17 +35,17 @@ const migrateBlockOptionsContentLimit = async (services: MigrationServices) => {
   const adminUser = await getAdminUser();
 
   if (!adminUser) {
-    services.logger.warn('Unable to process block, no admin user found');
+    services.logger.warn("Unable to process block, no admin user found");
     return;
   }
 
   try {
     await BlockModel.updateMany(
-      { 'options.content.limit': { $exists: true } },
+      { "options.content.limit": { $exists: true } },
       [
         {
           $set: {
-            'options.content.limit': { $toInt: '$options.content.limit' },
+            "options.content.limit": { $toInt: "$options.content.limit" },
           },
         },
       ],
@@ -64,10 +64,10 @@ const migrateBlockOptionsContentButtonsUrl = async (
 
   try {
     await BlockModel.updateMany(
-      { 'options.content.buttons.url': false },
+      { "options.content.buttons.url": false },
       {
         $set: {
-          'options.content.buttons.$[].url': '',
+          "options.content.buttons.$[].url": "",
         },
       },
     );
@@ -83,12 +83,12 @@ const migrateBlockOptionsFallback = async (services: MigrationServices) => {
 
   try {
     await BlockModel.updateMany(
-      { 'options.fallback.max_attempts': { $exists: true, $type: 'string' } },
+      { "options.fallback.max_attempts": { $exists: true, $type: "string" } },
       [
         {
           $set: {
-            'options.fallback.max_attempts': {
-              $toInt: '$options.fallback.max_attempts',
+            "options.fallback.max_attempts": {
+              $toInt: "$options.fallback.max_attempts",
             },
           },
         },
@@ -100,11 +100,11 @@ const migrateBlockOptionsFallback = async (services: MigrationServices) => {
   }
 
   try {
-    await BlockModel.updateMany({ 'options.fallback.message': { $size: 0 } }, [
+    await BlockModel.updateMany({ "options.fallback.message": { $size: 0 } }, [
       {
         $set: {
-          'options.fallback.max_attempts': 0,
-          'options.fallback.active': false,
+          "options.fallback.max_attempts": 0,
+          "options.fallback.active": false,
         },
       },
     ]);

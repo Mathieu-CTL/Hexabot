@@ -6,11 +6,11 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 
-import { BasePlugin } from './base-plugin.service';
-import { PluginInstance } from './map-types';
-import { PluginName, PluginType } from './types';
+import { BasePlugin } from "./base-plugin.service";
+import { PluginInstance } from "./map-types";
+import { PluginName, PluginType } from "./types";
 
 /**
  * @summary Service for managing and retrieving plugins.

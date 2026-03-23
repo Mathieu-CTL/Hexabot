@@ -6,7 +6,7 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
+import { ArgumentMetadata, Injectable, PipeTransform } from "@nestjs/common";
 
 /**
  * Sanitizes user input for search queries to prevent injection attacks and remove unwanted characters.
@@ -23,7 +23,7 @@ export class SanitizeQueryPipe implements PipeTransform<string, string> {
     input: unknown,
     maxLength = MAX_BLOCK_TEXT_MESSAGE_LENGTH,
   ): string {
-    if (typeof input !== 'string') return '';
+    if (typeof input !== "string") return "";
 
     let s = input.trim();
 
@@ -33,17 +33,17 @@ export class SanitizeQueryPipe implements PipeTransform<string, string> {
         const code = ch.charCodeAt(0);
         return code >= 0x20 && code !== 0x7f;
       })
-      .join('');
+      .join("");
 
     // Remove characters that can be used in injection payloads for MongoDB or
     // shell-like expressions: dollar sign, braces, semicolon, backslash, slashes.
-    s = s.replace(/[\$\{\}\;\\\/]/g, ' ');
+    s = s.replace(/[\$\{\}\;\\\/]/g, " ");
 
     // Remove quotes so users can't prematurely close quoted phrases in text search
-    s = s.replace(/["']/g, ' ');
+    s = s.replace(/["']/g, " ");
 
     // Remove other regex/meta characters that could change query semantics
-    s = s.replace(/[\^\*\?\+\(\)\[\]\|]/g, ' ');
+    s = s.replace(/[\^\*\?\+\(\)\[\]\|]/g, " ");
 
     if (s.length > maxLength) s = s.slice(0, maxLength);
 

@@ -7,32 +7,32 @@
  */
 
 // eslint-disable-next-line import/order
-import { ISendMailOptions } from '@nestjs-modules/mailer';
-import { UnauthorizedException } from '@nestjs/common';
-import { BadRequestException } from '@nestjs/common/exceptions/bad-request.exception';
-import { JwtService } from '@nestjs/jwt';
-import { SentMessageInfo } from 'nodemailer';
+import { ISendMailOptions } from "@nestjs-modules/mailer";
+import { UnauthorizedException } from "@nestjs/common";
+import { BadRequestException } from "@nestjs/common/exceptions/bad-request.exception";
+import { JwtService } from "@nestjs/jwt";
+import { SentMessageInfo } from "nodemailer";
 
-import { I18nService } from '@/i18n/services/i18n.service';
-import { MailerService } from '@/mailer/mailer.service';
-import { getRandom } from '@/utils/helpers/safeRandom';
-import { installLanguageFixtures } from '@/utils/test/fixtures/language';
-import { installUserFixtures } from '@/utils/test/fixtures/user';
+import { I18nService } from "@/i18n/services/i18n.service";
+import { MailerService } from "@/mailer/mailer.service";
+import { getRandom } from "@/utils/helpers/safeRandom";
+import { installLanguageFixtures } from "@/utils/test/fixtures/language";
+import { installUserFixtures } from "@/utils/test/fixtures/user";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { UserCreateDto } from '../dto/user.dto';
-import { Role } from '../schemas/role.schema';
-import { InvitationService } from '../services/invitation.service';
-import { RoleService } from '../services/role.service';
-import { UserService } from '../services/user.service';
+import { UserCreateDto } from "../dto/user.dto";
+import { Role } from "../schemas/role.schema";
+import { InvitationService } from "../services/invitation.service";
+import { RoleService } from "../services/role.service";
+import { UserService } from "../services/user.service";
 
-import { LocalAuthController } from './auth.controller';
+import { LocalAuthController } from "./auth.controller";
 
-describe('AuthController', () => {
+describe("AuthController", () => {
   let authController: LocalAuthController;
   let userService: UserService;
   let invitationService: InvitationService;
@@ -43,8 +43,8 @@ describe('AuthController', () => {
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      models: ['PermissionModel'],
-      autoInjectFrom: ['controllers', 'providers'],
+      models: ["PermissionModel"],
+      autoInjectFrom: ["controllers", "providers"],
       controllers: [LocalAuthController],
       imports: [
         rootMongooseTestModule(async () => {
@@ -58,7 +58,7 @@ describe('AuthController', () => {
           provide: MailerService,
           useValue: {
             sendMail(_options: ISendMailOptions): Promise<SentMessageInfo> {
-              return Promise.resolve('Mail sent successfully');
+              return Promise.resolve("Mail sent successfully");
             },
           },
         },
@@ -81,11 +81,11 @@ describe('AuthController', () => {
       ]);
     role = await roleService.findOne({});
     baseUser = {
-      email: 'test@testing.com',
+      email: "test@testing.com",
       password: getRandom().toString(),
-      username: 'test',
-      first_name: 'test',
-      last_name: 'test',
+      username: "test",
+      first_name: "test",
+      last_name: "test",
       roles: [role!.id],
       avatar: null,
     };
@@ -96,33 +96,33 @@ describe('AuthController', () => {
 
   afterEach(jest.clearAllMocks);
 
-  describe('acceptInvite', () => {
-    it('should throw a BadRequestException because token is invalid', async () => {
-      jest.spyOn(userService, 'create');
-      const promise = authController.acceptInvite(baseUser, 'invalid token');
+  describe("acceptInvite", () => {
+    it("should throw a BadRequestException because token is invalid", async () => {
+      jest.spyOn(userService, "create");
+      const promise = authController.acceptInvite(baseUser, "invalid token");
       expect(promise).rejects.toThrow(BadRequestException);
       expect(userService.create).not.toHaveBeenCalled();
     });
 
-    it('should throw an UnauthorizedException because token is expired', async () => {
+    it("should throw an UnauthorizedException because token is expired", async () => {
       const token = await jwtService.sign(baseUser, {
         ...invitationService.jwtSignOptions,
-        expiresIn: '0s',
+        expiresIn: "0s",
       });
-      jest.spyOn(userService, 'create');
+      jest.spyOn(userService, "create");
       const promise = authController.acceptInvite(baseUser, token);
       expect(promise).rejects.toThrow(
-        new UnauthorizedException('Token expired'),
+        new UnauthorizedException("Token expired"),
       );
       expect(userService.create).not.toHaveBeenCalled();
     });
 
-    it('should throw a BadRequestException because email does not match', async () => {
+    it("should throw a BadRequestException because email does not match", async () => {
       const token = await jwtService.sign(
-        { ...baseUser, email: 'test2@wrongMail.Com' },
+        { ...baseUser, email: "test2@wrongMail.Com" },
         invitationService.jwtSignOptions,
       );
-      jest.spyOn(userService, 'create');
+      jest.spyOn(userService, "create");
       const promise = authController.acceptInvite(baseUser, token);
       expect(promise).rejects.toThrow(
         new BadRequestException(`Email doesn't match invitation email`),
@@ -130,15 +130,15 @@ describe('AuthController', () => {
       expect(userService.create).not.toHaveBeenCalled();
     });
 
-    it('should throw a BadRequestException because role does not match', async () => {
+    it("should throw a BadRequestException because role does not match", async () => {
       const token = await jwtService.sign(
-        { ...baseUser, roles: ['invalid role'] },
+        { ...baseUser, roles: ["invalid role"] },
         invitationService.jwtSignOptions,
       );
-      jest.spyOn(userService, 'create');
+      jest.spyOn(userService, "create");
       const promise = authController.acceptInvite(baseUser, token);
       expect(promise).rejects.toThrow(
-        new BadRequestException('invitation roles do not match user roles'),
+        new BadRequestException("invitation roles do not match user roles"),
       );
       expect(userService.create).not.toHaveBeenCalled();
     });

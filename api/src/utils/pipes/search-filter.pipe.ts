@@ -11,17 +11,17 @@ import {
   Injectable,
   Logger,
   PipeTransform,
-} from '@nestjs/common';
-import escapeRegExp from 'lodash/escapeRegExp';
-import { Types } from 'mongoose';
+} from "@nestjs/common";
+import escapeRegExp from "lodash/escapeRegExp";
+import { Types } from "mongoose";
 
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { TFilterQuery } from "@/utils/types/filter.types";
 
 import {
   TFilterNestedKeysOfType,
   TSearchFilterValue,
   TTransformFieldProps,
-} from '../types/filter.types';
+} from "../types/filter.types";
 
 @Injectable()
 export class SearchFilterPipe<T>
@@ -37,12 +37,12 @@ export class SearchFilterPipe<T>
   ) {}
 
   private getNullableValue(val: string) {
-    return val === 'null' ? undefined : val;
+    return val === "null" ? undefined : val;
   }
 
   private getRegexValue(val: string) {
     const escapedRegExp = escapeRegExp(val);
-    return new RegExp(escapedRegExp, 'i');
+    return new RegExp(escapedRegExp, "i");
   }
 
   private isAllowedField(field: string) {
@@ -60,32 +60,32 @@ export class SearchFilterPipe<T>
   }
 
   private transformField(field: string, val?: unknown): TTransformFieldProps {
-    if (['id'].includes(field)) {
+    if (["id"].includes(field)) {
       if (Types.ObjectId.isValid(String(val))) {
         return {
-          _operator: 'eq',
+          _operator: "eq",
           data: {
-            [field === 'id' ? '_id' : field]: this.getNullableValue(
+            [field === "id" ? "_id" : field]: this.getNullableValue(
               String(val),
             ),
           },
         };
       }
       return {};
-    } else if (val?.['contains'] || val?.[field]?.['contains']) {
+    } else if (val?.["contains"] || val?.[field]?.["contains"]) {
       return {
-        _operator: 'iLike',
+        _operator: "iLike",
         data: {
           [field]: this.getRegexValue(
-            String(val['contains'] || val[field]['contains']),
+            String(val["contains"] || val[field]["contains"]),
           ),
         },
       };
-    } else if (val?.['!=']) {
+    } else if (val?.["!="]) {
       return {
-        _operator: 'neq',
+        _operator: "neq",
         data: {
-          [field]: this.getNullableValue(val['!=']),
+          [field]: this.getNullableValue(val["!="]),
         },
       };
     } else if (val?.[`$in`]) {
@@ -106,7 +106,7 @@ export class SearchFilterPipe<T>
     }
 
     return {
-      _operator: 'eq',
+      _operator: "eq",
       data: {
         [field]: Array.isArray(val)
           ? val.map((v) => this.getNullableValue(v)).filter((v) => v)
@@ -116,11 +116,11 @@ export class SearchFilterPipe<T>
   }
 
   async transform(value: TSearchFilterValue<T>, _metadata: ArgumentMetadata) {
-    const whereParams = value['where'] ?? {};
+    const whereParams = value["where"] ?? {};
     const filters: TTransformFieldProps[] = [];
 
-    if (whereParams?.['or']) {
-      Object.values(whereParams['or'])
+    if (whereParams?.["or"]) {
+      Object.values(whereParams["or"])
         .filter((val) => val && this.isAllowedField(Object.keys(val)[0]))
         .map((val) => {
           if (!val) return false;
@@ -129,12 +129,12 @@ export class SearchFilterPipe<T>
           if (filter._operator)
             filters.push({
               ...filter,
-              _context: 'or',
+              _context: "or",
             });
         });
     }
 
-    delete whereParams['or'];
+    delete whereParams["or"];
 
     if (whereParams) {
       Object.entries(whereParams)
@@ -145,7 +145,7 @@ export class SearchFilterPipe<T>
           if (filter._operator) {
             filters.push({
               ...filter,
-              _context: 'and',
+              _context: "and",
             });
           }
         });
@@ -153,12 +153,12 @@ export class SearchFilterPipe<T>
 
     return filters.reduce((acc, { _context, _operator, data, ...filter }) => {
       switch (_operator) {
-        case 'neq':
+        case "neq":
           return {
             ...acc,
             $nor: [...(acc?.$nor || []), { ...filter, ...data }],
           };
-        case 'in': {
+        case "in": {
           // Handle $in operator - convert to MongoDB $in syntax
           const inQuery = Object.entries(data || {}).reduce(
             (inAcc, [field, values]) => {
@@ -171,12 +171,12 @@ export class SearchFilterPipe<T>
           );
 
           switch (_context) {
-            case 'or':
+            case "or":
               return {
                 ...acc,
                 $or: [...(acc?.$or || []), { ...filter, ...inQuery }],
               };
-            case 'and':
+            case "and":
               return {
                 ...acc,
                 $and: [...(acc?.$and || []), { ...filter, ...inQuery }],
@@ -190,12 +190,12 @@ export class SearchFilterPipe<T>
         }
         default:
           switch (_context) {
-            case 'or':
+            case "or":
               return {
                 ...acc,
                 $or: [...(acc?.$or || []), { ...filter, ...data }],
               };
-            case 'and':
+            case "and":
               return {
                 ...acc,
                 $and: [...(acc?.$and || []), { ...filter, ...data }],

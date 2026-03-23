@@ -12,8 +12,8 @@ export const buildURL = (baseUrl: string, relativePath: string): string => {
   } catch {
     try {
       return new URL(
-        relativePath.replace(/^\//, ''),
-        baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`,
+        relativePath.replace(/^\//, ""),
+        baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`,
       ).toString();
     } catch {
       throw new Error(`Invalid base URL: ${baseUrl}`);

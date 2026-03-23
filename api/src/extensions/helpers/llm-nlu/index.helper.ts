@@ -6,21 +6,21 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
-import Handlebars from 'handlebars';
+import { Injectable, OnApplicationBootstrap } from "@nestjs/common";
+import { OnEvent } from "@nestjs/event-emitter";
+import Handlebars from "handlebars";
 
-import { AppInstance } from '@/app.instance';
-import { HelperService } from '@/helper/helper.service';
-import BaseNlpHelper from '@/helper/lib/base-nlp-helper';
-import { HelperType, LLM, NLU } from '@/helper/types';
-import { LanguageService } from '@/i18n/services/language.service';
-import { LoggerService } from '@/logger/logger.service';
-import { NlpEntityFull } from '@/nlp/schemas/nlp-entity.schema';
-import { NlpEntityService } from '@/nlp/services/nlp-entity.service';
-import { SettingService } from '@/setting/services/setting.service';
+import { AppInstance } from "@/app.instance";
+import { HelperService } from "@/helper/helper.service";
+import BaseNlpHelper from "@/helper/lib/base-nlp-helper";
+import { HelperType, LLM, NLU } from "@/helper/types";
+import { LanguageService } from "@/i18n/services/language.service";
+import { LoggerService } from "@/logger/logger.service";
+import { NlpEntityFull } from "@/nlp/schemas/nlp-entity.schema";
+import { NlpEntityService } from "@/nlp/services/nlp-entity.service";
+import { SettingService } from "@/setting/services/setting.service";
 
-import { LLM_NLU_HELPER_NAME } from './settings';
+import { LLM_NLU_HELPER_NAME } from "./settings";
 
 @Injectable()
 export default class LlmNluHelper
@@ -48,8 +48,8 @@ export default class LlmNluHelper
     return __dirname;
   }
 
-  @OnEvent('hook:language:*')
-  @OnEvent('hook:llm_nlu_helper:language_classifier_prompt_template')
+  @OnEvent("hook:language:*")
+  @OnEvent("hook:llm_nlu_helper:language_classifier_prompt_template")
   async buildLanguageClassifierPrompt() {
     try {
       const settings = await this.getSettings();
@@ -60,20 +60,20 @@ export default class LlmNluHelper
       this.languageClassifierPrompt = delegate({ languages });
     } catch (error) {
       this.logger.warn(
-        'Settings for LLM NLU helper not found or invalid, language classifier prompt will not be built.',
+        "Settings for LLM NLU helper not found or invalid, language classifier prompt will not be built.",
         error,
       );
     }
   }
 
-  @OnEvent('hook:nlpEntity:*')
-  @OnEvent('hook:nlpValue:*')
-  @OnEvent('hook:llm_nlu_helper:trait_classifier_prompt_template')
+  @OnEvent("hook:nlpEntity:*")
+  @OnEvent("hook:nlpValue:*")
+  @OnEvent("hook:llm_nlu_helper:trait_classifier_prompt_template")
   async buildClassifiersPrompt() {
     try {
       const settings = await this.getSettings();
       const traitEntities = await this.nlpEntityService.findAndPopulate({
-        lookups: 'trait',
+        lookups: "trait",
       });
       this.traitClassifierPrompts = traitEntities.map((entity) => ({
         ...entity,
@@ -83,7 +83,7 @@ export default class LlmNluHelper
       }));
     } catch (error) {
       this.logger.warn(
-        'Settings for LLM NLU helper not found or invalid, trait classifier prompts will not be built.',
+        "Settings for LLM NLU helper not found or invalid, trait classifier prompts will not be built.",
         error,
       );
     }
@@ -96,14 +96,14 @@ export default class LlmNluHelper
     }
 
     try {
-      this.logger.log('Initializing LLM NLU helper, building prompts...');
+      this.logger.log("Initializing LLM NLU helper, building prompts...");
       // Build prompts for language and trait classifiers
       // This is done on application bootstrap to ensure that the settings are loaded
       // and the prompts are built before any requests are made to the helper.
       await this.buildLanguageClassifierPrompt();
       await this.buildClassifiersPrompt();
     } catch (error) {
-      this.logger.error('Unable to initialize LLM NLU helper', error);
+      this.logger.error("Unable to initialize LLM NLU helper", error);
     }
   }
 
@@ -118,13 +118,13 @@ export default class LlmNluHelper
       this.languageClassifierPrompt,
       {
         type: LLM.ResponseSchemaType.STRING,
-        description: 'Language of the input text',
+        description: "Language of the input text",
       },
     );
 
     const traits: NLU.ParseEntity[] = [
       {
-        entity: 'language',
+        entity: "language",
         value: language || defaultLanguage.code,
         confidence: 1,
       },
@@ -138,13 +138,13 @@ export default class LlmNluHelper
         prompt,
         {
           type: LLM.ResponseSchemaType.STRING,
-          description: `${name}${doc ? `: ${doc}` : ''}`,
-          enum: allowedValues.concat('unknown'),
+          description: `${name}${doc ? `: ${doc}` : ""}`,
+          enum: allowedValues.concat("unknown"),
         },
       );
       const safeValue = result?.toLowerCase().trim();
       const value =
-        safeValue && allowedValues.includes(safeValue) ? safeValue : '';
+        safeValue && allowedValues.includes(safeValue) ? safeValue : "";
       traits.push({
         entity: name,
         value,
@@ -155,8 +155,8 @@ export default class LlmNluHelper
     // Perform slot filling in a deterministic way since
     // it's currently a challenging task for the LLMs.
     const entities = await this.nlpEntityService.getNlpEntitiesByLookup([
-      'keywords',
-      'pattern',
+      "keywords",
+      "pattern",
     ]);
 
     const slotEntities = this.runDeterministicSlotFilling(text, entities);

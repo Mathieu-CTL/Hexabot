@@ -18,18 +18,18 @@ type UIAvatarSvgParams = {
 };
 
 export function generateUIAvatarSvg({
-  text = 'AB',
+  text = "AB",
   round = true,
   size = 64,
-  bgColor = '#ff0000',
-  textColor = '#000',
+  bgColor = "#ff0000",
+  textColor = "#000",
   fontFamily = "'Roboto'",
   fontSize = 0.4,
-  fontWeight = '500',
+  fontWeight = "500",
 }: UIAvatarSvgParams): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${size}px" height="${size}px" viewBox="0 0 ${size} ${size}" version="1.1">
       <${
-        round ? 'circle' : 'rect'
+        round ? "circle" : "rect"
       } fill="${bgColor}" width="${size}" height="${size}" cx="${
         size / 2
       }" cy="${size / 2}" r="${size / 2}"/>
@@ -43,8 +43,8 @@ export function generateUIAvatarSvg({
 
 export function generateBotAvatarSvg({
   size = 64,
-  bgColor = '#000',
-  textColor = '#fff',
+  bgColor = "#000",
+  textColor = "#fff",
 }: UIAvatarSvgParams): string {
   return `
   <svg width="${size}px" height="${size}px" viewBox="-3.36 -3.36 30.72 30.72"  version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">

@@ -6,28 +6,28 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { PartialType } from '@nestjs/mapped-types';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { PartialType } from "@nestjs/mapped-types";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
-import { DtoConfig } from '@/utils/types/dto.types';
+import { DtoConfig } from "@/utils/types/dto.types";
 
 export class LanguageCreateDto {
-  @ApiProperty({ description: 'Language Title', type: String })
+  @ApiProperty({ description: "Language Title", type: String })
   @IsNotEmpty()
   @IsString()
   title: string;
 
-  @ApiProperty({ description: 'Language Code', type: String })
+  @ApiProperty({ description: "Language Code", type: String })
   @IsNotEmpty()
   @IsString()
   code: string;
 
-  @ApiProperty({ description: 'Whether Language is RTL', type: Boolean })
+  @ApiProperty({ description: "Whether Language is RTL", type: Boolean })
   @IsBoolean()
   isRTL: boolean;
 
-  @ApiPropertyOptional({ description: 'Is Default Language ?', type: Boolean })
+  @ApiPropertyOptional({ description: "Is Default Language ?", type: Boolean })
   @IsOptional()
   @IsBoolean()
   isDefault?: boolean;

@@ -6,19 +6,19 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model as MongooseModel } from 'mongoose';
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model as MongooseModel } from "mongoose";
 
-import { BaseRepository, DeleteResult } from '@/utils/generics/base-repository';
+import { BaseRepository, DeleteResult } from "@/utils/generics/base-repository";
 
 import {
   Model,
   MODEL_POPULATE,
   ModelFull,
   ModelPopulate,
-} from '../schemas/model.schema';
-import { Permission } from '../schemas/permission.schema';
+} from "../schemas/model.schema";
+import { Permission } from "../schemas/permission.schema";
 
 @Injectable()
 export class ModelRepository extends BaseRepository<

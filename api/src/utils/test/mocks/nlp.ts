@@ -6,19 +6,19 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { NLU } from '@/helper/types';
+import { NLU } from "@/helper/types";
 
 export const mockNlpGreetingNameEntities: NLU.ScoredEntities = {
   entities: [
     {
-      entity: 'intent',
-      value: 'greeting',
+      entity: "intent",
+      value: "greeting",
       confidence: 0.999,
       score: 0.999,
     },
     {
-      entity: 'firstname',
-      value: 'jhon',
+      entity: "firstname",
+      value: "jhon",
       confidence: 0.5,
       score: 0.425,
     },
@@ -28,18 +28,18 @@ export const mockNlpGreetingNameEntities: NLU.ScoredEntities = {
 export const mockNlpGreetingFullNameEntities: NLU.ParseEntities = {
   entities: [
     {
-      entity: 'intent',
-      value: 'greeting',
+      entity: "intent",
+      value: "greeting",
       confidence: 0.999,
     },
     {
-      entity: 'firstname',
-      value: 'jhon',
+      entity: "firstname",
+      value: "jhon",
       confidence: 0.5,
     },
     {
-      entity: 'lastname',
-      value: 'doe',
+      entity: "lastname",
+      value: "doe",
       confidence: 0.5,
     },
   ],
@@ -48,9 +48,9 @@ export const mockNlpGreetingFullNameEntities: NLU.ParseEntities = {
 export const mockNlpFirstNameEntities: NLU.ParseEntities = {
   entities: [
     {
-      entity: 'firstname',
-      value: 'jhonny',
-      canonicalValue: 'jhon',
+      entity: "firstname",
+      value: "jhonny",
+      canonicalValue: "jhon",
       confidence: 0.75,
     },
   ],

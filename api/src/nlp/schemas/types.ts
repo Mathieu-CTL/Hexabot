@@ -6,14 +6,14 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { NlpEntityFull, NlpEntityStub } from './nlp-entity.schema';
-import { NlpValueStub } from './nlp-value.schema';
+import { NlpEntityFull, NlpEntityStub } from "./nlp-entity.schema";
+import { NlpValueStub } from "./nlp-value.schema";
 
 export enum LookupStrategy {
-  keywords = 'keywords',
-  trait = 'trait',
-  free_text = 'free-text',
-  pattern = 'pattern',
+  keywords = "keywords",
+  trait = "trait",
+  free_text = "free-text",
+  pattern = "pattern",
 }
 
 export type Lookup = `${LookupStrategy}`;
@@ -30,9 +30,9 @@ export type NlpEntityMap<T extends NlpEntityStub> = { [entityId: string]: T };
 export type NlpValueMap<T extends NlpValueStub> = { [valueId: string]: T };
 
 export enum NlpSampleState {
-  train = 'train',
-  test = 'test',
-  inbox = 'inbox',
+  train = "train",
+  test = "test",
+  inbox = "inbox",
 }
 
 export type NlpCacheMap = Map<string, NlpEntityFull>;

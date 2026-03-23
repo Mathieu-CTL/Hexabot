@@ -6,13 +6,13 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { PickType } from '@nestjs/mapped-types';
+import { PickType } from "@nestjs/mapped-types";
 import {
   ApiProperty,
   ApiPropertyOptional,
   OmitType,
   PartialType,
-} from '@nestjs/swagger';
+} from "@nestjs/swagger";
 import {
   IsArray,
   IsBoolean,
@@ -20,51 +20,51 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-} from 'class-validator';
+} from "class-validator";
 
-import { DtoConfig } from '@/utils/types/dto.types';
-import { IsObjectId } from '@/utils/validation-rules/is-object-id';
+import { DtoConfig } from "@/utils/types/dto.types";
+import { IsObjectId } from "@/utils/validation-rules/is-object-id";
 
 export class UserCreateDto {
-  @ApiProperty({ description: 'User username', type: String })
+  @ApiProperty({ description: "User username", type: String })
   @IsNotEmpty()
   @IsString()
   username: string;
 
-  @ApiProperty({ description: 'User first name', type: String })
+  @ApiProperty({ description: "User first name", type: String })
   @IsNotEmpty()
   @IsString()
   first_name: string;
 
-  @ApiProperty({ description: 'User last name', type: String })
+  @ApiProperty({ description: "User last name", type: String })
   @IsNotEmpty()
   @IsString()
   last_name: string;
 
-  @ApiProperty({ description: 'User email', type: String })
+  @ApiProperty({ description: "User email", type: String })
   @IsNotEmpty()
   @IsEmail()
   email: string;
 
-  @ApiProperty({ description: 'User password', type: String })
+  @ApiProperty({ description: "User password", type: String })
   @IsNotEmpty()
   @IsString()
   password: string;
 
-  @ApiProperty({ description: 'User roles', type: String })
+  @ApiProperty({ description: "User roles", type: String })
   @IsNotEmpty()
   @IsArray()
-  @IsObjectId({ each: true, message: 'Role must be a valid ObjectId' })
+  @IsObjectId({ each: true, message: "Role must be a valid ObjectId" })
   roles: string[];
 
-  @ApiPropertyOptional({ description: 'Avatar', type: String })
+  @ApiPropertyOptional({ description: "Avatar", type: String })
   @IsOptional()
   @IsString()
-  @IsObjectId({ message: 'Avatar must be a valid ObjectId' })
+  @IsObjectId({ message: "Avatar must be a valid ObjectId" })
   avatar: string | null = null;
 
   @ApiPropertyOptional({
-    description: 'User state',
+    description: "User state",
     type: Boolean,
   })
   @IsOptional()
@@ -73,12 +73,12 @@ export class UserCreateDto {
 }
 
 export class UserEditProfileDto extends OmitType(PartialType(UserCreateDto), [
-  'username',
-  'roles',
-  'avatar',
-  'state',
+  "username",
+  "roles",
+  "avatar",
+  "state",
 ]) {
-  @ApiPropertyOptional({ description: 'User language', type: String })
+  @ApiPropertyOptional({ description: "User language", type: String })
   @IsOptional()
   @IsString()
   language?: string;
@@ -86,7 +86,7 @@ export class UserEditProfileDto extends OmitType(PartialType(UserCreateDto), [
 
 export class UserUpdateStateAndRolesDto {
   @ApiPropertyOptional({
-    description: 'User state',
+    description: "User state",
     type: Boolean,
   })
   @IsOptional()
@@ -94,20 +94,20 @@ export class UserUpdateStateAndRolesDto {
   state?: boolean;
 
   @ApiPropertyOptional({
-    description: 'User roles',
+    description: "User roles",
     type: Boolean,
   })
   @IsOptional()
   @IsArray()
-  @IsObjectId({ each: true, message: 'Role must be a valid ObjectId' })
+  @IsObjectId({ each: true, message: "Role must be a valid ObjectId" })
   roles?: string[];
 }
 
 export class UserResetPasswordDto extends PickType(UserCreateDto, [
-  'password',
+  "password",
 ]) {}
 
-export class UserRequestResetDto extends PickType(UserCreateDto, ['email']) {}
+export class UserRequestResetDto extends PickType(UserCreateDto, ["email"]) {}
 
 export type UserDto = DtoConfig<{
   create: UserCreateDto;

@@ -6,16 +6,16 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ForbiddenException, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Document, Model, Query } from 'mongoose';
+import { ForbiddenException, Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Document, Model, Query } from "mongoose";
 
-import { BaseRepository, DeleteResult } from '@/utils/generics/base-repository';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { BaseRepository, DeleteResult } from "@/utils/generics/base-repository";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
-import { CategoryDto } from '../dto/category.dto';
-import { Category } from '../schemas/category.schema';
-import { BlockService } from '../services/block.service';
+import { CategoryDto } from "../dto/category.dto";
+import { Category } from "../schemas/category.schema";
+import { BlockService } from "../services/block.service";
 
 @Injectable()
 export class CategoryRepository extends BaseRepository<
@@ -44,7 +44,7 @@ export class CategoryRepository extends BaseRepository<
       Document<Category, any, any>,
       unknown,
       Category,
-      'deleteOne' | 'deleteMany'
+      "deleteOne" | "deleteMany"
     >,
     criteria: TFilterQuery<Category>,
   ) {
@@ -59,7 +59,7 @@ export class CategoryRepository extends BaseRepository<
         );
       }
     } else {
-      throw new Error('Attempted to delete category using unknown criteria');
+      throw new Error("Attempted to delete category using unknown criteria");
     }
   }
 }

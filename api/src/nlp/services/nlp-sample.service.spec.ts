@@ -6,35 +6,35 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from "@nestjs/common";
 
-import { NlpValueMatchPattern } from '@/chat/schemas/types/pattern';
-import { LanguageRepository } from '@/i18n/repositories/language.repository';
-import { Language } from '@/i18n/schemas/language.schema';
-import { LanguageService } from '@/i18n/services/language.service';
-import { PageQueryDto } from '@/utils/pagination/pagination-query.dto';
-import { nlpSampleFixtures } from '@/utils/test/fixtures/nlpsample';
-import { installNlpSampleEntityFixtures } from '@/utils/test/fixtures/nlpsampleentity';
-import { getPageQuery } from '@/utils/test/pagination';
+import { NlpValueMatchPattern } from "@/chat/schemas/types/pattern";
+import { LanguageRepository } from "@/i18n/repositories/language.repository";
+import { Language } from "@/i18n/schemas/language.schema";
+import { LanguageService } from "@/i18n/services/language.service";
+import { PageQueryDto } from "@/utils/pagination/pagination-query.dto";
+import { nlpSampleFixtures } from "@/utils/test/fixtures/nlpsample";
+import { installNlpSampleEntityFixtures } from "@/utils/test/fixtures/nlpsampleentity";
+import { getPageQuery } from "@/utils/test/pagination";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { NlpSampleEntityCreateDto } from '../dto/nlp-sample-entity.dto';
-import { NlpSampleEntityRepository } from '../repositories/nlp-sample-entity.repository';
-import { NlpSampleRepository } from '../repositories/nlp-sample.repository';
-import { NlpEntity, NlpEntityFull } from '../schemas/nlp-entity.schema';
-import { NlpSampleEntity } from '../schemas/nlp-sample-entity.schema';
-import { NlpSample, NlpSampleFull } from '../schemas/nlp-sample.schema';
+import { NlpSampleEntityCreateDto } from "../dto/nlp-sample-entity.dto";
+import { NlpSampleEntityRepository } from "../repositories/nlp-sample-entity.repository";
+import { NlpSampleRepository } from "../repositories/nlp-sample.repository";
+import { NlpEntity, NlpEntityFull } from "../schemas/nlp-entity.schema";
+import { NlpSampleEntity } from "../schemas/nlp-sample-entity.schema";
+import { NlpSample, NlpSampleFull } from "../schemas/nlp-sample.schema";
 
-import { NlpEntityService } from './nlp-entity.service';
-import { NlpSampleEntityService } from './nlp-sample-entity.service';
-import { NlpSampleService } from './nlp-sample.service';
-import { NlpValueService } from './nlp-value.service';
+import { NlpEntityService } from "./nlp-entity.service";
+import { NlpSampleEntityService } from "./nlp-sample-entity.service";
+import { NlpSampleService } from "./nlp-sample.service";
+import { NlpValueService } from "./nlp-value.service";
 
-describe('NlpSampleService', () => {
+describe("NlpSampleService", () => {
   let nlpEntityService: NlpEntityService;
   let nlpSampleService: NlpSampleService;
   let nlpSampleEntityService: NlpSampleEntityService;
@@ -49,7 +49,7 @@ describe('NlpSampleService', () => {
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['providers'],
+      autoInjectFrom: ["providers"],
       imports: [rootMongooseTestModule(installNlpSampleEntityFixtures)],
       providers: [NlpSampleService],
     });
@@ -74,7 +74,7 @@ describe('NlpSampleService', () => {
       LanguageService,
       LanguageRepository,
     ]);
-    noNlpSample = await nlpSampleService.findOne({ text: 'No' });
+    noNlpSample = await nlpSampleService.findOne({ text: "No" });
     nlpSampleEntity = await nlpSampleEntityRepository.findOne({
       sample: noNlpSample!.id,
     });
@@ -85,8 +85,8 @@ describe('NlpSampleService', () => {
 
   afterEach(jest.clearAllMocks);
 
-  describe('findOneAndPopulate', () => {
-    it('should return a nlp Sample with populate', async () => {
+  describe("findOneAndPopulate", () => {
+    it("should return a nlp Sample with populate", async () => {
       const result = await nlpSampleService.findOneAndPopulate(noNlpSample!.id);
       const sampleWithEntities = {
         ...nlpSampleFixtures[1],
@@ -97,9 +97,9 @@ describe('NlpSampleService', () => {
     });
   });
 
-  describe('findAndPopulate', () => {
-    it('should return all nlp samples with populate', async () => {
-      const pageQuery = getPageQuery<NlpSample>({ sort: ['text', 'desc'] });
+  describe("findAndPopulate", () => {
+    it("should return all nlp samples with populate", async () => {
+      const pageQuery = getPageQuery<NlpSample>({ sort: ["text", "desc"] });
       const result = await nlpSampleService.findAndPopulate({}, pageQuery);
       const nlpSamples = await nlpSampleRepository.findAll();
       const nlpSampleEntities = await nlpSampleEntityRepository.findAll();
@@ -123,8 +123,8 @@ describe('NlpSampleService', () => {
     });
   });
 
-  describe('updateMany', () => {
-    it('should update many nlp samples', async () => {
+  describe("updateMany", () => {
+    it("should update many nlp samples", async () => {
       const result = await nlpSampleService.updateMany(
         {},
         {
@@ -136,35 +136,35 @@ describe('NlpSampleService', () => {
     });
   });
 
-  describe('The deleteCascadeOne function', () => {
-    it('should delete a nlp Sample', async () => {
+  describe("The deleteCascadeOne function", () => {
+    it("should delete a nlp Sample", async () => {
       const result = await nlpSampleService.deleteOne(noNlpSample!.id);
       expect(result.deletedCount).toEqual(1);
     });
   });
 
-  describe('parseAndSaveDataset', () => {
-    it('should throw NotFoundException if no entities are found', async () => {
-      jest.spyOn(nlpEntityService, 'findAll').mockResolvedValue([]);
+  describe("parseAndSaveDataset", () => {
+    it("should throw NotFoundException if no entities are found", async () => {
+      jest.spyOn(nlpEntityService, "findAll").mockResolvedValue([]);
 
       await expect(
         nlpSampleService.parseAndSaveDataset(
-          'text,intent,language\nHello,none,en',
+          "text,intent,language\nHello,none,en",
         ),
       ).rejects.toThrow(NotFoundException);
 
       expect(nlpEntityService.findAll).toHaveBeenCalled();
     });
 
-    it('should throw BadRequestException if CSV parsing fails', async () => {
+    it("should throw BadRequestException if CSV parsing fails", async () => {
       const invalidCSV = 'text,intent,language\n"Hello,none'; // Malformed CSV
       jest
-        .spyOn(nlpEntityService, 'findAll')
-        .mockResolvedValue([{ name: 'intent' } as NlpEntity]);
-      jest.spyOn(languageService, 'getLanguages').mockResolvedValue({});
+        .spyOn(nlpEntityService, "findAll")
+        .mockResolvedValue([{ name: "intent" } as NlpEntity]);
+      jest.spyOn(languageService, "getLanguages").mockResolvedValue({});
       jest
-        .spyOn(languageService, 'getDefaultLanguage')
-        .mockResolvedValue({ code: 'en' } as Language);
+        .spyOn(languageService, "getDefaultLanguage")
+        .mockResolvedValue({ code: "en" } as Language);
 
       await expect(
         nlpSampleService.parseAndSaveDataset(invalidCSV),
@@ -172,123 +172,123 @@ describe('NlpSampleService', () => {
     });
 
     it('should filter out rows with "none" as intent', async () => {
-      const mockData = 'text,intent,language\nHello,none,en\nHi,greet,en';
+      const mockData = "text,intent,language\nHello,none,en\nHi,greet,en";
       jest
-        .spyOn(nlpEntityService, 'findAll')
-        .mockResolvedValue([{ name: 'intent' } as NlpEntity]);
+        .spyOn(nlpEntityService, "findAll")
+        .mockResolvedValue([{ name: "intent" } as NlpEntity]);
       jest
-        .spyOn(languageService, 'getLanguages')
-        .mockResolvedValue({ en: { id: '1' } } as unknown as Record<
+        .spyOn(languageService, "getLanguages")
+        .mockResolvedValue({ en: { id: "1" } } as unknown as Record<
           string,
           Language
         >);
       jest
-        .spyOn(languageService, 'getDefaultLanguage')
-        .mockResolvedValue({ code: 'en' } as Language);
-      jest.spyOn(nlpSampleService, 'find').mockResolvedValue([]);
+        .spyOn(languageService, "getDefaultLanguage")
+        .mockResolvedValue({ code: "en" } as Language);
+      jest.spyOn(nlpSampleService, "find").mockResolvedValue([]);
       jest
-        .spyOn(nlpSampleService, 'create')
-        .mockResolvedValue({ id: '1', text: 'Hi' } as NlpSample);
-      jest.spyOn(nlpSampleEntityService, 'createMany').mockResolvedValue([]);
+        .spyOn(nlpSampleService, "create")
+        .mockResolvedValue({ id: "1", text: "Hi" } as NlpSample);
+      jest.spyOn(nlpSampleEntityService, "createMany").mockResolvedValue([]);
 
       const result = await nlpSampleService.parseAndSaveDataset(mockData);
 
       expect(result).toHaveLength(1);
-      expect(result[0].text).toEqual('Hi');
+      expect(result[0].text).toEqual("Hi");
     });
 
-    it('should fallback to the default language if the language is invalid', async () => {
-      const mockData = 'text,intent,language\nHi,greet,invalidLang';
+    it("should fallback to the default language if the language is invalid", async () => {
+      const mockData = "text,intent,language\nHi,greet,invalidLang";
       jest
-        .spyOn(nlpEntityService, 'findAll')
-        .mockResolvedValue([{ name: 'intent' } as NlpEntity]);
+        .spyOn(nlpEntityService, "findAll")
+        .mockResolvedValue([{ name: "intent" } as NlpEntity]);
       jest
-        .spyOn(languageService, 'getLanguages')
-        .mockResolvedValue({ en: { id: '1' } } as unknown as Record<
+        .spyOn(languageService, "getLanguages")
+        .mockResolvedValue({ en: { id: "1" } } as unknown as Record<
           string,
           Language
         >);
       jest
-        .spyOn(languageService, 'getDefaultLanguage')
-        .mockResolvedValue({ code: 'en' } as Language);
-      jest.spyOn(nlpSampleService, 'find').mockResolvedValue([]);
+        .spyOn(languageService, "getDefaultLanguage")
+        .mockResolvedValue({ code: "en" } as Language);
+      jest.spyOn(nlpSampleService, "find").mockResolvedValue([]);
       jest
-        .spyOn(nlpSampleService, 'create')
-        .mockResolvedValue({ id: '1', text: 'Hi' } as NlpSample);
-      jest.spyOn(nlpSampleEntityService, 'createMany').mockResolvedValue([]);
+        .spyOn(nlpSampleService, "create")
+        .mockResolvedValue({ id: "1", text: "Hi" } as NlpSample);
+      jest.spyOn(nlpSampleEntityService, "createMany").mockResolvedValue([]);
 
       const result = await nlpSampleService.parseAndSaveDataset(mockData);
 
       expect(result).toHaveLength(1);
-      expect(result[0].text).toEqual('Hi');
+      expect(result[0].text).toEqual("Hi");
     });
 
-    it('should successfully process and save valid dataset rows', async () => {
-      const mockData = 'text,intent,language\nHi,greet,en\nBye,bye,en';
-      const mockLanguages = { en: { id: '1' } } as unknown as Record<
+    it("should successfully process and save valid dataset rows", async () => {
+      const mockData = "text,intent,language\nHi,greet,en\nBye,bye,en";
+      const mockLanguages = { en: { id: "1" } } as unknown as Record<
         string,
         Language
       >;
 
       jest
-        .spyOn(languageService, 'getLanguages')
+        .spyOn(languageService, "getLanguages")
         .mockResolvedValue(mockLanguages);
       jest
-        .spyOn(languageService, 'getDefaultLanguage')
-        .mockResolvedValue({ code: 'en' } as Language);
-      jest.spyOn(nlpSampleService, 'find').mockResolvedValue([]);
+        .spyOn(languageService, "getDefaultLanguage")
+        .mockResolvedValue({ code: "en" } as Language);
+      jest.spyOn(nlpSampleService, "find").mockResolvedValue([]);
       let id = 0;
-      jest.spyOn(nlpSampleService, 'create').mockImplementation((s) => {
+      jest.spyOn(nlpSampleService, "create").mockImplementation((s) => {
         return Promise.resolve({ id: (++id).toString(), ...s } as NlpSample);
       });
-      jest.spyOn(nlpSampleEntityService, 'createMany').mockResolvedValue([]);
+      jest.spyOn(nlpSampleEntityService, "createMany").mockResolvedValue([]);
 
       const result = await nlpSampleService.parseAndSaveDataset(mockData);
 
       expect(nlpSampleEntityService.createMany).toHaveBeenCalledTimes(2);
       expect(result).toHaveLength(2);
-      expect(result[0].text).toEqual('Hi');
-      expect(result[1].text).toEqual('Bye');
+      expect(result[0].text).toEqual("Hi");
+      expect(result[1].text).toEqual("Bye");
     });
   });
 
-  describe('annotateWithKeywordEntity', () => {
-    it('should annotate samples when matching samples exist', async () => {
+  describe("annotateWithKeywordEntity", () => {
+    it("should annotate samples when matching samples exist", async () => {
       const entity = {
-        id: 'entity-id',
-        name: 'entity_name',
+        id: "entity-id",
+        name: "entity_name",
         values: [
           {
-            id: 'value-id',
-            value: 'keyword',
-            expressions: ['synonym1', 'synonym2'],
+            id: "value-id",
+            value: "keyword",
+            expressions: ["synonym1", "synonym2"],
           },
         ],
       } as NlpEntityFull;
 
-      const sampleText = 'This is a test sample with keyword in it.';
-      const samples = [{ id: 'sample-id', text: sampleText }] as NlpSample[];
+      const sampleText = "This is a test sample with keyword in it.";
+      const samples = [{ id: "sample-id", text: sampleText }] as NlpSample[];
 
       const extractedMatches = [
-        { sample: 'sample-id', entity: 'test_entity', value: 'keyword' },
+        { sample: "sample-id", entity: "test_entity", value: "keyword" },
       ] as NlpSampleEntityCreateDto[];
 
       const findSpy = jest
-        .spyOn(nlpSampleService, 'find')
+        .spyOn(nlpSampleService, "find")
         .mockResolvedValue(samples);
       const extractSpy = jest
-        .spyOn(nlpSampleEntityService, 'extractKeywordEntities')
+        .spyOn(nlpSampleEntityService, "extractKeywordEntities")
         .mockReturnValue(extractedMatches);
 
       const findOrCreateSpy = jest
-        .spyOn(nlpSampleEntityService, 'findOneOrCreate')
+        .spyOn(nlpSampleEntityService, "findOneOrCreate")
         .mockResolvedValue({} as NlpSampleEntity);
 
       await nlpSampleService.annotateWithKeywordEntity(entity);
 
       expect(findSpy).toHaveBeenCalledWith({
-        text: { $regex: '\\b(keyword|synonym1|synonym2)\\b', $options: 'i' },
-        type: ['train', 'test'],
+        text: { $regex: "\\b(keyword|synonym1|synonym2)\\b", $options: "i" },
+        type: ["train", "test"],
       });
 
       expect(extractSpy).toHaveBeenCalledWith(samples[0], entity.values[0]);
@@ -298,22 +298,22 @@ describe('NlpSampleService', () => {
       );
     });
 
-    it('should not annotate when no matching samples are found', async () => {
+    it("should not annotate when no matching samples are found", async () => {
       const entity = {
-        id: 'entity-id',
-        name: 'test_entity',
+        id: "entity-id",
+        name: "test_entity",
         values: [
           {
-            value: 'keyword',
-            expressions: ['synonym1', 'synonym2'],
+            value: "keyword",
+            expressions: ["synonym1", "synonym2"],
           },
         ],
       } as NlpEntityFull;
 
-      jest.spyOn(nlpSampleService, 'find').mockResolvedValue([]);
+      jest.spyOn(nlpSampleService, "find").mockResolvedValue([]);
       const extractSpy = jest.spyOn(
         nlpSampleEntityService,
-        'extractKeywordEntities',
+        "extractKeywordEntities",
       );
 
       await nlpSampleService.annotateWithKeywordEntity(entity);
@@ -322,8 +322,8 @@ describe('NlpSampleService', () => {
     });
   });
 
-  describe('findByPatterns', () => {
-    it('should return samples without providing patterns', async () => {
+  describe("findByPatterns", () => {
+    it("should return samples without providing patterns", async () => {
       const result = await nlpSampleService.findByPatterns(
         { filters: {}, patterns: [] },
         undefined,
@@ -333,13 +333,13 @@ describe('NlpSampleService', () => {
       expect(result.length).toBeGreaterThan(0);
     });
 
-    it('should return samples matching the given patterns', async () => {
+    it("should return samples matching the given patterns", async () => {
       // Assume pattern: entity 'intent', value 'greeting'
       const patterns: NlpValueMatchPattern[] = [
-        { entity: 'intent', match: 'value', value: 'greeting' },
+        { entity: "intent", match: "value", value: "greeting" },
       ];
-      jest.spyOn(nlpSampleRepository, 'findByEntities');
-      jest.spyOn(nlpValueService, 'findByPatterns');
+      jest.spyOn(nlpSampleRepository, "findByEntities");
+      jest.spyOn(nlpValueService, "findByPatterns");
       const result = await nlpSampleService.findByPatterns(
         { filters: {}, patterns },
         undefined,
@@ -347,16 +347,16 @@ describe('NlpSampleService', () => {
       expect(nlpSampleRepository.findByEntities).toHaveBeenCalled();
       expect(nlpValueService.findByPatterns).toHaveBeenCalled();
       expect(Array.isArray(result)).toBe(true);
-      expect(result[0].text).toBe('Hello');
+      expect(result[0].text).toBe("Hello");
     });
 
-    it('should return an empty array if no samples match the patterns', async () => {
+    it("should return an empty array if no samples match the patterns", async () => {
       const patterns: NlpValueMatchPattern[] = [
-        { entity: 'intent', match: 'value', value: 'nonexistent' },
+        { entity: "intent", match: "value", value: "nonexistent" },
       ];
 
-      jest.spyOn(nlpSampleRepository, 'findByEntities');
-      jest.spyOn(nlpValueService, 'findByPatterns');
+      jest.spyOn(nlpSampleRepository, "findByEntities");
+      jest.spyOn(nlpValueService, "findByPatterns");
       const result = await nlpSampleService.findByPatterns(
         { filters: {}, patterns },
         undefined,
@@ -368,14 +368,14 @@ describe('NlpSampleService', () => {
       expect(result).toHaveLength(0);
     });
 
-    it('should support pagination', async () => {
+    it("should support pagination", async () => {
       const patterns: NlpValueMatchPattern[] = [
-        { entity: 'intent', match: 'value', value: 'greeting' },
+        { entity: "intent", match: "value", value: "greeting" },
       ];
       const page: PageQueryDto<NlpSample> = {
         limit: 1,
         skip: 0,
-        sort: ['text', 'asc'],
+        sort: ["text", "asc"],
       };
 
       const result = await nlpSampleService.findByPatterns(
@@ -388,10 +388,10 @@ describe('NlpSampleService', () => {
     });
   });
 
-  describe('findByPatternsAndPopulate', () => {
-    it('should return populated NlpSampleFull instances for matching patterns', async () => {
+  describe("findByPatternsAndPopulate", () => {
+    it("should return populated NlpSampleFull instances for matching patterns", async () => {
       const patterns: NlpValueMatchPattern[] = [
-        { entity: 'intent', match: 'value', value: 'greeting' },
+        { entity: "intent", match: "value", value: "greeting" },
       ];
 
       const result = await nlpSampleService.findByPatternsAndPopulate(
@@ -409,7 +409,7 @@ describe('NlpSampleService', () => {
       });
     });
 
-    it('should return populated NlpSampleFull without providing patterns', async () => {
+    it("should return populated NlpSampleFull without providing patterns", async () => {
       const result = await nlpSampleService.findByPatternsAndPopulate(
         { filters: { text: /Hello/gi }, patterns: [] },
         undefined,
@@ -422,9 +422,9 @@ describe('NlpSampleService', () => {
       expect(Array.isArray(result[0].entities)).toBe(true);
     });
 
-    it('should return an empty array if no samples match the patterns', async () => {
+    it("should return an empty array if no samples match the patterns", async () => {
       const patterns: NlpValueMatchPattern[] = [
-        { entity: 'intent', match: 'value', value: 'nonexistent' },
+        { entity: "intent", match: "value", value: "nonexistent" },
       ];
 
       const result = await nlpSampleService.findByPatternsAndPopulate(
@@ -436,14 +436,14 @@ describe('NlpSampleService', () => {
       expect(result).toHaveLength(0);
     });
 
-    it('should support pagination and projection', async () => {
+    it("should support pagination and projection", async () => {
       const patterns: NlpValueMatchPattern[] = [
-        { entity: 'intent', match: 'value', value: 'greeting' },
+        { entity: "intent", match: "value", value: "greeting" },
       ];
       const page: PageQueryDto<NlpSample> = {
         limit: 1,
         skip: 0,
-        sort: ['text', 'asc'],
+        sort: ["text", "asc"],
       };
 
       const result = await nlpSampleService.findByPatternsAndPopulate(
@@ -456,14 +456,14 @@ describe('NlpSampleService', () => {
     });
   });
 
-  describe('countByPatterns', () => {
-    it('should return the correct count for matching patterns', async () => {
+  describe("countByPatterns", () => {
+    it("should return the correct count for matching patterns", async () => {
       const patterns: NlpValueMatchPattern[] = [
-        { entity: 'intent', match: 'value', value: 'greeting' },
+        { entity: "intent", match: "value", value: "greeting" },
       ];
 
-      jest.spyOn(nlpSampleRepository, 'countByEntities');
-      jest.spyOn(nlpValueService, 'findByPatterns');
+      jest.spyOn(nlpSampleRepository, "countByEntities");
+      jest.spyOn(nlpValueService, "findByPatterns");
       const count = await nlpSampleService.countByPatterns({
         filters: {},
         patterns,
@@ -471,13 +471,13 @@ describe('NlpSampleService', () => {
 
       expect(nlpSampleRepository.countByEntities).toHaveBeenCalled();
       expect(nlpValueService.findByPatterns).toHaveBeenCalled();
-      expect(typeof count).toBe('number');
+      expect(typeof count).toBe("number");
       expect(count).toBe(2);
     });
 
-    it('should return the correct count without providing patterns', async () => {
-      jest.spyOn(nlpSampleRepository, 'findByEntities');
-      jest.spyOn(nlpValueService, 'findByPatterns');
+    it("should return the correct count without providing patterns", async () => {
+      jest.spyOn(nlpSampleRepository, "findByEntities");
+      jest.spyOn(nlpValueService, "findByPatterns");
       const count = await nlpSampleService.countByPatterns({
         filters: {},
         patterns: [],
@@ -485,13 +485,13 @@ describe('NlpSampleService', () => {
 
       expect(nlpSampleRepository.findByEntities).not.toHaveBeenCalled();
       expect(nlpValueService.findByPatterns).not.toHaveBeenCalled();
-      expect(typeof count).toBe('number');
+      expect(typeof count).toBe("number");
       expect(count).toBeGreaterThan(2);
     });
 
-    it('should return 0 if no samples match the patterns', async () => {
+    it("should return 0 if no samples match the patterns", async () => {
       const patterns: NlpValueMatchPattern[] = [
-        { entity: 'intent', match: 'value', value: 'nonexistent' },
+        { entity: "intent", match: "value", value: "nonexistent" },
       ];
 
       const count = await nlpSampleService.countByPatterns({
@@ -502,18 +502,18 @@ describe('NlpSampleService', () => {
       expect(count).toBe(0);
     });
 
-    it('should respect filters (e.g. language)', async () => {
+    it("should respect filters (e.g. language)", async () => {
       const patterns: NlpValueMatchPattern[] = [
-        { entity: 'intent', match: 'value', value: 'greeting' },
+        { entity: "intent", match: "value", value: "greeting" },
       ];
-      const filters = { text: 'Hello' };
+      const filters = { text: "Hello" };
 
       const count = await nlpSampleService.countByPatterns({
         filters,
         patterns,
       });
 
-      expect(typeof count).toBe('number');
+      expect(typeof count).toBe("number");
       expect(count).toBe(1);
     });
   });

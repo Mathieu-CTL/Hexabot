@@ -9,7 +9,9 @@ module.exports = {
     "../.eslintrc.base.js",
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended",
+    "plugin:security/recommended-legacy",
   ],
+  plugins: ["security"],
   root: true,
   env: {
     node: true,

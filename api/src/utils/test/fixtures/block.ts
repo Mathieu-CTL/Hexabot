@@ -6,21 +6,21 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-import { BlockCreateDto } from '@/chat/dto/block.dto';
-import { Block, BlockModel } from '@/chat/schemas/block.schema';
-import { CategoryModel } from '@/chat/schemas/category.schema';
-import { FileType } from '@/chat/schemas/types/attachment';
-import { ButtonType } from '@/chat/schemas/types/button';
-import { QuickReplyType } from '@/chat/schemas/types/quick-reply';
+import { BlockCreateDto } from "@/chat/dto/block.dto";
+import { Block, BlockModel } from "@/chat/schemas/block.schema";
+import { CategoryModel } from "@/chat/schemas/category.schema";
+import { FileType } from "@/chat/schemas/types/attachment";
+import { ButtonType } from "@/chat/schemas/types/button";
+import { QuickReplyType } from "@/chat/schemas/types/quick-reply";
 
-import { getFixturesWithDefaultValues } from '../defaultValues';
-import { FixturesTypeBuilder } from '../types';
+import { getFixturesWithDefaultValues } from "../defaultValues";
+import { FixturesTypeBuilder } from "../types";
 
 type TBlockFixtures = FixturesTypeBuilder<Block, BlockCreateDto>;
 
-export const blockDefaultValues: TBlockFixtures['defaultValues'] = {
+export const blockDefaultValues: TBlockFixtures["defaultValues"] = {
   options: {},
   nextBlocks: [],
   capture_vars: [],
@@ -31,10 +31,10 @@ export const blockDefaultValues: TBlockFixtures['defaultValues'] = {
   starts_conversation: false,
 };
 
-export const blocks: TBlockFixtures['values'][] = [
+export const blocks: TBlockFixtures["values"][] = [
   {
-    name: 'hasNextBlocks',
-    patterns: ['Hi'],
+    name: "hasNextBlocks",
+    patterns: ["Hi"],
     outcomes: [],
     category: null,
     options: {
@@ -45,15 +45,15 @@ export const blocks: TBlockFixtures['values'][] = [
         message: [],
       },
     },
-    message: ['Hi back !'],
+    message: ["Hi back !"],
     position: {
       x: 0,
       y: 0,
     },
   },
   {
-    name: 'hasPreviousBlocks',
-    patterns: ['colors'],
+    name: "hasPreviousBlocks",
+    patterns: ["colors"],
     outcomes: [],
     category: null,
     options: {
@@ -69,18 +69,18 @@ export const blocks: TBlockFixtures['values'][] = [
       quickReplies: [
         {
           content_type: QuickReplyType.text,
-          title: 'Green',
-          payload: 'Green',
+          title: "Green",
+          payload: "Green",
         },
         {
           content_type: QuickReplyType.text,
-          title: 'Yellow',
-          payload: 'Yellow',
+          title: "Yellow",
+          payload: "Yellow",
         },
         {
           content_type: QuickReplyType.text,
-          title: 'Red',
-          payload: 'Red',
+          title: "Red",
+          payload: "Red",
         },
       ],
     },
@@ -90,8 +90,8 @@ export const blocks: TBlockFixtures['values'][] = [
     },
   },
   {
-    name: 'buttons',
-    patterns: ['about'],
+    name: "buttons",
+    patterns: ["about"],
     outcomes: [],
     category: null,
     options: {
@@ -103,22 +103,22 @@ export const blocks: TBlockFixtures['values'][] = [
       },
     },
     message: {
-      text: 'What would you like to know about us?',
+      text: "What would you like to know about us?",
       buttons: [
         {
           type: ButtonType.postback,
-          title: 'Vision',
-          payload: 'Vision',
+          title: "Vision",
+          payload: "Vision",
         },
         {
           type: ButtonType.postback,
-          title: 'Values',
-          payload: 'Values',
+          title: "Values",
+          payload: "Values",
         },
         {
           type: ButtonType.postback,
-          title: 'Approach',
-          payload: 'Approach',
+          title: "Approach",
+          payload: "Approach",
         },
       ],
     },
@@ -128,8 +128,8 @@ export const blocks: TBlockFixtures['values'][] = [
     },
   },
   {
-    name: 'attachment',
-    patterns: ['image'],
+    name: "attachment",
+    patterns: ["image"],
     outcomes: [],
     category: null,
     options: {
@@ -144,7 +144,7 @@ export const blocks: TBlockFixtures['values'][] = [
       attachment: {
         type: FileType.image,
         payload: {
-          id: '1',
+          id: "1",
         },
       },
       quickReplies: [],
@@ -155,8 +155,8 @@ export const blocks: TBlockFixtures['values'][] = [
     },
   },
   {
-    name: 'test',
-    patterns: ['yes'],
+    name: "test",
+    patterns: ["yes"],
     outcomes: [],
     category: null,
     //to be verified
@@ -168,7 +168,7 @@ export const blocks: TBlockFixtures['values'][] = [
         message: [],
       },
     },
-    message: [':)', ':D', ';)'],
+    message: [":)", ":D", ";)"],
     position: {
       x: 36,
       y: 78,
@@ -177,7 +177,7 @@ export const blocks: TBlockFixtures['values'][] = [
 ];
 
 export const blockFixtures = getFixturesWithDefaultValues<
-  TBlockFixtures['values']
+  TBlockFixtures["values"]
 >({
   fixtures: blocks,
   defaultValues: blockDefaultValues,
@@ -186,7 +186,7 @@ export const blockFixtures = getFixturesWithDefaultValues<
 export const installBlockFixtures = async () => {
   const Category = mongoose.model(CategoryModel.name, CategoryModel.schema);
   const defaultCategory = await Category.create({
-    label: 'default',
+    label: "default",
     builtin: true,
   });
   const Block = mongoose.model(BlockModel.name, BlockModel.schema);
@@ -197,7 +197,7 @@ export const installBlockFixtures = async () => {
     })),
   );
   await Block.updateOne(
-    { name: 'hasNextBlocks' },
+    { name: "hasNextBlocks" },
     { $set: { nextBlocks: blocks[1].id } },
   );
 

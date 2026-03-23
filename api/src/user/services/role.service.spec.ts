@@ -6,25 +6,25 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { installPermissionFixtures } from '@/utils/test/fixtures/permission';
-import { getPageQuery } from '@/utils/test/pagination';
+import { installPermissionFixtures } from "@/utils/test/fixtures/permission";
+import { getPageQuery } from "@/utils/test/pagination";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { PermissionRepository } from '../repositories/permission.repository';
-import { RoleRepository } from '../repositories/role.repository';
-import { UserRepository } from '../repositories/user.repository';
-import { Permission } from '../schemas/permission.schema';
-import { Role, RoleFull } from '../schemas/role.schema';
-import { User } from '../schemas/user.schema';
+import { PermissionRepository } from "../repositories/permission.repository";
+import { RoleRepository } from "../repositories/role.repository";
+import { UserRepository } from "../repositories/user.repository";
+import { Permission } from "../schemas/permission.schema";
+import { Role, RoleFull } from "../schemas/role.schema";
+import { User } from "../schemas/user.schema";
 
-import { roleFixtures } from './../../utils/test/fixtures/role';
-import { RoleService } from './role.service';
+import { roleFixtures } from "./../../utils/test/fixtures/role";
+import { RoleService } from "./role.service";
 
-describe('RoleService', () => {
+describe("RoleService", () => {
   let roleService: RoleService;
   let roleRepository: RoleRepository;
   let permissionRepository: PermissionRepository;
@@ -35,8 +35,8 @@ describe('RoleService', () => {
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      models: ['PermissionModel', 'InvitationModel'],
-      autoInjectFrom: ['providers'],
+      models: ["PermissionModel", "InvitationModel"],
+      autoInjectFrom: ["providers"],
       imports: [rootMongooseTestModule(installPermissionFixtures)],
       providers: [RoleService, UserRepository, PermissionRepository],
     });
@@ -47,7 +47,7 @@ describe('RoleService', () => {
         UserRepository,
         PermissionRepository,
       ]);
-    role = (await roleRepository.findOne({ name: 'admin' })) as Role;
+    role = (await roleRepository.findOne({ name: "admin" })) as Role;
     users = (await userRepository.findAll()).filter((user) =>
       user.roles.includes(role.id),
     );
@@ -59,26 +59,26 @@ describe('RoleService', () => {
 
   afterEach(jest.clearAllMocks);
 
-  describe('findOneAndPopulate', () => {
-    it('should find one role and populate its permissions and users', async () => {
-      jest.spyOn(roleRepository, 'findOneAndPopulate');
+  describe("findOneAndPopulate", () => {
+    it("should find one role and populate its permissions and users", async () => {
+      jest.spyOn(roleRepository, "findOneAndPopulate");
       const result = await roleService.findOneAndPopulate(role.id, undefined);
       expect(roleRepository.findOneAndPopulate).toHaveBeenCalledWith(
         role.id,
         undefined,
       );
       expect(result).toEqualPayload({
-        ...roleFixtures.find(({ name }) => name == 'admin'),
+        ...roleFixtures.find(({ name }) => name == "admin"),
         users,
         permissions,
       });
     });
   });
 
-  describe('findAndPopulate', () => {
-    it('should find roles, and for each role populate the corresponding permissions and users', async () => {
-      const pageQuery = getPageQuery<Role>({ sort: ['_id', 'asc'] });
-      jest.spyOn(roleRepository, 'findAndPopulate');
+  describe("findAndPopulate", () => {
+    it("should find roles, and for each role populate the corresponding permissions and users", async () => {
+      const pageQuery = getPageQuery<Role>({ sort: ["_id", "asc"] });
+      jest.spyOn(roleRepository, "findAndPopulate");
       const allRoles = await roleRepository.findAll();
       const allPermissions = await permissionRepository.findAll();
       const allUsers = await userRepository.findAll();

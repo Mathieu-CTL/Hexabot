@@ -6,19 +6,19 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import util from 'util';
+import util from "util";
 
-import type { ServerOptions } from 'socket.io';
+import type { ServerOptions } from "socket.io";
 
-import { AppInstance } from '@/app.instance';
-import { config } from '@/config';
-import { SettingService } from '@/setting/services/setting.service';
+import { AppInstance } from "@/app.instance";
+import { config } from "@/config";
+import { SettingService } from "@/setting/services/setting.service";
 
 export const buildWebSocketGatewayOptions = (): Partial<ServerOptions> => {
   const opts: Partial<ServerOptions> = {
     allowEIO3: true, // Allows support for Engine.io v3 clients.
     path: config.sockets.path,
-    ...(typeof config.sockets.serveClient !== 'undefined' && {
+    ...(typeof config.sockets.serveClient !== "undefined" && {
       serveClient: config.sockets.serveClient,
     }),
     ...(config.sockets.beforeConnect && {
@@ -54,7 +54,7 @@ export const buildWebSocketGatewayOptions = (): Partial<ServerOptions> => {
     ...(config.sockets.cookie && { cookie: config.sockets.cookie }),
     cors: {
       origin: async (origin, cb) => {
-        if (config.env === 'test') {
+        if (config.env === "test") {
           cb(null, true);
         } else {
           // Retrieve the allowed origins from the settings
@@ -72,7 +72,7 @@ export const buildWebSocketGatewayOptions = (): Partial<ServerOptions> => {
                   `A socket was rejected via the config.sockets.onlyAllowOrigins array.\n` +
                     `It attempted to connect with origin: ${origin}`,
                 );
-                cb(new Error('Origin not allowed'), false);
+                cb(new Error("Origin not allowed"), false);
               }
             })
             .catch(cb);

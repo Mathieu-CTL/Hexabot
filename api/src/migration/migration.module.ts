@@ -6,18 +6,18 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { join } from 'path';
+import { join } from "path";
 
-import { HttpModule } from '@nestjs/axios';
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { HttpModule } from "@nestjs/axios";
+import { Module } from "@nestjs/common";
+import { MongooseModule } from "@nestjs/mongoose";
 
-import { AttachmentModule } from '@/attachment/attachment.module';
-import { LoggerModule } from '@/logger/logger.module';
+import { AttachmentModule } from "@/attachment/attachment.module";
+import { LoggerModule } from "@/logger/logger.module";
 
-import { MigrationCommand } from './migration.command';
-import { MigrationModel } from './migration.schema';
-import { MigrationService } from './migration.service';
+import { MigrationCommand } from "./migration.command";
+import { MigrationModel } from "./migration.schema";
+import { MigrationService } from "./migration.service";
 
 @Module({
   imports: [
@@ -30,8 +30,8 @@ import { MigrationService } from './migration.service';
     MigrationService,
     MigrationCommand,
     {
-      provide: 'MONGO_MIGRATION_DIR',
-      useValue: join(__dirname, 'migrations'),
+      provide: "MONGO_MIGRATION_DIR",
+      useValue: join(__dirname, "migrations"),
     },
   ],
   exports: [MigrationService],

@@ -6,20 +6,20 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Attachment } from '@/attachment/schemas/attachment.schema';
-import EventWrapper from '@/channel/lib/EventWrapper';
-import { ChannelName } from '@/channel/types';
-import { PayloadType } from '@/chat/schemas/types/button';
+import { Attachment } from "@/attachment/schemas/attachment.schema";
+import EventWrapper from "@/channel/lib/EventWrapper";
+import { ChannelName } from "@/channel/types";
+import { PayloadType } from "@/chat/schemas/types/button";
 import {
   IncomingMessageType,
   StdEventType,
   StdIncomingMessage,
-} from '@/chat/schemas/types/message';
-import { Payload } from '@/chat/schemas/types/quick-reply';
+} from "@/chat/schemas/types/message";
+import { Payload } from "@/chat/schemas/types/quick-reply";
 
-import BaseWebChannelHandler from './base-web-channel';
-import { WEB_CHANNEL_NAME } from './settings';
-import { Web } from './types';
+import BaseWebChannelHandler from "./base-web-channel";
+import { WEB_CHANNEL_NAME } from "./settings";
+import { Web } from "./types";
 
 type WebEventAdapter =
   | {
@@ -149,9 +149,9 @@ export default class WebEventWrapper<
       if (this._adapter.raw.mid) {
         return this._adapter.raw.mid;
       }
-      throw new Error('The message id `mid` has not been set');
+      throw new Error("The message id `mid` has not been set");
     }
-    throw new Error('The id (`mid`) is only available in message events');
+    throw new Error("The id (`mid`) is only available in message events");
   }
 
   /**
@@ -164,9 +164,9 @@ export default class WebEventWrapper<
       if (this._adapter.raw.author) {
         return this._adapter.raw.author;
       }
-      throw new Error('The message author has not been set');
+      throw new Error("The message author has not been set");
     }
-    throw new Error('The `author` is only available in message events');
+    throw new Error("The `author` is only available in message events");
   }
 
   /**
@@ -176,7 +176,7 @@ export default class WebEventWrapper<
    */
   getRecipientForeignId(): string {
     // @TODO : Implement echo messaging to sync messages sent by third party
-    return '';
+    return "";
   }
 
   /**
@@ -220,7 +220,7 @@ export default class WebEventWrapper<
       }
       case IncomingMessageType.attachments:
         if (!this._adapter.attachment) {
-          throw new Error('Attachment has not been processed');
+          throw new Error("Attachment has not been processed");
         }
 
         return {
@@ -270,7 +270,7 @@ export default class WebEventWrapper<
 
       case IncomingMessageType.attachments: {
         if (!this._adapter.attachment) {
-          throw new Error('Attachment has not been processed');
+          throw new Error("Attachment has not been processed");
         }
 
         const fileType = Attachment.getTypeByMime(
@@ -290,7 +290,7 @@ export default class WebEventWrapper<
 
       default:
         return {
-          text: '',
+          text: "",
         };
     }
   }

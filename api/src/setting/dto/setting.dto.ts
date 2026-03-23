@@ -6,7 +6,7 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
   IsArray,
   IsBoolean,
@@ -14,48 +14,48 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-} from 'class-validator';
+} from "class-validator";
 
-import { SettingType } from '../schemas/types';
+import { SettingType } from "../schemas/types";
 
 export class SettingCreateDto {
-  @ApiProperty({ description: 'Setting group', type: String })
+  @ApiProperty({ description: "Setting group", type: String })
   @IsNotEmpty()
   @IsString()
   group: string;
 
-  @ApiProperty({ description: 'Setting subgroup', type: String })
+  @ApiProperty({ description: "Setting subgroup", type: String })
   @IsOptional()
   @IsString()
   subgroup?: string;
 
-  @ApiProperty({ description: 'Setting label (system name)', type: String })
+  @ApiProperty({ description: "Setting label (system name)", type: String })
   @IsNotEmpty()
   @IsString()
   label: string;
 
   @ApiProperty({
-    description: 'Setting type',
+    description: "Setting type",
     enum: [
-      'text',
-      'multiple_text',
-      'checkbox',
-      'select',
-      'number',
-      'attachment',
-      'multiple_attachment',
+      "text",
+      "multiple_text",
+      "checkbox",
+      "select",
+      "number",
+      "attachment",
+      "multiple_attachment",
     ],
   })
   @IsNotEmpty()
   @IsIn(Object.values(SettingType))
   type: SettingType;
 
-  @ApiProperty({ description: 'Setting value' })
+  @ApiProperty({ description: "Setting value" })
   @IsNotEmpty()
   value: any;
 
   @ApiPropertyOptional({
-    description: 'Setting options (required when type is select)',
+    description: "Setting options (required when type is select)",
     isArray: true,
     type: Array,
   })
@@ -68,13 +68,13 @@ export class SettingCreateDto {
 
   @ApiPropertyOptional({
     description:
-      'Defines the display order of the setting in the user interface',
+      "Defines the display order of the setting in the user interface",
     type: Number,
   })
   weight: number;
 
   @ApiPropertyOptional({
-    description: 'Indicates whether this setting supports translation',
+    description: "Indicates whether this setting supports translation",
     type: Boolean,
   })
   @IsBoolean()
@@ -83,6 +83,6 @@ export class SettingCreateDto {
 }
 
 export class SettingUpdateDto {
-  @ApiProperty({ description: 'value of the setting' })
+  @ApiProperty({ description: "value of the setting" })
   value: null | string | number | boolean | string[] | Record<string, any>;
 }

@@ -6,24 +6,24 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { getModelToken } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { getModelToken } from "@nestjs/mongoose";
+import { Model } from "mongoose";
 
-import { BlockService } from '@/chat/services/block.service';
-import { ContentType } from '@/cms/schemas/content-type.schema';
-import { I18nService } from '@/i18n/services/i18n.service';
+import { BlockService } from "@/chat/services/block.service";
+import { ContentType } from "@/cms/schemas/content-type.schema";
+import { I18nService } from "@/i18n/services/i18n.service";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { Content } from '../schemas/content.schema';
+import { Content } from "../schemas/content.schema";
 
-import { installContentFixtures } from './../../utils/test/fixtures/content';
-import { ContentTypeRepository } from './content-type.repository';
+import { installContentFixtures } from "./../../utils/test/fixtures/content";
+import { ContentTypeRepository } from "./content-type.repository";
 
-describe('ContentTypeRepository', () => {
+describe("ContentTypeRepository", () => {
   let contentTypeRepository: ContentTypeRepository;
   let contentTypeModel: Model<ContentType>;
   let contentModel: Model<Content>;
@@ -31,7 +31,7 @@ describe('ContentTypeRepository', () => {
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['providers'],
+      autoInjectFrom: ["providers"],
       imports: [rootMongooseTestModule(installContentFixtures)],
       providers: [
         ContentTypeRepository,
@@ -56,10 +56,10 @@ describe('ContentTypeRepository', () => {
 
   afterEach(jest.clearAllMocks);
 
-  describe('deleteCascadeOne', () => {
-    it('should delete a contentType by id if no associated block was found', async () => {
-      jest.spyOn(blockService, 'findOne').mockResolvedValueOnce(null);
-      const contentType = await contentTypeModel.findOne({ name: 'Store' });
+  describe("deleteCascadeOne", () => {
+    it("should delete a contentType by id if no associated block was found", async () => {
+      jest.spyOn(blockService, "findOne").mockResolvedValueOnce(null);
+      const contentType = await contentTypeModel.findOne({ name: "Store" });
       const result = await contentTypeRepository.deleteOne(contentType!.id);
       expect(result).toEqual({ acknowledged: true, deletedCount: 1 });
       const contents = await contentModel.find({

@@ -6,12 +6,12 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { FlattenMaps } from 'mongoose';
+import { FlattenMaps } from "mongoose";
 
-import { DtoAction, DtoConfig, DtoInfer } from '../types/dto.types';
+import { DtoAction, DtoConfig, DtoInfer } from "../types/dto.types";
 
-import { BaseRepository } from './base-repository';
-import { BaseSchema } from './base-schema';
+import { BaseRepository } from "./base-repository";
+import { BaseSchema } from "./base-schema";
 
 export abstract class BaseSeeder<
   T extends FlattenMaps<unknown>,

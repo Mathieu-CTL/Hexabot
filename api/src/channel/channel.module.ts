@@ -6,24 +6,24 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { HttpModule } from '@nestjs/axios';
+import { HttpModule } from "@nestjs/axios";
 import {
   Global,
   MiddlewareConsumer,
   Module,
   RequestMethod,
-} from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
-import { InjectDynamicProviders } from 'nestjs-dynamic-providers';
+} from "@nestjs/common";
+import { JwtModule } from "@nestjs/jwt";
+import { InjectDynamicProviders } from "nestjs-dynamic-providers";
 
-import { AttachmentModule } from '@/attachment/attachment.module';
-import { ChatModule } from '@/chat/chat.module';
-import { CmsModule } from '@/cms/cms.module';
+import { AttachmentModule } from "@/attachment/attachment.module";
+import { ChatModule } from "@/chat/chat.module";
+import { CmsModule } from "@/cms/cms.module";
 
-import { ChannelController } from './channel.controller';
-import { ChannelMiddleware } from './channel.middleware';
-import { ChannelService } from './channel.service';
-import { WebhookController } from './webhook.controller';
+import { ChannelController } from "./channel.controller";
+import { ChannelMiddleware } from "./channel.middleware";
+import { ChannelService } from "./channel.service";
+import { WebhookController } from "./webhook.controller";
 
 export interface ChannelModuleOptions {
   folder: string;
@@ -32,11 +32,11 @@ export interface ChannelModuleOptions {
 @Global()
 @InjectDynamicProviders(
   // Core & under dev channels
-  'dist/extensions/**/*.channel.js',
+  "dist/extensions/**/*.channel.js",
   // Community extensions installed via npm
-  'dist/.hexabot/contrib/extensions/channels/**/*.channel.js',
+  "dist/.hexabot/contrib/extensions/channels/**/*.channel.js",
   // Custom extensions under dev
-  'dist/.hexabot/custom/extensions/channels/**/*.channel.js',
+  "dist/.hexabot/custom/extensions/channels/**/*.channel.js",
 )
 @Module({
   imports: [ChatModule, AttachmentModule, CmsModule, HttpModule, JwtModule],
@@ -48,6 +48,6 @@ export class ChannelModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(ChannelMiddleware)
-      .forRoutes({ path: 'webhook/*', method: RequestMethod.ALL });
+      .forRoutes({ path: "webhook/*", method: RequestMethod.ALL });
   }
 }

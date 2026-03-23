@@ -6,17 +6,17 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { plainToInstance } from 'class-transformer';
-import { Model, PipelineStage, SortOrder, Types } from 'mongoose';
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { plainToInstance } from "class-transformer";
+import { Model, PipelineStage, SortOrder, Types } from "mongoose";
 
-import { BaseRepository } from '@/utils/generics/base-repository';
-import { PageQueryDto } from '@/utils/pagination/pagination-query.dto';
-import { TFilterQuery } from '@/utils/types/filter.types';
-import { Format } from '@/utils/types/format.types';
+import { BaseRepository } from "@/utils/generics/base-repository";
+import { PageQueryDto } from "@/utils/pagination/pagination-query.dto";
+import { TFilterQuery } from "@/utils/types/filter.types";
+import { Format } from "@/utils/types/format.types";
 
-import { NlpValueDto } from '../dto/nlp-value.dto';
+import { NlpValueDto } from "../dto/nlp-value.dto";
 import {
   NLP_VALUE_POPULATE,
   NlpValue,
@@ -25,7 +25,7 @@ import {
   NlpValuePopulate,
   NlpValueWithCount,
   TNlpValueCount,
-} from '../schemas/nlp-value.schema';
+} from "../schemas/nlp-value.schema";
 
 @Injectable()
 export class NlpValueRepository extends BaseRepository<
@@ -39,9 +39,9 @@ export class NlpValueRepository extends BaseRepository<
   }
 
   private getSortDirection(sortOrder: SortOrder) {
-    return typeof sortOrder === 'number'
+    return typeof sortOrder === "number"
       ? sortOrder
-      : sortOrder.toString().toLowerCase() === 'desc'
+      : sortOrder.toString().toLowerCase() === "desc"
         ? -1
         : 1;
   }
@@ -69,7 +69,7 @@ export class NlpValueRepository extends BaseRepository<
     {
       limit = 10,
       skip = 0,
-      sort = ['createdAt', 'desc'],
+      sort = ["createdAt", "desc"],
     }: PageQueryDto<NlpValue>,
     { $and = [], ...rest }: TFilterQuery<NlpValue>,
   ): Promise<TNlpValueCount<F>[]> {
@@ -91,38 +91,38 @@ export class NlpValueRepository extends BaseRepository<
       },
       {
         $lookup: {
-          from: 'nlpsampleentities',
-          localField: '_id',
-          foreignField: 'value',
-          as: '_sampleEntities',
+          from: "nlpsampleentities",
+          localField: "_id",
+          foreignField: "value",
+          as: "_sampleEntities",
         },
       },
       {
         $unwind: {
-          path: '$_sampleEntities',
+          path: "$_sampleEntities",
           preserveNullAndEmptyArrays: true,
         },
       },
       {
         $lookup: {
-          from: 'nlpsamples',
-          localField: '_sampleEntities.sample',
-          foreignField: '_id',
-          as: '_samples',
+          from: "nlpsamples",
+          localField: "_sampleEntities.sample",
+          foreignField: "_id",
+          as: "_samples",
         },
       },
       {
         $unwind: {
-          path: '$_samples',
+          path: "$_samples",
           preserveNullAndEmptyArrays: true,
         },
       },
       {
         $group: {
-          _id: '$_id',
+          _id: "$_id",
           _originalDoc: {
             $first: {
-              $unsetField: { input: '$$ROOT', field: 'nlpSamplesCount' },
+              $unsetField: { input: "$$ROOT", field: "nlpSamplesCount" },
             },
           },
           nlpSamplesCount: {
@@ -130,8 +130,8 @@ export class NlpValueRepository extends BaseRepository<
               $cond: [
                 {
                   $and: [
-                    { $ifNull: ['$_sampleEntities', false] },
-                    { $eq: ['$_samples.type', 'train'] },
+                    { $ifNull: ["$_sampleEntities", false] },
+                    { $eq: ["$_samples.type", "train"] },
                   ],
                 },
                 1,
@@ -144,8 +144,8 @@ export class NlpValueRepository extends BaseRepository<
       {
         $replaceWith: {
           $mergeObjects: [
-            '$_originalDoc',
-            { nlpSamplesCount: '$nlpSamplesCount' },
+            "$_originalDoc",
+            { nlpSamplesCount: "$nlpSamplesCount" },
           ],
         },
       },
@@ -153,14 +153,14 @@ export class NlpValueRepository extends BaseRepository<
         ? [
             {
               $lookup: {
-                from: 'nlpentities',
-                localField: 'entity',
-                foreignField: '_id',
-                as: 'entity',
+                from: "nlpentities",
+                localField: "entity",
+                foreignField: "_id",
+                as: "entity",
               },
             },
             {
-              $unwind: '$entity',
+              $unwind: "$entity",
             },
           ]
         : []),
@@ -206,12 +206,12 @@ export class NlpValueRepository extends BaseRepository<
 
       if (format === Format.FULL) {
         return plainToInstance(NlpValueFullWithCount, aggregatedResults, {
-          excludePrefixes: ['_'],
+          excludePrefixes: ["_"],
         }) as TNlpValueCount<F>[];
       }
 
       return plainToInstance(NlpValueWithCount, aggregatedResults, {
-        excludePrefixes: ['_'],
+        excludePrefixes: ["_"],
       }) as TNlpValueCount<F>[];
     } catch (error) {
       this.logger.error(`Error in : ${error.message}`, error);

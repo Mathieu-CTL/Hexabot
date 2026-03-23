@@ -6,42 +6,42 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-import { LabelGroupCreateDto } from '@/chat/dto/label-group.dto';
-import { LabelGroup, LabelGroupModel } from '@/chat/schemas/label-group.schema';
-import { LabelModel } from '@/chat/schemas/label.schema';
+import { LabelGroupCreateDto } from "@/chat/dto/label-group.dto";
+import { LabelGroup, LabelGroupModel } from "@/chat/schemas/label-group.schema";
+import { LabelModel } from "@/chat/schemas/label.schema";
 
-import { getFixturesWithDefaultValues } from '../defaultValues';
-import { FixturesTypeBuilder } from '../types';
+import { getFixturesWithDefaultValues } from "../defaultValues";
+import { FixturesTypeBuilder } from "../types";
 
-import { contentLabelDefaultValues, TLabelFixtures } from './label';
+import { contentLabelDefaultValues, TLabelFixtures } from "./label";
 
 type TLabelGroupFixtures = FixturesTypeBuilder<LabelGroup, LabelGroupCreateDto>;
 
-export const labelGroupFixtures: TLabelGroupFixtures['values'][] = [
+export const labelGroupFixtures: TLabelGroupFixtures["values"][] = [
   {
-    name: 'Subscription',
+    name: "Subscription",
   },
 ];
 
-export const labels: TLabelFixtures['values'][] = [
+export const labels: TLabelFixtures["values"][] = [
   {
-    name: 'FREE',
-    title: 'Free',
+    name: "FREE",
+    title: "Free",
   },
   {
-    name: 'STANDARD',
-    title: 'Standard',
+    name: "STANDARD",
+    title: "Standard",
   },
   {
-    name: 'PREMIUM',
-    title: 'Premium',
+    name: "PREMIUM",
+    title: "Premium",
   },
 ];
 
 export const groupedLabelFixtures = getFixturesWithDefaultValues<
-  TLabelFixtures['values']
+  TLabelFixtures["values"]
 >({
   fixtures: labels,
   defaultValues: contentLabelDefaultValues,

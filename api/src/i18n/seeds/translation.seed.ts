@@ -6,12 +6,12 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
-import { BaseSeeder } from '@/utils/generics/base-seeder';
+import { BaseSeeder } from "@/utils/generics/base-seeder";
 
-import { TranslationRepository } from '../repositories/translation.repository';
-import { Translation } from '../schemas/translation.schema';
+import { TranslationRepository } from "../repositories/translation.repository";
+import { Translation } from "../schemas/translation.schema";
 
 @Injectable()
 export class TranslationSeeder extends BaseSeeder<Translation> {

@@ -6,25 +6,25 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import {
   Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
-} from '@nestjs/common';
-import { Cache } from 'cache-manager';
+} from "@nestjs/common";
+import { Cache } from "cache-manager";
 
 import {
   DEFAULT_LANGUAGE_CACHE_KEY,
   LANGUAGES_CACHE_KEY,
-} from '@/utils/constants/cache';
-import { Cacheable } from '@/utils/decorators/cacheable.decorator';
-import { BaseService } from '@/utils/generics/base-service';
+} from "@/utils/constants/cache";
+import { Cacheable } from "@/utils/decorators/cacheable.decorator";
+import { BaseService } from "@/utils/generics/base-service";
 
-import { LanguageDto } from '../dto/language.dto';
-import { LanguageRepository } from '../repositories/language.repository';
-import { Language } from '../schemas/language.schema';
+import { LanguageDto } from "../dto/language.dto";
+import { LanguageRepository } from "../repositories/language.repository";
+import { Language } from "../schemas/language.schema";
 
 @Injectable()
 export class LanguageService extends BaseService<
@@ -67,7 +67,7 @@ export class LanguageService extends BaseService<
     const defaultLanguage = await this.findOne({ isDefault: true });
     if (!defaultLanguage) {
       throw new InternalServerErrorException(
-        'Default language not found: getDefaultLanguage()',
+        "Default language not found: getDefaultLanguage()",
       );
     }
     return defaultLanguage;

@@ -6,20 +6,20 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Exclude, Transform, Type } from 'class-transformer';
-import { Schema as MongooseSchema } from 'mongoose';
+import { ModelDefinition, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Exclude, Transform, Type } from "class-transformer";
+import { Schema as MongooseSchema } from "mongoose";
 
-import { Language } from '@/i18n/schemas/language.schema';
-import { BaseSchema } from '@/utils/generics/base-schema';
-import { LifecycleHookManager } from '@/utils/generics/lifecycle-hook-manager';
+import { Language } from "@/i18n/schemas/language.schema";
+import { BaseSchema } from "@/utils/generics/base-schema";
+import { LifecycleHookManager } from "@/utils/generics/lifecycle-hook-manager";
 import {
   TFilterPopulateFields,
   THydratedDocument,
-} from '@/utils/types/filter.types';
+} from "@/utils/types/filter.types";
 
-import { NlpSampleEntity } from './nlp-sample-entity.schema';
-import { NlpSampleState } from './types';
+import { NlpSampleEntity } from "./nlp-sample-entity.schema";
+import { NlpSampleState } from "./types";
 
 @Schema({ timestamps: true })
 export class NlpSampleStub extends BaseSchema {
@@ -50,7 +50,7 @@ export class NlpSampleStub extends BaseSchema {
    */
   @Prop({
     type: MongooseSchema.Types.ObjectId,
-    ref: 'Language',
+    ref: "Language",
     required: false,
   })
   language: unknown | null;
@@ -77,17 +77,17 @@ export class NlpSampleFull extends NlpSampleStub {
 export type NlpSampleDocument = THydratedDocument<NlpSample>;
 
 const NlpSampleSchema = SchemaFactory.createForClass(NlpSampleStub);
-NlpSampleSchema.index({ text: 'text' }, { language_override: 'none' });
+NlpSampleSchema.index({ text: "text" }, { language_override: "none" });
 
 export const NlpSampleModel: ModelDefinition = LifecycleHookManager.attach({
   name: NlpSample.name,
   schema: NlpSampleSchema,
 });
 
-NlpSampleSchema.virtual('entities', {
-  ref: 'NlpSampleEntity',
-  localField: '_id',
-  foreignField: 'sample',
+NlpSampleSchema.virtual("entities", {
+  ref: "NlpSampleEntity",
+  localField: "_id",
+  foreignField: "sample",
 });
 
 export default NlpSampleModel.schema;
@@ -98,6 +98,6 @@ export type NlpSamplePopulate = keyof TFilterPopulateFields<
 >;
 
 export const NLP_SAMPLE_POPULATE: NlpSamplePopulate[] = [
-  'language',
-  'entities',
+  "language",
+  "entities",
 ];

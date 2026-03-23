@@ -6,22 +6,22 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Readable, Stream } from 'stream';
+import { Readable, Stream } from "stream";
 
-import { StreamableFile } from '@nestjs/common';
+import { StreamableFile } from "@nestjs/common";
 
 import {
   AttachmentCreateDto,
   AttachmentMetadataDto,
-} from '@/attachment/dto/attachment.dto';
-import { Attachment } from '@/attachment/schemas/attachment.schema';
-import { LoggerService } from '@/logger/logger.service';
-import { SettingService } from '@/setting/services/setting.service';
+} from "@/attachment/dto/attachment.dto";
+import { Attachment } from "@/attachment/schemas/attachment.schema";
+import { LoggerService } from "@/logger/logger.service";
+import { SettingService } from "@/setting/services/setting.service";
 
-import { HelperService } from '../helper.service';
-import { HelperName, HelperType } from '../types';
+import { HelperService } from "../helper.service";
+import { HelperName, HelperType } from "../types";
 
-import BaseHelper from './base-helper';
+import BaseHelper from "./base-helper";
 
 export default abstract class BaseStorageHelper<
   N extends HelperName = HelperName,

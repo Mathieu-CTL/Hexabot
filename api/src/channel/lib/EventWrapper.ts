@@ -6,20 +6,20 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Attachment } from '@/attachment/schemas/attachment.schema';
-import { Subscriber } from '@/chat/schemas/subscriber.schema';
-import { SubscriberChannelData } from '@/chat/schemas/types/channel';
+import { Attachment } from "@/attachment/schemas/attachment.schema";
+import { Subscriber } from "@/chat/schemas/subscriber.schema";
+import { SubscriberChannelData } from "@/chat/schemas/types/channel";
 import {
   IncomingMessageType,
   StdEventType,
   StdIncomingMessage,
-} from '@/chat/schemas/types/message';
-import { Payload } from '@/chat/schemas/types/quick-reply';
-import { NLU } from '@/helper/types';
+} from "@/chat/schemas/types/message";
+import { Payload } from "@/chat/schemas/types/quick-reply";
+import { NLU } from "@/helper/types";
 
-import { ChannelName } from '../types';
+import { ChannelName } from "../types";
 
-import ChannelHandler from './Handler';
+import ChannelHandler from "./Handler";
 
 export interface ChannelEvent {}
 
@@ -60,7 +60,7 @@ export default abstract class EventWrapper<
    * @param event - The message event received
    * @param channelAttrs - Channel's specific data
    */
-  constructor(handler: C, event: A['raw'], channelAttrs: S = {} as S) {
+  constructor(handler: C, event: A["raw"], channelAttrs: S = {} as S) {
     this._handler = handler;
     this._init(event);
     this.channelAttrs = channelAttrs;
@@ -95,7 +95,7 @@ export default abstract class EventWrapper<
    *- `_adapter.raw` : Sets a typed object of the event raw data
    * @param event - The message event received from a given channel
    */
-  abstract _init(event: A['raw']): void;
+  abstract _init(event: A["raw"]): void;
 
   /**
    * Retrieves the current channel handler.
@@ -261,12 +261,12 @@ export default abstract class EventWrapper<
    */
   getText(): string {
     const message = this.getMessage();
-    if ('text' in message) {
+    if ("text" in message) {
       return message.text;
-    } else if ('serialized_text' in message) {
+    } else if ("serialized_text" in message) {
       return message.serialized_text;
     }
-    return '';
+    return "";
   }
 
   /**
@@ -332,7 +332,7 @@ export class GenericEventWrapper extends EventWrapper<
     if (this._adapter.raw.messageId) {
       return this._adapter.raw.messageId;
     }
-    throw new Error('The message id `mid` is missing');
+    throw new Error("The message id `mid` is missing");
   }
 
   /**
@@ -344,7 +344,7 @@ export class GenericEventWrapper extends EventWrapper<
     if (this._adapter.raw.senderId) {
       return this._adapter.raw.senderId;
     }
-    throw new Error('The sender id is missing');
+    throw new Error("The sender id is missing");
   }
 
   /**
@@ -353,7 +353,7 @@ export class GenericEventWrapper extends EventWrapper<
    * @returns Returns event recipient id
    */
   getRecipientForeignId(): string {
-    throw new Error('The recipient id is missing');
+    throw new Error("The recipient id is missing");
   }
 
   /**
@@ -389,7 +389,7 @@ export class GenericEventWrapper extends EventWrapper<
    * @returns Received message in standard format
    */
   getMessage(): StdIncomingMessage {
-    throw new Error('Unknown incoming message type');
+    throw new Error("Unknown incoming message type");
   }
 
   /**
