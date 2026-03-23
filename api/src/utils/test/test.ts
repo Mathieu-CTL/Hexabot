@@ -20,7 +20,7 @@ export const rootMongooseTestModule = (
     useFactory: async () => {
       const dbName = "test";
       mongod = await MongoMemoryServer.create({
-        instance: { dbName },
+        instance: { dbName, launchTimeout: 30000 },
       });
       const uri = mongod.getUri();
       await mongoose.connect(`${uri}`);

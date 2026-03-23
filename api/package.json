@@ -30,7 +30,7 @@
     "lint:fix": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest --runInBand --logHeapUsage --detectOpenHandles --forceExit",
     "test:half": "jest --logHeapUsage --maxWorkers=50% --testTimeout=10000",
-    "test:ci": "cross-env MONGOMS_INSTANCE_IP=127.0.0.1 jest --runInBand --logHeapUsage --testTimeout=10000 --no-coverage",
+    "test:ci": "cross-env MONGOMS_INSTANCE_IP=127.0.0.1 jest --runInBand --logHeapUsage --testTimeout=30000 --no-coverage",
     "test:full": "jest --logHeapUsage --maxWorkers=100% --testTimeout=10000",
     "test:watch": "jest --watch --detectOpenHandles",
     "test:cov": "jest --coverage --runInBand --detectOpenHandles --forceExit",
