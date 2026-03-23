@@ -6,9 +6,9 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server';
-import mongoose from 'mongoose';
+import { MongooseModule, MongooseModuleOptions } from "@nestjs/mongoose";
+import { MongoMemoryServer } from "mongodb-memory-server";
+import mongoose from "mongoose";
 
 let mongod: MongoMemoryServer;
 
@@ -18,9 +18,9 @@ export const rootMongooseTestModule = (
 ) =>
   MongooseModule.forRootAsync({
     useFactory: async () => {
-      const dbName = 'test';
+      const dbName = "test";
       mongod = await MongoMemoryServer.create({
-        instance: { dbName, ip: '127.0.0.1' },
+        instance: { dbName },
       });
       const uri = mongod.getUri();
       await mongoose.connect(`${uri}`);
@@ -38,6 +38,6 @@ export const closeInMongodConnection = async () => {
     if (mongod) await mongod.stop();
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.warn('Unable to close MongoDB connection', err);
+    console.warn("Unable to close MongoDB connection", err);
   }
 };
