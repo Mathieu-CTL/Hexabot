@@ -16,6 +16,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
       - name: ⏳ setting environment ...
         run: npm i
@@ -39,6 +40,7 @@ jobs:
         run: cd frontend && npm run build
 
   API-Tests:
+    name: API Tests
     runs-on: ubuntu-22.04
     timeout-minutes: 20
     steps:
@@ -49,9 +51,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
+          cache-dependency-path: api/package-lock.json
 
       - name: ⏳ setting environment for API ...
-        run: cd api && npm i
+        run: cd api && npm ci
 
       - name: 🖥 typecheck API ...
         run: cd api && npm run typecheck
@@ -60,4 +64,7 @@ jobs:
         run: cd api && npm run lint
 
       - name: 🔬 running unit tests for API ...
-        run: cd api && npm run test
+        run: cd api && npm run test:ci
+
+      - name: 🔐 security audit ...
+        run: cd api && npm audit --audit-level=high
