@@ -41,6 +41,7 @@ describe("MigrationService", () => {
           provide: LoggerService,
           useValue: {
             log: jest.fn(),
+            info: jest.fn(),
             error: jest.fn(),
           },
         },
@@ -105,7 +106,7 @@ describe("MigrationService", () => {
         expectedFilePath,
         "template",
       );
-      expect(loggerService.log).toHaveBeenCalledWith(
+      expect(loggerService.info).toHaveBeenCalledWith(
         expect.stringMatching(/Migration file for "v2.2.0" created/),
       );
       expect(exitSpy).toHaveBeenCalled();
@@ -141,7 +142,7 @@ describe("MigrationService", () => {
 
       await service.onApplicationBootstrap();
 
-      expect(loggerService.log).toHaveBeenCalledWith(
+      expect(loggerService.info).toHaveBeenCalledWith(
         "Executing migrations ...",
       );
       expect(service.run).toHaveBeenCalledWith({
@@ -290,7 +291,7 @@ describe("MigrationService", () => {
         up: jest.fn().mockRejectedValue(new Error("Test Error")),
       };
       loadMigrationFileSpy.mockResolvedValue(migrationMock);
-      const loggerSpy = jest.spyOn(service["logger"], "log");
+      const loggerSpy = jest.spyOn(service["logger"], "info");
 
       const result = await (service as any).runOne({
         version: "v2.1.9",
