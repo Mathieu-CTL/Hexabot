@@ -1,5 +1,5 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2026 Hexastack. All rights reserved.
  *
  * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
@@ -209,7 +209,7 @@ export class ChatService {
    */
   @OnEvent("hook:chatbot:echo")
   async handleEchoMessage(event: EventWrapper<any, any>) {
-    this.logger.verbose("Message echo received", event._adapter.raw);
+    this.logger.debug("Message echo received", event._adapter.raw);
     const foreignId = event.getRecipientForeignId();
 
     if (foreignId) {

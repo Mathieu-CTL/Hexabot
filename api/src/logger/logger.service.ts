@@ -26,6 +26,10 @@ export class LoggerService {
     this.logArguments("log", message, args);
   }
 
+  info(message: string, ...args: any[]) {
+    this.logArguments("log", message, args);
+  }
+
   error(message: string, ...args: any[]) {
     this.logArguments("error", message, args);
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2026 Hexastack. All rights reserved.
  *
  * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
@@ -149,7 +149,7 @@ export class ContextVarController extends BaseController<ContextVar> {
       throw new NotFoundException("Context vars with provided IDs not found");
     }
 
-    this.logger.log(`Successfully deleted context vars with IDs: ${ids}`);
+    this.logger.info(`Successfully deleted context vars with IDs: ${ids}`);
     return deleteResult;
   }
 }

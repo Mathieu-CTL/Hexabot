@@ -1,5 +1,5 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2026 Hexastack. All rights reserved.
  *
  * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
@@ -96,7 +96,7 @@ export default class LlmNluHelper
     }
 
     try {
-      this.logger.log("Initializing LLM NLU helper, building prompts...");
+      this.logger.info("Initializing LLM NLU helper, building prompts...");
       // Build prompts for language and trait classifiers
       // This is done on application bootstrap to ensure that the settings are loaded
       // and the prompts are built before any requests are made to the helper.

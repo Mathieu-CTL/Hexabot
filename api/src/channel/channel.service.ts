@@ -1,5 +1,5 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2026 Hexastack. All rights reserved.
  *
  * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
@@ -124,7 +124,7 @@ export class ChannelService {
     @SocketReq() req: SocketRequest,
     @SocketRes() res: SocketResponse,
   ) {
-    this.logger.log("Channel notification (Web Socket) : ", req.method);
+    this.logger.info("Channel notification (Web Socket) : ", req.method);
     const handler = this.getChannelHandler(WEB_CHANNEL_NAME);
     return await handler.handle(req, res);
   }
@@ -142,7 +142,7 @@ export class ChannelService {
     @SocketReq() req: SocketRequest,
     @SocketRes() res: SocketResponse,
   ) {
-    this.logger.log(
+    this.logger.info(
       "Channel notification (Admin Chat Console Socket) : ",
       req.method,
     );

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2026 Hexastack. All rights reserved.
  *
  * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
@@ -56,10 +56,10 @@ export class MigrationService implements OnApplicationBootstrap {
     if (mongoose.connection.readyState !== 1) {
       await this.connect();
     }
-    this.logger.log("Mongoose connection established!");
+    this.logger.info("Mongoose connection established!");
 
     if (!this.isCLI && config.mongo.autoMigrate) {
-      this.logger.log("Executing migrations ...");
+      this.logger.info("Executing migrations ...");
       await this.run({
         action: MigrationAction.UP,
         isAutoMigrate: true,
@@ -138,7 +138,7 @@ export class MigrationService implements OnApplicationBootstrap {
     const template = this.getMigrationTemplate();
     try {
       fs.writeFileSync(filePath, template);
-      this.logger.log(
+      this.logger.info(
         `Migration file for "${version}" created: ${migrationFileName}`,
       );
     } catch (e) {
@@ -273,7 +273,7 @@ module.exports = {
         version,
         action,
       });
-      this.logger.log(e.stack);
+      this.logger.info(e.stack);
       return false;
     }
   }
@@ -327,7 +327,7 @@ module.exports = {
     );
 
     if (!filteredVersions.length) {
-      this.logger.log("No migrations to execute ...");
+      this.logger.info("No migrations to execute ...");
       return version;
     }
 
@@ -525,7 +525,7 @@ module.exports = {
   }: MigrationSuccessCallback): Promise<void> {
     await this.updateStatus({ version, action, migrationDocument });
     const migrationDisplayName = `${version} [${action}]`;
-    this.logger.log(`"${migrationDisplayName}" migration done`);
+    this.logger.info(`"${migrationDisplayName}" migration done`);
     // Create or Update DB version
     await this.metadataService.updateOne(
       { name: "db-version" },
@@ -538,7 +538,7 @@ module.exports = {
         new: true,
       },
     );
-    this.logger.log(`db-version metadata "${version}"`);
+    this.logger.info(`db-version metadata "${version}"`);
   }
 
   /**

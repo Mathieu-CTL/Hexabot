@@ -1,5 +1,5 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2026 Hexastack. All rights reserved.
  *
  * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
@@ -147,7 +147,7 @@ export class WebsocketGateway
         // Optionally set the cookie on the client's handshake object if needed
         client.handshake.headers.cookie = cookies;
 
-        this.logger.verbose(`
+        this.logger.debug(`
           Could not fetch session, since connecting socket has no cookie in its handshake.
           Generated a one-time-use cookie:
           ${client.handshake.headers.cookie}
@@ -172,13 +172,13 @@ export class WebsocketGateway
     next: (err: Error, session: any) => void,
   ): void {
     getSessionStore().get(sessionID, (err, session) => {
-      this.logger.verbose("Retrieved socket session", err || session);
+      this.logger.debug("Retrieved socket session", err || session);
       return next(err, session);
     });
   }
 
   afterInit(): void {
-    this.logger.log("Initialized websocket gateway");
+    this.logger.info("Initialized websocket gateway");
 
     if (config.env !== "test") {
       // Share the same session middleware (main.ts > express-session)
@@ -205,7 +205,7 @@ export class WebsocketGateway
 
     // Handle session
     this.io.use(async (client, next) => {
-      this.logger.verbose("Client connected, attempting to load session.");
+      this.logger.debug("Client connected, attempting to load session.");
       try {
         const { searchParams } = new URL(`ws://localhost${client.request.url}`);
 
@@ -244,7 +244,7 @@ export class WebsocketGateway
 
   handleConnection(client: Socket, ..._args: any[]): void {
     const { sockets } = this.io.sockets;
-    this.logger.log(`Client id: ${client.id} connected`);
+    this.logger.info(`Client id: ${client.id} connected`);
     this.logger.debug(`Number of connected clients: ${sockets?.size}`);
 
     this.eventEmitter.emit(`hook:websocket:connection`, client);
@@ -260,7 +260,7 @@ export class WebsocketGateway
   }
 
   async handleDisconnect(client: Socket): Promise<void> {
-    this.logger.log(`Client id: ${client.id} disconnected`);
+    this.logger.info(`Client id: ${client.id} disconnected`);
     // Configurable custom afterDisconnect logic here
     // (default: do nothing)
     if (!config.sockets.afterDisconnect) {

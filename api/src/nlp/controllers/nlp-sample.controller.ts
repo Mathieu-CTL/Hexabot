@@ -1,5 +1,5 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2026 Hexastack. All rights reserved.
  *
  * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
@@ -231,7 +231,7 @@ export class NlpSampleController extends BaseController<
       );
       return response;
     } catch (err) {
-      this.logger.error(err);
+      this.logger.error("Unable to perform the train operation", err);
       throw new InternalServerErrorException(
         "Unable to perform the train operation",
       );
@@ -392,7 +392,7 @@ export class NlpSampleController extends BaseController<
       throw new NotFoundException("NLP samples with provided IDs not found");
     }
 
-    this.logger.log(`Successfully deleted NLP samples with IDs: ${ids}`);
+    this.logger.info(`Successfully deleted NLP samples with IDs: ${ids}`);
     return deleteResult;
   }
 

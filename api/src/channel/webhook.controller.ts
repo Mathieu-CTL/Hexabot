@@ -1,5 +1,5 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2026 Hexastack. All rights reserved.
  *
  * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
@@ -39,7 +39,7 @@ export class WebhookController {
     @Query("t") token: string,
     @Req() req: Request,
   ) {
-    this.logger.log("Channel download request: ", channel, name);
+    this.logger.info("Channel download request: ", channel, name);
     return await this.channelService.download(channel, token, req);
   }
 
@@ -62,7 +62,7 @@ export class WebhookController {
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<any> {
-    this.logger.log("Channel notification : ", req.method, channel);
+    this.logger.info("Channel notification : ", req.method, channel);
     return await this.channelService.handle(channel, req, res);
   }
 
@@ -85,7 +85,7 @@ export class WebhookController {
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<void> {
-    this.logger.log("Channel notification : ", req.method, channel);
+    this.logger.info("Channel notification : ", req.method, channel);
     return await this.channelService.handle(channel, req, res);
   }
 

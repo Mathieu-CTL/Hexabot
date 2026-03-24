@@ -1,5 +1,5 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2026 Hexastack. All rights reserved.
  *
  * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
@@ -143,7 +143,7 @@ export class CategoryController extends BaseController<Category> {
       throw new NotFoundException("Categories with provided IDs not found");
     }
 
-    this.logger.log(`Successfully deleted categories with IDs: ${ids}`);
+    this.logger.info(`Successfully deleted categories with IDs: ${ids}`);
     return deleteResult;
   }
 }
