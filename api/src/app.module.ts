@@ -1,5 +1,5 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2026 Hexastack. All rights reserved.
  *
  * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
@@ -13,6 +13,7 @@ import { Module } from "@nestjs/common";
 import { APP_GUARD } from "@nestjs/core";
 import { EventEmitterModule } from "@nestjs/event-emitter";
 import { MongooseModule } from "@nestjs/mongoose";
+import { PrometheusModule } from "@willsoto/nestjs-prometheus";
 import { redisStore } from "cache-manager-redis-yet";
 import {
   AcceptLanguageResolver,
@@ -84,6 +85,13 @@ const i18nOptions: I18nOptions = {
     PluginsModule,
     HelperModule,
     LoggerModule,
+    PrometheusModule.register({
+      defaultMetrics: {
+        enabled: true,
+      },
+      path: "/metrics",
+      customMetricPrefix: "hexabot",
+    }),
     WebsocketModule,
     EventEmitterModule.forRoot({
       // set this to `true` to use wildcards

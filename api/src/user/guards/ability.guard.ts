@@ -1,5 +1,5 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2026 Hexastack. All rights reserved.
  *
  * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
@@ -44,6 +44,11 @@ export class Ability implements CanActivate {
       .switchToHttp()
       .getRequest<Request & { user: User; _parsedUrl: Url }>();
 
+    // Allow unauthenticated access to metrics endpoint
+    if (_parsedUrl.pathname === "/metrics") {
+      return true;
+    }
+
     if (!user) {
       throw new UnauthorizedException();
     }
@@ -64,6 +69,7 @@ export class Ability implements CanActivate {
           "/auth/me",
           "/channel",
           "/i18n",
+          "/metrics",
           // Allow to update own profile
           `/user/edit/${user.id}`,
           // Allow access to own avatar
