@@ -1,5 +1,5 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2026 Hexastack. All rights reserved.
  *
  * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
@@ -8,6 +8,8 @@
 
 import { Injectable } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
+import { InjectMetric } from "@willsoto/nestjs-prometheus";
+import { Counter } from "prom-client";
 
 import { BotStatsType } from "@/analytics/schemas/bot-stats.schema";
 import EventWrapper from "@/channel/lib/EventWrapper";
@@ -42,6 +44,8 @@ export class BotService {
     private readonly subscriberService: SubscriberService,
     private readonly settingService: SettingService,
     private readonly helperService: HelperService,
+    @InjectMetric("messages_processed_total")
+    private readonly messagesCounter: Counter<string>,
   ) {}
 
   /**
@@ -608,6 +612,7 @@ export class BotService {
   async handleMessageEvent(event: EventWrapper<any, any>) {
     const settings = await this.settingService.getSettings();
     try {
+      this.messagesCounter.inc();
       const captured = await this.processConversationMessage(event);
       if (captured) {
         return;

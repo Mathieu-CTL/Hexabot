@@ -12,6 +12,7 @@ import { EventEmitter2 } from "@nestjs/event-emitter";
 import { ModelDefinition, MongooseModule } from "@nestjs/mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
 import { PinoLogger } from "nestjs-pino";
+import { Counter, Gauge } from "prom-client";
 
 import { LoggerService } from "@/logger/logger.service";
 
@@ -154,8 +155,13 @@ const getNestedModels = (
     return acc;
   }, [] as ModelDefinition[]);
 
-const filterNestedDependencies = (dependency: Provider) =>
-  dependency.valueOf().toString().slice(0, 6) === "class ";
+const filterNestedDependencies = (dependency: Provider) => {
+  const str = dependency.valueOf().toString().slice(0, 6);
+  const name = (dependency as any).name;
+  // exclude prom-client metric classes — they require a config object to instantiate
+  const excluded = ["Counter", "Gauge", "Histogram", "Summary"];
+  return str === "class " && !excluded.includes(name);
+};
 
 /**
  * Identifies nested class-based dependencies to be automatically injected into test modules.
@@ -232,6 +238,22 @@ const defaultProviders = [
       set: jest.fn(),
       get: jest.fn(),
     },
+  },
+  {
+    provide: "PROM_METRIC_MESSAGES_PROCESSED_TOTAL",
+    useValue: { inc: jest.fn() },
+  },
+  {
+    provide: "PROM_METRIC_CONVERSATIONS_ACTIVE_TOTAL",
+    useValue: { inc: jest.fn(), dec: jest.fn() },
+  },
+  {
+    provide: Counter,
+    useValue: { inc: jest.fn() },
+  },
+  {
+    provide: Gauge,
+    useValue: { inc: jest.fn(), dec: jest.fn(), set: jest.fn() },
   },
 ];
 
