@@ -7,10 +7,7 @@
  */
 
 import { Module } from "@nestjs/common";
-import {
-  makeCounterProvider,
-  makeGaugeProvider,
-} from "@willsoto/nestjs-prometheus";
+import { makeCounterProvider } from "@willsoto/nestjs-prometheus";
 
 @Module({
   providers: [
@@ -18,14 +15,14 @@ import {
       name: "messages_processed_total",
       help: "total number of messages processed by the chatbot",
     }),
-    makeGaugeProvider({
-      name: "conversations_active_total",
-      help: "number of currently active conversations",
+    makeCounterProvider({
+      name: "agent_handovers_total",
+      help: "total number of times a human agent took over a conversation",
     }),
   ],
   exports: [
     "PROM_METRIC_MESSAGES_PROCESSED_TOTAL",
-    "PROM_METRIC_CONVERSATIONS_ACTIVE_TOTAL",
+    "PROM_METRIC_AGENT_HANDOVERS_TOTAL",
   ],
 })
 export class ChatMetricsModule {}

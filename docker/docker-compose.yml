@@ -52,9 +52,35 @@ services:
     volumes:
       - mongo-data:/data/db
 
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - app-network
+    depends_on:
+      api:
+        condition: service_healthy
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    networks:
+      - app-network
+    volumes:
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - prometheus
+
 volumes:
   mongo-data:
   api-data:
+  grafana-data:
 
 networks:
   db-network:

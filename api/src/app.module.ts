@@ -13,11 +13,7 @@ import { Module } from "@nestjs/common";
 import { APP_GUARD } from "@nestjs/core";
 import { EventEmitterModule } from "@nestjs/event-emitter";
 import { MongooseModule } from "@nestjs/mongoose";
-import {
-  PrometheusModule,
-  makeCounterProvider,
-  makeGaugeProvider,
-} from "@willsoto/nestjs-prometheus";
+import { PrometheusModule } from "@willsoto/nestjs-prometheus";
 import { redisStore } from "cache-manager-redis-yet";
 import {
   AcceptLanguageResolver,
@@ -135,17 +131,6 @@ const i18nOptions: I18nOptions = {
     ...extraModules,
   ],
   controllers: [AppController],
-  providers: [
-    makeCounterProvider({
-      name: "messages_processed_total",
-      help: "total number of messages processed by the chatbot",
-    }),
-    makeGaugeProvider({
-      name: "conversations_active_total",
-      help: "number of currently active conversations",
-    }),
-    { provide: APP_GUARD, useClass: Ability },
-    AppService,
-  ],
+  providers: [{ provide: APP_GUARD, useClass: Ability }, AppService],
 })
 export class HexabotModule {}

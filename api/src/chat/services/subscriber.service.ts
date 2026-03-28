@@ -8,7 +8,9 @@
 
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
+import { InjectMetric } from "@willsoto/nestjs-prometheus";
 import mime from "mime";
+import { Counter } from "prom-client";
 import { v4 as uuidv4 } from "uuid";
 
 import { AttachmentService } from "@/attachment/services/attachment.service";
@@ -56,6 +58,8 @@ export class SubscriberService extends BaseService<
     protected readonly attachmentService: AttachmentService,
     protected readonly labelService: LabelService,
     private readonly gateway: WebsocketGateway,
+    @InjectMetric("agent_handovers_total")
+    private readonly handoversCounter: Counter<string>,
   ) {
     super(repository);
   }
@@ -142,7 +146,16 @@ export class SubscriberService extends BaseService<
    * @returns The result of the hand-over operation.
    */
   async handOverByForeignId(foreignId: string, userId: string) {
-    return await this.repository.handOverByForeignIdQuery(foreignId, userId);
+    const result = await this.repository.handOverByForeignIdQuery(
+      foreignId,
+      userId,
+    );
+
+    if (result) {
+      this.handoversCounter.inc();
+    }
+
+    return result;
   }
 
   /**
@@ -242,6 +255,7 @@ export class SubscriberService extends BaseService<
     }
 
     const updated = await this.updateOne(profile.id, { assignedTo: assignTo });
+    this.handoversCounter.inc();
     this.logger.debug(
       `Subscriber "${profile.id}" handed over to "${assignTo}"`,
     );

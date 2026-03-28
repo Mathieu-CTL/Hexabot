@@ -8,8 +8,6 @@
 
 import { Injectable } from "@nestjs/common";
 import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
-import { InjectMetric } from "@willsoto/nestjs-prometheus";
-import { Gauge } from "prom-client";
 
 import { BotStatsType } from "@/analytics/schemas/bot-stats.schema";
 import EventWrapper from "@/channel/lib/EventWrapper";
@@ -42,8 +40,6 @@ export class ChatService {
     private readonly websocketGateway: WebsocketGateway,
     private readonly helperService: HelperService,
     private readonly languageService: LanguageService,
-    @InjectMetric("conversations_active_total")
-    private readonly conversationsGauge: Gauge<string>,
   ) {}
 
   /**
@@ -55,7 +51,6 @@ export class ChatService {
   async handleEndConversation(convo: Conversation) {
     try {
       await this.conversationService.end(convo);
-      this.conversationsGauge.dec();
       this.logger.debug("Conversation has ended successfully.", convo.id);
     } catch (err) {
       this.logger.error("Unable to end conversation !", convo.id);
@@ -251,7 +246,6 @@ export class ChatService {
   @OnEvent("hook:chatbot:message")
   async handleNewMessage(event: EventWrapper<any, any>) {
     this.logger.debug("New message received", event._adapter.raw);
-    this.conversationsGauge.inc();
 
     const foreignId = event.getSenderForeignId();
     const handler = event.getHandler();

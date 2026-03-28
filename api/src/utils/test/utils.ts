@@ -244,8 +244,8 @@ const defaultProviders = [
     useValue: { inc: jest.fn() },
   },
   {
-    provide: "PROM_METRIC_CONVERSATIONS_ACTIVE_TOTAL",
-    useValue: { inc: jest.fn(), dec: jest.fn() },
+    provide: "PROM_METRIC_AGENT_HANDOVERS_TOTAL",
+    useValue: { inc: jest.fn() },
   },
   {
     provide: Counter,
