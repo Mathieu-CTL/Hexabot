@@ -146,16 +146,7 @@ export class SubscriberService extends BaseService<
    * @returns The result of the hand-over operation.
    */
   async handOverByForeignId(foreignId: string, userId: string) {
-    const result = await this.repository.handOverByForeignIdQuery(
-      foreignId,
-      userId,
-    );
-
-    if (result) {
-      this.handoversCounter.inc();
-    }
-
-    return result;
+    return await this.repository.handOverByForeignIdQuery(foreignId, userId);
   }
 
   /**
@@ -255,7 +246,6 @@ export class SubscriberService extends BaseService<
     }
 
     const updated = await this.updateOne(profile.id, { assignedTo: assignTo });
-    this.handoversCounter.inc();
     this.logger.debug(
       `Subscriber "${profile.id}" handed over to "${assignTo}"`,
     );
@@ -356,6 +346,16 @@ export class SubscriberService extends BaseService<
       );
     } else {
       throw new Error("Attempted to delete label using unknown criteria");
+    }
+  }
+
+  @OnEvent("hook:subscriber:assign")
+  handleSubscriberAssign(
+    updates: SubscriberUpdateDto,
+    oldSubscriber: Subscriber,
+  ) {
+    if (updates.assignedTo && !oldSubscriber.assignedTo) {
+      this.handoversCounter.inc();
     }
   }
 }
