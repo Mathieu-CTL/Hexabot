@@ -1,5 +1,5 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2026 Hexastack. All rights reserved.
  *
  * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
@@ -16,6 +16,7 @@ import { CmsModule } from "@/cms/cms.module";
 import { NlpModule } from "@/nlp/nlp.module";
 import { UserModule } from "@/user/user.module";
 
+import { ChatMetricsModule } from "./chat-metrics.module";
 import { BlockController } from "./controllers/block.controller";
 import { CategoryController } from "./controllers/category.controller";
 import { ContextVarController } from "./controllers/context-var.controller";
@@ -71,6 +72,7 @@ import { SubscriberService } from "./services/subscriber.service";
     EventEmitter2,
     UserModule,
     NlpModule,
+    ChatMetricsModule,
   ],
   controllers: [
     CategoryController,
