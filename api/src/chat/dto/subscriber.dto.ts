@@ -6,7 +6,7 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, PartialType } from "@nestjs/swagger";
 import {
   IsArray,
   IsDate,
@@ -14,77 +14,77 @@ import {
   IsNumber,
   IsOptional,
   IsString,
-} from 'class-validator';
+} from "class-validator";
 
-import { ChannelName } from '@/channel/types';
-import { Validate } from '@/utils/decorators/validate.decorator';
-import { DtoConfig } from '@/utils/types/dto.types';
-import { IsObjectId } from '@/utils/validation-rules/is-object-id';
+import { ChannelName } from "@/channel/types";
+import { Validate } from "@/utils/decorators/validate.decorator";
+import { DtoConfig } from "@/utils/types/dto.types";
+import { IsObjectId } from "@/utils/validation-rules/is-object-id";
 
 import {
   channelDataSchema,
   SubscriberChannelData,
-} from '../schemas/types/channel';
+} from "../schemas/types/channel";
 
 export class SubscriberCreateDto {
-  @ApiProperty({ description: 'Subscriber first name', type: String })
+  @ApiProperty({ description: "Subscriber first name", type: String })
   @IsNotEmpty()
   @IsString()
   first_name: string;
 
-  @ApiProperty({ description: 'Subscriber last name', type: String })
+  @ApiProperty({ description: "Subscriber last name", type: String })
   @IsNotEmpty()
   @IsString()
   last_name: string;
 
-  @ApiPropertyOptional({ description: 'Subscriber locale', type: String })
+  @ApiPropertyOptional({ description: "Subscriber locale", type: String })
   @IsOptional()
   @IsString()
   locale?: string;
 
-  @ApiPropertyOptional({ description: 'Subscriber timezone', type: Number })
+  @ApiPropertyOptional({ description: "Subscriber timezone", type: Number })
   @IsOptional()
   @IsNumber()
   timezone?: number;
 
-  @ApiPropertyOptional({ description: 'Subscriber language', type: String })
+  @ApiPropertyOptional({ description: "Subscriber language", type: String })
   @IsNotEmpty()
   @IsString()
   language: string;
 
-  @ApiPropertyOptional({ description: 'Subscriber gender', type: String })
+  @ApiPropertyOptional({ description: "Subscriber gender", type: String })
   @IsOptional()
   @IsString()
   gender?: string;
 
-  @ApiPropertyOptional({ description: 'Subscriber country', type: String })
+  @ApiPropertyOptional({ description: "Subscriber country", type: String })
   @IsOptional()
   @IsString()
   country?: string;
 
-  @ApiPropertyOptional({ description: 'Subscriber foreign id', type: String })
+  @ApiPropertyOptional({ description: "Subscriber foreign id", type: String })
   @IsOptional()
   @IsString()
   foreign_id?: string;
 
-  @ApiProperty({ description: 'Subscriber labels', type: Array })
+  @ApiProperty({ description: "Subscriber labels", type: Array })
   @IsNotEmpty()
   @IsArray()
-  @IsObjectId({ each: true, message: 'Label must be a valid ObjectId' })
+  @IsObjectId({ each: true, message: "Label must be a valid ObjectId" })
   labels: string[];
 
   @ApiPropertyOptional({
-    description: 'Subscriber assigned to',
+    description: "Subscriber assigned to",
     type: String,
     default: null,
   })
   @IsOptional()
   @IsString()
-  @IsObjectId({ message: 'AssignedTo must be a valid ObjectId' })
+  @IsObjectId({ message: "AssignedTo must be a valid ObjectId" })
   assignedTo?: string | null;
 
   @ApiPropertyOptional({
-    description: 'Subscriber assigned at',
+    description: "Subscriber assigned at",
     type: Date,
     default: null,
   })
@@ -93,7 +93,7 @@ export class SubscriberCreateDto {
   assignedAt?: Date | null;
 
   @ApiPropertyOptional({
-    description: 'Subscriber last visit',
+    description: "Subscriber last visit",
     type: Date,
   })
   @IsOptional()
@@ -101,7 +101,7 @@ export class SubscriberCreateDto {
   lastvisit?: Date;
 
   @ApiPropertyOptional({
-    description: 'Subscriber retained from',
+    description: "Subscriber retained from",
     type: Date,
   })
   @IsOptional()
@@ -109,7 +109,7 @@ export class SubscriberCreateDto {
   retainedFrom?: Date;
 
   @ApiProperty({
-    description: 'Subscriber channel',
+    description: "Subscriber channel",
     type: Object,
   })
   @IsNotEmpty()
@@ -117,13 +117,13 @@ export class SubscriberCreateDto {
   channel: SubscriberChannelData<ChannelName>;
 
   @ApiPropertyOptional({
-    description: 'Subscriber Avatar',
+    description: "Subscriber Avatar",
     type: String,
     default: null,
   })
   @IsOptional()
   @IsString()
-  @IsObjectId({ message: 'Avatar Attachment ID must be a valid ObjectId' })
+  @IsObjectId({ message: "Avatar Attachment ID must be a valid ObjectId" })
   avatar?: string | null = null;
 }
 

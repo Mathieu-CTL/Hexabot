@@ -6,13 +6,13 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Inject } from '@nestjs/common';
+import { Inject } from "@nestjs/common";
 import {
   EventEmitter2,
   IHookEntities,
   TNormalizedEvents,
-} from '@nestjs/event-emitter';
-import { ClassTransformOptions, plainToClass } from 'class-transformer';
+} from "@nestjs/event-emitter";
+import { ClassTransformOptions, plainToClass } from "class-transformer";
 import {
   Document,
   FilterQuery,
@@ -25,24 +25,24 @@ import {
   UpdateQuery,
   UpdateWithAggregationPipeline,
   UpdateWriteOpResult,
-} from 'mongoose';
+} from "mongoose";
 
-import { LoggerService } from '@/logger/logger.service';
+import { LoggerService } from "@/logger/logger.service";
 import {
   TFilterQuery,
   TFlattenOption,
   THydratedDocument,
   TProjectionType,
   TQueryOptions,
-} from '@/utils/types/filter.types';
+} from "@/utils/types/filter.types";
 
-import { flatten } from '../helpers/flatten';
-import { camelCase } from '../helpers/misc';
-import { PageQueryDto, QuerySortDto } from '../pagination/pagination-query.dto';
-import { DtoAction, DtoConfig, DtoInfer } from '../types/dto.types';
+import { flatten } from "../helpers/flatten";
+import { camelCase } from "../helpers/misc";
+import { PageQueryDto, QuerySortDto } from "../pagination/pagination-query.dto";
+import { DtoAction, DtoConfig, DtoInfer } from "../types/dto.types";
 
-import { BaseSchema } from './base-schema';
-import { LifecycleHookManager } from './lifecycle-hook-manager';
+import { BaseSchema } from "./base-schema";
+import { LifecycleHookManager } from "./lifecycle-hook-manager";
 
 export type DeleteResult = {
   acknowledged: boolean;
@@ -50,18 +50,18 @@ export type DeleteResult = {
 };
 
 export enum EHook {
-  preCreateValidate = 'preCreateValidate',
-  preCreate = 'preCreate',
-  preUpdateValidate = 'preUpdateValidate',
-  preUpdate = 'preUpdate',
-  preUpdateMany = 'preUpdateMany',
-  preDelete = 'preDelete',
-  postCreateValidate = 'postCreateValidate',
-  postCreate = 'postCreate',
-  postUpdateValidate = 'postUpdateValidate',
-  postUpdate = 'postUpdate',
-  postUpdateMany = 'postUpdateMany',
-  postDelete = 'postDelete',
+  preCreateValidate = "preCreateValidate",
+  preCreate = "preCreate",
+  preUpdateValidate = "preUpdateValidate",
+  preUpdate = "preUpdate",
+  preUpdateMany = "preUpdateMany",
+  preDelete = "preDelete",
+  postCreateValidate = "postCreateValidate",
+  postCreate = "postCreate",
+  postUpdateValidate = "postUpdateValidate",
+  postUpdate = "postUpdate",
+  postUpdateMany = "postUpdateMany",
+  postDelete = "postDelete",
 }
 
 // ! ------------------------------------ Note --------------------------------------------
@@ -84,7 +84,7 @@ export abstract class BaseRepository<
   U extends Omit<T, keyof BaseSchema> = Omit<T, keyof BaseSchema>,
   D = Document<T>,
 > {
-  protected readonly transformOpts = { excludePrefixes: ['_', 'password'] };
+  protected readonly transformOpts = { excludePrefixes: ["_", "password"] };
 
   protected readonly leanOpts = {
     virtuals: true,
@@ -197,7 +197,7 @@ export abstract class BaseRepository<
     });
 
     hooks.deleteOne.pre.execute(async function () {
-      const query = this as Query<DeleteResult, D, unknown, T, 'deleteOne'>;
+      const query = this as Query<DeleteResult, D, unknown, T, "deleteOne">;
       const criteria = query.getQuery();
       await repository.preDelete(query, criteria);
       await repository.eventEmitter.emitAsync(
@@ -208,7 +208,7 @@ export abstract class BaseRepository<
     });
 
     hooks?.deleteOne.post.execute(async function (result: DeleteResult) {
-      const query = this as Query<DeleteResult, D, unknown, T, 'deleteOne'>;
+      const query = this as Query<DeleteResult, D, unknown, T, "deleteOne">;
       await repository.postDelete(query, result);
       await repository.eventEmitter.emitAsync(
         repository.getEventName(EHook.postDelete),
@@ -218,7 +218,7 @@ export abstract class BaseRepository<
     });
 
     hooks.deleteMany.pre.execute(async function () {
-      const query = this as Query<DeleteResult, D, unknown, T, 'deleteMany'>;
+      const query = this as Query<DeleteResult, D, unknown, T, "deleteMany">;
       const criteria = query.getQuery();
       await repository.preDelete(query, criteria);
       await repository.eventEmitter.emitAsync(
@@ -229,7 +229,7 @@ export abstract class BaseRepository<
     });
 
     hooks.deleteMany.post.execute(async function (result: DeleteResult) {
-      const query = this as Query<DeleteResult, D, unknown, T, 'deleteMany'>;
+      const query = this as Query<DeleteResult, D, unknown, T, "deleteMany">;
       await repository.postDelete(query, result);
       await repository.eventEmitter.emitAsync(
         repository.getEventName(EHook.postDelete),
@@ -239,37 +239,37 @@ export abstract class BaseRepository<
     });
 
     hooks.findOneAndUpdate.pre.execute(async function () {
-      const query = this as Query<D, D, unknown, T, 'findOneAndUpdate'>;
+      const query = this as Query<D, D, unknown, T, "findOneAndUpdate">;
       const criteria = query.getFilter();
       const updates = query.getUpdate();
       if (!updates) {
-        throw new Error('Unable to run findOneAndUpdate pre hook');
+        throw new Error("Unable to run findOneAndUpdate pre hook");
       }
       await repository.preUpdate(query, criteria, updates);
       await repository.eventEmitter.emitAsync(
         repository.getEventName(EHook.preUpdate),
         criteria,
-        updates?.['$set'],
+        updates?.["$set"],
       );
     });
 
     hooks.updateMany.pre.execute(async function () {
-      const query = this as Query<D, D, unknown, T, 'updateMany'>;
+      const query = this as Query<D, D, unknown, T, "updateMany">;
       const criteria = query.getFilter();
       const updates = query.getUpdate();
       if (!updates) {
-        throw new Error('Unable to execute updateMany() pre-hook');
+        throw new Error("Unable to execute updateMany() pre-hook");
       }
       await repository.preUpdateMany(query, criteria, updates);
       await repository.eventEmitter.emitAsync(
         repository.getEventName(EHook.preUpdateMany),
         criteria,
-        updates?.['$set'],
+        updates?.["$set"],
       );
     });
 
     hooks.updateMany.post.execute(async function (updated: any) {
-      const query = this as Query<D, D, unknown, T, 'updateMany'>;
+      const query = this as Query<D, D, unknown, T, "updateMany">;
       await repository.postUpdateMany(query, updated);
       await repository.eventEmitter.emitAsync(
         repository.getEventName(EHook.postUpdateMany),
@@ -281,7 +281,7 @@ export abstract class BaseRepository<
       updated: HydratedDocument<T>,
     ) {
       if (updated) {
-        const query = this as Query<D, D, unknown, T, 'findOneAndUpdate'>;
+        const query = this as Query<D, D, unknown, T, "findOneAndUpdate">;
         await repository.postUpdate(
           query,
           plainToClass(repository.cls, updated, repository.transformOpts),
@@ -352,13 +352,13 @@ export abstract class BaseRepository<
   protected findOneQuery(
     criteria: string | TFilterQuery<T>,
     projection?: TProjectionType<T>,
-  ): Query<T | null, T, object, T, 'findOne', object> {
+  ): Query<T | null, T, object, T, "findOne", object> {
     if (!criteria) {
       // An empty criteria would return the first document that it finds
-      throw new Error('findOneQuery() should not have an empty criteria');
+      throw new Error("findOneQuery() should not have an empty criteria");
     }
 
-    return typeof criteria === 'string'
+    return typeof criteria === "string"
       ? this.model.findById<HydratedDocument<T>>(criteria, projection)
       : this.model.findOne<HydratedDocument<T>>(criteria, projection);
   }
@@ -414,7 +414,7 @@ export abstract class BaseRepository<
     filter: TFilterQuery<T>,
     pageQuery?: PageQueryDto<T>,
     projection?: TProjectionType<T>,
-  ): Query<T[], T, object, T, 'find', object>;
+  ): Query<T[], T, object, T, "find", object>;
 
   /**
    * @deprecated
@@ -423,7 +423,7 @@ export abstract class BaseRepository<
     filter: TFilterQuery<T>,
     pageQuery?: QuerySortDto<T>,
     projection?: TProjectionType<T>,
-  ): Query<T[], T, object, T, 'find', object>;
+  ): Query<T[], T, object, T, "find", object>;
 
   /**
    * Build an un-executed `find` query with optional pagination, sorting,
@@ -440,7 +440,7 @@ export abstract class BaseRepository<
     filter: TFilterQuery<T>,
     pageQuery?: QuerySortDto<T> | PageQueryDto<T>,
     projection?: TProjectionType<T>,
-  ): Query<T[], T, object, T, 'find', object> {
+  ): Query<T[], T, object, T, "find", object> {
     if (Array.isArray(pageQuery)) {
       const query = this.model.find<T>(filter, projection);
       return query.sort([pageQuery] as [string, SortOrder][]);
@@ -449,7 +449,7 @@ export abstract class BaseRepository<
     const {
       skip = 0,
       limit = 0,
-      sort = ['createdAt', 'asc'],
+      sort = ["createdAt", "asc"],
     } = pageQuery || {};
     const query = this.model.find<T>(filter, projection);
     return query
@@ -511,7 +511,7 @@ export abstract class BaseRepository<
    */
   private ensureCanPopulate(): void {
     if (!this.populatePaths || !this.clsPopulate) {
-      throw new Error('Cannot populate query');
+      throw new Error("Cannot populate query");
     }
   }
 
@@ -572,7 +572,7 @@ export abstract class BaseRepository<
    */
   protected findAllQuery(
     sort?: QuerySortDto<T>,
-  ): Query<T[], T, object, T, 'find', object> {
+  ): Query<T[], T, object, T, "find", object> {
     return this.findQuery({}, { limit: 0, skip: 0, sort });
   }
 
@@ -606,7 +606,7 @@ export abstract class BaseRepository<
   protected findPageQuery(
     filters: TFilterQuery<T>,
     { skip = 0, limit = 0, sort }: PageQueryDto<T>,
-  ): Query<T[], T, object, T, 'find', object> {
+  ): Query<T[], T, object, T, "find", object> {
     return this.findQuery(filters)
       .skip(skip)
       .limit(limit)
@@ -722,7 +722,7 @@ export abstract class BaseRepository<
     };
     const query = this.model.findOneAndUpdate<T>(
       {
-        ...(typeof criteria === 'string' ? { _id: criteria } : criteria),
+        ...(typeof criteria === "string" ? { _id: criteria } : criteria),
       },
       {
         $set: shouldFlatten ? flatten(dto) : dto,
@@ -733,7 +733,7 @@ export abstract class BaseRepository<
     const queryUpdates = query.getUpdate();
 
     if (!queryUpdates) {
-      throw new Error('Unable to execute updateOne() - No updates');
+      throw new Error("Unable to execute updateOne() - No updates");
     }
 
     await this.preUpdateValidate(filterCriteria, queryUpdates);
@@ -752,7 +752,7 @@ export abstract class BaseRepository<
     const result = await this.executeOne(query, this.cls);
 
     if (!result) {
-      const errorMessage = `Unable to update ${this.cls.name} with ${typeof criteria === 'string' ? 'ID' : 'criteria'} ${JSON.stringify(criteria)}`;
+      const errorMessage = `Unable to update ${this.cls.name} with ${typeof criteria === "string" ? "ID" : "criteria"} ${JSON.stringify(criteria)}`;
       throw new Error(errorMessage);
     }
 
@@ -793,7 +793,7 @@ export abstract class BaseRepository<
    * @returns Promise that resolves to Mongo’s `DeleteResult`.
    */
   async deleteOne(criteria: string | TFilterQuery<T>): Promise<DeleteResult> {
-    const filter = typeof criteria === 'string' ? { _id: criteria } : criteria;
+    const filter = typeof criteria === "string" ? { _id: criteria } : criteria;
 
     return await this.model
       .deleteOne({ ...filter, builtin: { $ne: true } })
@@ -893,7 +893,7 @@ export abstract class BaseRepository<
    * @param _updates   Update payload or pipeline.
    */
   async preUpdate(
-    _query: Query<D, D, unknown, T, 'findOneAndUpdate'>,
+    _query: Query<D, D, unknown, T, "findOneAndUpdate">,
     _criteria: TFilterQuery<T>,
     _updates: UpdateWithAggregationPipeline | UpdateQuery<D>,
   ): Promise<void> {
@@ -908,7 +908,7 @@ export abstract class BaseRepository<
    * @param _updates   Update payload or pipeline.
    */
   async preUpdateMany(
-    _query: Query<D, D, unknown, T, 'updateMany'>,
+    _query: Query<D, D, unknown, T, "updateMany">,
     _criteria: TFilterQuery<T>,
     _updates: UpdateWithAggregationPipeline | UpdateQuery<D>,
   ): Promise<void> {
@@ -922,7 +922,7 @@ export abstract class BaseRepository<
    * @param _updated  Mongoose result object.
    */
   async postUpdateMany(
-    _query: Query<D, D, unknown, T, 'updateMany'>,
+    _query: Query<D, D, unknown, T, "updateMany">,
     _updated: any,
   ): Promise<void> {
     // Nothing ...
@@ -935,7 +935,7 @@ export abstract class BaseRepository<
    * @param _updated  The updated document.
    */
   async postUpdate(
-    _query: Query<D, D, unknown, T, 'findOneAndUpdate'>,
+    _query: Query<D, D, unknown, T, "findOneAndUpdate">,
     _updated: T,
   ): Promise<void> {
     // Nothing ...
@@ -948,7 +948,7 @@ export abstract class BaseRepository<
    * @param _criteria  Filter criteria.
    */
   async preDelete(
-    _query: Query<DeleteResult, D, unknown, T, 'deleteOne' | 'deleteMany'>,
+    _query: Query<DeleteResult, D, unknown, T, "deleteOne" | "deleteMany">,
     _criteria: TFilterQuery<T>,
   ): Promise<void> {
     // Nothing ...
@@ -961,7 +961,7 @@ export abstract class BaseRepository<
    * @param _result  MongoDB `DeleteResult`.
    */
   async postDelete(
-    _query: Query<DeleteResult, D, unknown, T, 'deleteOne' | 'deleteMany'>,
+    _query: Query<DeleteResult, D, unknown, T, "deleteOne" | "deleteMany">,
     _result: DeleteResult,
   ): Promise<void> {
     // Nothing ...
@@ -992,9 +992,9 @@ export abstract class BaseRepository<
       stages.push({
         $sort: {
           [field]:
-            typeof dir === 'number'
+            typeof dir === "number"
               ? dir
-              : ['asc', 'ascending'].includes(dir as string)
+              : ["asc", "ascending"].includes(dir as string)
                 ? 1
                 : -1,
         } as Record<string, 1 | -1>,

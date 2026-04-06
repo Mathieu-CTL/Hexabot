@@ -6,12 +6,12 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { z } from 'zod';
+import { z } from "zod";
 
-import { buttonSchema } from './button';
+import { buttonSchema } from "./button";
 
 export const contentOptionsSchema = z.object({
-  display: z.enum(['list', 'carousel']),
+  display: z.enum(["list", "carousel"]),
   fields: z.object({
     title: z.string(),
     subtitle: z.string().nullable(),
@@ -24,7 +24,7 @@ export const contentOptionsSchema = z.object({
   limit: z.number().finite(),
   query: z.any().optional(),
   entity: z.string().optional(),
-  top_element_style: z.enum(['large', 'compact']).optional(),
+  top_element_style: z.enum(["large", "compact"]).optional(),
 });
 
 export type ContentOptions = z.infer<typeof contentOptionsSchema>;

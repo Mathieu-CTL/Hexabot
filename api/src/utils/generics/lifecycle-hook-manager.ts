@@ -6,18 +6,18 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ModelDefinition } from '@nestjs/mongoose';
+import { ModelDefinition } from "@nestjs/mongoose";
 
 enum LifecycleOperation {
-  Validate = 'validate',
-  Save = 'save',
-  DeleteOne = 'deleteOne',
-  DeleteMany = 'deleteMany',
-  FindOneAndUpdate = 'findOneAndUpdate',
+  Validate = "validate",
+  Save = "save",
+  DeleteOne = "deleteOne",
+  DeleteMany = "deleteMany",
+  FindOneAndUpdate = "findOneAndUpdate",
   //   InsertMany = 'insertMany',
   //   Update = 'update',
   //   UpdateOne = 'updateOne',
-  UpdateMany = 'updateMany',
+  UpdateMany = "updateMany",
 }
 
 type PreHook = (...args: any[]) => void;
@@ -60,9 +60,9 @@ export class LifecycleHookManager {
       await currentCallback.apply(this, args);
     }
 
-    dynamicCallback['execute'] = function (newCallback: H) {
-      if (typeof newCallback !== 'function') {
-        throw new Error('Lifecycle callback must be a function');
+    dynamicCallback["execute"] = function (newCallback: H) {
+      if (typeof newCallback !== "function") {
+        throw new Error("Lifecycle callback must be a function");
       }
       currentCallback = newCallback as typeof currentCallback;
     };
@@ -74,25 +74,25 @@ export class LifecycleHookManager {
     LifecycleHookManager.addModel(model);
     const { name, schema } = model;
     const operations: {
-      [key in LifecycleOperation]: ('pre' | 'post')[];
+      [key in LifecycleOperation]: ("pre" | "post")[];
     } = {
-      validate: ['pre', 'post'],
-      save: ['pre', 'post'],
-      deleteOne: ['pre', 'post'],
-      deleteMany: ['pre', 'post'],
-      findOneAndUpdate: ['pre', 'post'],
+      validate: ["pre", "post"],
+      save: ["pre", "post"],
+      deleteOne: ["pre", "post"],
+      deleteMany: ["pre", "post"],
+      findOneAndUpdate: ["pre", "post"],
       //   insertMany: ['pre'],
       //   update: ['pre', 'post'],
       //   updateOne: ['pre', 'post'],
-      updateMany: ['pre', 'post'],
+      updateMany: ["pre", "post"],
     };
 
     const lifecycleHooks: LifecycleHooks = {} as LifecycleHooks;
 
     for (const [op, types] of Object.entries(operations)) {
       const hooks: LifecycleHook = {
-        pre: this.createLifecycleCallback() as LifecycleHook['pre'],
-        post: this.createLifecycleCallback() as LifecycleHook['post'],
+        pre: this.createLifecycleCallback() as LifecycleHook["pre"],
+        post: this.createLifecycleCallback() as LifecycleHook["post"],
       };
 
       types.forEach((type) => {

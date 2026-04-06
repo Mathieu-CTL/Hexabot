@@ -6,11 +6,11 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { z } from 'zod';
+import { z } from "zod";
 
 export enum ButtonType {
-  postback = 'postback',
-  web_url = 'web_url',
+  postback = "postback",
+  web_url = "web_url",
 }
 
 const postBackButtonSchema = z.object({
@@ -22,9 +22,9 @@ const postBackButtonSchema = z.object({
 const webUrlButtonSchema = z.object({
   type: z.literal(ButtonType.web_url),
   title: z.string(),
-  url: z.union([z.string().url(), z.literal('')]),
+  url: z.union([z.string().url(), z.literal("")]),
   messenger_extensions: z.boolean().optional(),
-  webview_height_ratio: z.enum(['compact', 'tall', 'full']).optional(),
+  webview_height_ratio: z.enum(["compact", "tall", "full"]).optional(),
 });
 
 export const buttonSchema = z.union([postBackButtonSchema, webUrlButtonSchema]);
@@ -36,11 +36,11 @@ export type WebUrlButton = z.infer<typeof webUrlButtonSchema>;
 export type Button = z.infer<typeof buttonSchema>;
 
 export enum PayloadType {
-  location = 'location',
-  attachments = 'attachments',
-  quick_reply = 'quick_reply',
-  button = 'button',
-  outcome = 'outcome',
-  menu = 'menu',
-  content = 'content',
+  location = "location",
+  attachments = "attachments",
+  quick_reply = "quick_reply",
+  button = "button",
+  outcome = "outcome",
+  menu = "menu",
+  content = "content",
 }

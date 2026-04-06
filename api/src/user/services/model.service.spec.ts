@@ -6,22 +6,22 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { modelFixtures } from '@/utils/test/fixtures/model';
-import { installPermissionFixtures } from '@/utils/test/fixtures/permission';
+import { modelFixtures } from "@/utils/test/fixtures/model";
+import { installPermissionFixtures } from "@/utils/test/fixtures/permission";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { ModelRepository } from '../repositories/model.repository';
-import { PermissionRepository } from '../repositories/permission.repository';
-import { Model, ModelFull } from '../schemas/model.schema';
-import { Permission } from '../schemas/permission.schema';
+import { ModelRepository } from "../repositories/model.repository";
+import { PermissionRepository } from "../repositories/permission.repository";
+import { Model, ModelFull } from "../schemas/model.schema";
+import { Permission } from "../schemas/permission.schema";
 
-import { ModelService } from './model.service';
+import { ModelService } from "./model.service";
 
-describe('ModelService', () => {
+describe("ModelService", () => {
   let modelService: ModelService;
   let modelRepository: ModelRepository;
   let permissionRepository: PermissionRepository;
@@ -30,8 +30,8 @@ describe('ModelService', () => {
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      models: ['PermissionModel'],
-      autoInjectFrom: ['providers'],
+      models: ["PermissionModel"],
+      autoInjectFrom: ["providers"],
       imports: [rootMongooseTestModule(installPermissionFixtures)],
       providers: [ModelService, PermissionRepository],
     });
@@ -40,7 +40,7 @@ describe('ModelService', () => {
       PermissionRepository,
       ModelRepository,
     ]);
-    model = await modelRepository.findOne({ name: 'ContentType' });
+    model = await modelRepository.findOne({ name: "ContentType" });
     permissions = await permissionRepository.find({ model: model!.id });
   });
 
@@ -48,18 +48,18 @@ describe('ModelService', () => {
 
   afterEach(jest.clearAllMocks);
 
-  describe('findOneAndPopulate', () => {
-    it('should find a model and populate its permissions', async () => {
+  describe("findOneAndPopulate", () => {
+    it("should find a model and populate its permissions", async () => {
       const result = await modelService.findOneAndPopulate(model!.id);
       expect(result).toEqualPayload({
-        ...modelFixtures.find(({ name }) => name === 'ContentType'),
+        ...modelFixtures.find(({ name }) => name === "ContentType"),
         permissions,
       });
     });
   });
-  describe('findAndPopulate', () => {
-    it('should find models, and for each model populate the corresponding permissions', async () => {
-      jest.spyOn(modelRepository, 'findAndPopulate');
+  describe("findAndPopulate", () => {
+    it("should find models, and for each model populate the corresponding permissions", async () => {
+      jest.spyOn(modelRepository, "findAndPopulate");
       const models = await modelRepository.findAll();
       const permissions = await permissionRepository.findAll();
       const result = await modelService.findAndPopulate({});

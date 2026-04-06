@@ -6,4 +6,4 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-export const NOT_FOUND_ID = '9'.repeat(24);
+export const NOT_FOUND_ID = "9".repeat(24);

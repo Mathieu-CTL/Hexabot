@@ -6,40 +6,40 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
   IsNotEmpty,
   IsObject,
   IsString,
   IsOptional,
   IsNumber,
-} from 'class-validator';
+} from "class-validator";
 
 export class TranslationCreateDto {
-  @ApiProperty({ description: 'Translation str', type: String })
+  @ApiProperty({ description: "Translation str", type: String })
   @IsNotEmpty()
   @IsString()
   str: string;
 
-  @ApiProperty({ description: 'Translations', type: Object })
+  @ApiProperty({ description: "Translations", type: Object })
   @IsNotEmpty()
   @IsObject()
   translations: Record<string, string>;
 
-  @ApiProperty({ description: 'Translated', type: Number })
+  @ApiProperty({ description: "Translated", type: Number })
   @IsNotEmpty()
   @IsNumber()
   translated: number;
 }
 
 export class TranslationUpdateDto {
-  @ApiPropertyOptional({ description: 'Translation str', type: String })
+  @ApiPropertyOptional({ description: "Translation str", type: String })
   @IsNotEmpty()
   @IsString()
   @IsOptional()
   str?: string;
 
-  @ApiPropertyOptional({ description: 'Translations', type: Object })
+  @ApiPropertyOptional({ description: "Translations", type: Object })
   @IsNotEmpty()
   @IsObject()
   @IsOptional()

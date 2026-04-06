@@ -6,12 +6,12 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Type } from 'class-transformer';
-import { IsNotEmpty } from 'class-validator';
-import { Types } from 'mongoose';
+import { Type } from "class-transformer";
+import { IsNotEmpty } from "class-validator";
+import { Types } from "mongoose";
 
 export class ObjectIdDto {
   @Type(() => Types.ObjectId)
-  @IsNotEmpty({ message: 'Invalid ObjectId' })
+  @IsNotEmpty({ message: "Invalid ObjectId" })
   id: string;
 }

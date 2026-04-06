@@ -6,11 +6,11 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Logger } from '@nestjs/common';
+import { Logger } from "@nestjs/common";
 
-import { TSearchFilterValue } from '../types/filter.types';
+import { TSearchFilterValue } from "../types/filter.types";
 
-import { SearchFilterPipe } from './search-filter.pipe';
+import { SearchFilterPipe } from "./search-filter.pipe";
 
 type PipeTest = {
   name: string;
@@ -21,21 +21,21 @@ type PipeTest = {
   channel: string;
 };
 
-jest.mock('@nestjs/common', () => ({
-  ...(jest.requireActual('@nestjs/common') as Record<string, unknown>),
+jest.mock("@nestjs/common", () => ({
+  ...(jest.requireActual("@nestjs/common") as Record<string, unknown>),
   Logger: {
     warn: jest.fn(),
   },
 }));
 
-describe('SearchFilterPipe', () => {
+describe("SearchFilterPipe", () => {
   const allowedFields = [
-    'name',
-    'email',
-    'id',
-    'status',
-    'roles',
-    'channel',
+    "name",
+    "email",
+    "id",
+    "status",
+    "roles",
+    "channel",
   ] as (keyof PipeTest)[];
 
   const pipe = new SearchFilterPipe<PipeTest>({
@@ -49,51 +49,51 @@ describe('SearchFilterPipe', () => {
   it('should transform a simple "where" query correctly', async () => {
     const input = {
       where: {
-        name: 'John Doe',
-        email: { contains: 'example' },
+        name: "John Doe",
+        email: { contains: "example" },
       },
     };
 
     const result = await pipe.transform(input, {} as any);
 
     expect(result).toEqual({
-      $and: [{ name: 'John Doe' }, { email: /example/i }],
+      $and: [{ name: "John Doe" }, { email: /example/i }],
     });
   });
 
   it('should handle "or" queries correctly', async () => {
     const input = {
       where: {
-        or: [{ name: 'John Doe' }, { email: { contains: 'example' } }],
+        or: [{ name: "John Doe" }, { email: { contains: "example" } }],
       },
     };
 
     const result = await pipe.transform(input, {} as any);
 
     expect(result).toEqual({
-      $or: [{ name: 'John Doe' }, { email: /example/i }],
+      $or: [{ name: "John Doe" }, { email: /example/i }],
     });
   });
 
-  it('should filter out disallowed fields', async () => {
+  it("should filter out disallowed fields", async () => {
     const input = {
       where: {
-        name: 'John Doe',
-        secret: 'top-secret', // Disallowed field
+        name: "John Doe",
+        secret: "top-secret", // Disallowed field
       },
     } as TSearchFilterValue<PipeTest>;
 
     const result = await pipe.transform(input, {} as any);
 
     expect(result).toEqual({
-      $and: [{ name: 'John Doe' }],
+      $and: [{ name: "John Doe" }],
     });
 
-    expect(Logger.warn).toHaveBeenCalledWith('Field secret is not allowed');
+    expect(Logger.warn).toHaveBeenCalledWith("Field secret is not allowed");
   });
 
   it('should transform "id" field into ObjectId when valid', async () => {
-    const oid = '9'.repeat(24);
+    const oid = "9".repeat(24);
     const input = {
       where: {
         id: oid,
@@ -110,7 +110,7 @@ describe('SearchFilterPipe', () => {
   it('should skip "id" field if it is not a valid ObjectId', async () => {
     const input = {
       where: {
-        id: 'invalid-id',
+        id: "invalid-id",
       },
     };
 
@@ -119,10 +119,10 @@ describe('SearchFilterPipe', () => {
     expect(result).toEqual({});
   });
 
-  it('should handle null values properly', async () => {
+  it("should handle null values properly", async () => {
     const input = {
       where: {
-        name: 'null',
+        name: "null",
       },
     };
 
@@ -136,51 +136,51 @@ describe('SearchFilterPipe', () => {
   it('should handle "!=" operator correctly', async () => {
     const input = {
       where: {
-        status: { '!=': 'inactive' },
+        status: { "!=": "inactive" },
       },
     };
 
     const result = await pipe.transform(input, {} as any);
 
     expect(result).toEqual({
-      $nor: [{ status: 'inactive' }],
+      $nor: [{ status: "inactive" }],
     });
   });
 
   it('should handle "in" operator correctly', async () => {
     const input = {
       where: {
-        roles: ['1', '2'],
+        roles: ["1", "2"],
       },
     };
 
     const result = await pipe.transform(input, {} as any);
 
     expect(result).toEqual({
-      $and: [{ roles: ['1', '2'] }],
+      $and: [{ roles: ["1", "2"] }],
     });
   });
 
-  it('should transform $in queries correctly', async () => {
+  it("should transform $in queries correctly", async () => {
     const input = {
       where: {
-        channel: { $in: ['web-channel', 'console-channel'] },
+        channel: { $in: ["web-channel", "console-channel"] },
       },
     };
 
     const result = await pipe.transform(input, {} as any);
 
     expect(result).toEqual({
-      $and: [{ channel: { $in: ['web-channel', 'console-channel'] } }],
+      $and: [{ channel: { $in: ["web-channel", "console-channel"] } }],
     });
   });
 
-  it('should transform $in queries in OR context correctly', async () => {
+  it("should transform $in queries in OR context correctly", async () => {
     const input = {
       where: {
         or: [
-          { channel: { $in: ['web-channel', 'console-channel'] } },
-          { name: { contains: 'John' } },
+          { channel: { $in: ["web-channel", "console-channel"] } },
+          { name: { contains: "John" } },
         ],
       },
     };
@@ -189,23 +189,23 @@ describe('SearchFilterPipe', () => {
 
     expect(result).toEqual({
       $or: [
-        { channel: { $in: ['web-channel', 'console-channel'] } },
+        { channel: { $in: ["web-channel", "console-channel"] } },
         { name: /John/i },
       ],
     });
   });
 
-  it('should handle $in with single value correctly', async () => {
+  it("should handle $in with single value correctly", async () => {
     const input = {
       where: {
-        channel: { $in: 'web-channel' },
+        channel: { $in: "web-channel" },
       },
     };
 
     const result = await pipe.transform(input, {} as any);
 
     expect(result).toEqual({
-      $and: [{ channel: { $in: ['web-channel'] } }],
+      $and: [{ channel: { $in: ["web-channel"] } }],
     });
   });
 });

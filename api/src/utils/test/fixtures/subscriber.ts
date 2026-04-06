@@ -6,20 +6,20 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-import { SubscriberCreateDto } from '@/chat/dto/subscriber.dto';
-import { Subscriber, SubscriberModel } from '@/chat/schemas/subscriber.schema';
+import { SubscriberCreateDto } from "@/chat/dto/subscriber.dto";
+import { Subscriber, SubscriberModel } from "@/chat/schemas/subscriber.schema";
 
-import { getFixturesWithDefaultValues } from '../defaultValues';
-import { FixturesTypeBuilder } from '../types';
+import { getFixturesWithDefaultValues } from "../defaultValues";
+import { FixturesTypeBuilder } from "../types";
 
-import { installLabelFixtures } from './label';
-import { installUserFixtures } from './user';
+import { installLabelFixtures } from "./label";
+import { installUserFixtures } from "./user";
 
 type TSubscriberFixtures = FixturesTypeBuilder<Subscriber, SubscriberCreateDto>;
 
-export const subscriberDefaultValues: TSubscriberFixtures['defaultValues'] = {
+export const subscriberDefaultValues: TSubscriberFixtures["defaultValues"] = {
   timezone: 0,
   assignedTo: null,
   assignedAt: null,
@@ -31,71 +31,71 @@ export const subscriberDefaultValues: TSubscriberFixtures['defaultValues'] = {
   },
 };
 
-const subscribers: TSubscriberFixtures['values'][] = [
+const subscribers: TSubscriberFixtures["values"][] = [
   {
-    foreign_id: 'foreign-id-messenger',
-    first_name: 'Jhon',
-    last_name: 'Doe',
-    language: 'fr',
-    locale: 'en_EN',
-    gender: 'male',
-    country: 'FR',
+    foreign_id: "foreign-id-messenger",
+    first_name: "Jhon",
+    last_name: "Doe",
+    language: "fr",
+    locale: "en_EN",
+    gender: "male",
+    country: "FR",
     channel: {
-      name: 'messenger-channel',
+      name: "messenger-channel",
     },
     labels: [],
-    lastvisit: new Date('2020-01-01T20:40:03.249Z'),
-    retainedFrom: new Date('2020-01-01T20:40:03.249Z'),
+    lastvisit: new Date("2020-01-01T20:40:03.249Z"),
+    retainedFrom: new Date("2020-01-01T20:40:03.249Z"),
   },
   {
-    foreign_id: 'foreign-id-web-1',
-    first_name: 'Maynard',
-    last_name: 'James Keenan',
-    language: 'en',
-    locale: 'en_EN',
-    gender: 'male',
-    country: 'US',
+    foreign_id: "foreign-id-web-1",
+    first_name: "Maynard",
+    last_name: "James Keenan",
+    language: "en",
+    locale: "en_EN",
+    gender: "male",
+    country: "US",
     channel: {
-      name: 'web-channel',
+      name: "web-channel",
     },
     labels: [],
-    lastvisit: new Date('2021-01-01T20:40:03.249Z'),
-    retainedFrom: new Date('2021-01-02T20:40:03.249Z'),
+    lastvisit: new Date("2021-01-01T20:40:03.249Z"),
+    retainedFrom: new Date("2021-01-02T20:40:03.249Z"),
   },
   {
-    foreign_id: 'foreign-id-web-2',
-    first_name: 'Queen',
-    last_name: 'Elisabeth',
-    language: 'en',
-    locale: 'en_EN',
-    gender: 'male',
-    country: 'US',
+    foreign_id: "foreign-id-web-2",
+    first_name: "Queen",
+    last_name: "Elisabeth",
+    language: "en",
+    locale: "en_EN",
+    gender: "male",
+    country: "US",
     channel: {
-      name: 'web-channel',
+      name: "web-channel",
     },
     labels: [],
-    lastvisit: new Date('2022-01-01T20:40:03.249Z'),
-    retainedFrom: new Date('2022-01-02T20:40:03.249Z'),
+    lastvisit: new Date("2022-01-01T20:40:03.249Z"),
+    retainedFrom: new Date("2022-01-02T20:40:03.249Z"),
   },
   {
-    foreign_id: 'foreign-id-dimelo',
-    first_name: 'Carl',
-    last_name: 'Jung',
-    language: 'en',
-    locale: 'en_EN',
-    gender: 'male',
-    country: 'US',
+    foreign_id: "foreign-id-dimelo",
+    first_name: "Carl",
+    last_name: "Jung",
+    language: "en",
+    locale: "en_EN",
+    gender: "male",
+    country: "US",
     channel: {
-      name: 'web-channel',
+      name: "web-channel",
     },
     labels: [],
-    lastvisit: new Date('2024-01-01T20:40:03.249Z'),
-    retainedFrom: new Date('2024-01-02T20:40:03.249Z'),
+    lastvisit: new Date("2024-01-01T20:40:03.249Z"),
+    retainedFrom: new Date("2024-01-02T20:40:03.249Z"),
   },
 ];
 
 export const subscriberFixtures = getFixturesWithDefaultValues<
-  TSubscriberFixtures['values']
+  TSubscriberFixtures["values"]
 >({
   fixtures: subscribers,
   defaultValues: subscriberDefaultValues,

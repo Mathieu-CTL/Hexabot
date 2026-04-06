@@ -6,9 +6,9 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
-import { IHookSettingsGroupLabelOperationMap } from '@nestjs/event-emitter';
-import { InjectModel } from '@nestjs/mongoose';
+import { Injectable } from "@nestjs/common";
+import { IHookSettingsGroupLabelOperationMap } from "@nestjs/event-emitter";
+import { InjectModel } from "@nestjs/mongoose";
 import {
   Document,
   FilterQuery,
@@ -17,12 +17,12 @@ import {
   Types,
   UpdateQuery,
   UpdateWithAggregationPipeline,
-} from 'mongoose';
+} from "mongoose";
 
-import { BaseRepository } from '@/utils/generics/base-repository';
+import { BaseRepository } from "@/utils/generics/base-repository";
 
-import { Setting } from '../schemas/setting.schema';
-import { SettingType } from '../schemas/types';
+import { Setting } from "../schemas/setting.schema";
+import { SettingType } from "../schemas/types";
 
 @Injectable()
 export class SettingRepository extends BaseRepository<Setting> {
@@ -43,18 +43,18 @@ export class SettingRepository extends BaseRepository<Setting> {
   ): Promise<void> {
     if (!Array.isArray(updates)) {
       const payload = updates.$set;
-      if (payload && 'value' in payload) {
-        const hasType = 'type' in payload;
+      if (payload && "value" in payload) {
+        const hasType = "type" in payload;
         if (hasType) {
           // Case when we need to update both the type and value
           this.validateSettingValue(payload.type, payload.value);
         } else {
           // Case when we only update the setting value
           const setting = await this.findOne(criteria);
-          if (setting && 'type' in setting) {
+          if (setting && "type" in setting) {
             this.validateSettingValue(setting.type, payload.value);
           } else {
-            throw new Error('Unable to find the setting to be updated');
+            throw new Error("Unable to find the setting to be updated");
           }
         }
       }
@@ -76,12 +76,12 @@ export class SettingRepository extends BaseRepository<Setting> {
       Document<Setting, any, any>,
       unknown,
       Setting,
-      'findOneAndUpdate'
+      "findOneAndUpdate"
     >,
     setting: Setting,
   ) {
     const group = setting.group as keyof IHookSettingsGroupLabelOperationMap;
-    const label = setting.label as '*';
+    const label = setting.label as "*";
 
     // Sync global settings var
     this.eventEmitter.emit(`hook:${group}:${label}`, setting);
@@ -100,48 +100,48 @@ export class SettingRepository extends BaseRepository<Setting> {
   public validateSettingValue(type: SettingType, value: any) {
     if (
       (type === SettingType.text || type === SettingType.textarea) &&
-      typeof value !== 'string' &&
+      typeof value !== "string" &&
       value !== null
     ) {
-      throw new Error('Setting Model : Value must be a string!');
+      throw new Error("Setting Model : Value must be a string!");
     } else if (type === SettingType.multiple_text) {
       if (!this.isArrayOfString(value)) {
         throw new Error(
-          'Setting Model (Multiple Text) : Value must be a string array!',
+          "Setting Model (Multiple Text) : Value must be a string array!",
         );
       }
     } else if (
       type === SettingType.checkbox &&
-      typeof value !== 'boolean' &&
+      typeof value !== "boolean" &&
       value !== null
     ) {
-      throw new Error('Setting Model : Value must be a boolean!');
+      throw new Error("Setting Model : Value must be a boolean!");
     } else if (
       type === SettingType.number &&
-      typeof value !== 'number' &&
+      typeof value !== "number" &&
       value !== null
     ) {
-      throw new Error('Setting Model : Value must be a number!');
+      throw new Error("Setting Model : Value must be a number!");
     } else if (type === SettingType.multiple_attachment) {
       if (!this.isArrayOfString(value)) {
         throw new Error(
-          'Setting Model (Multiple Attachement): Value must be a string array!',
+          "Setting Model (Multiple Attachement): Value must be a string array!",
         );
       }
     } else if (type === SettingType.attachment) {
-      if (typeof value !== 'string' && typeof value !== null) {
+      if (typeof value !== "string" && typeof value !== null) {
         throw new Error(
-          'Setting Model (attachement): Value must be a string or null !',
+          "Setting Model (attachement): Value must be a string or null !",
         );
       }
-    } else if (type === SettingType.secret && typeof value !== 'string') {
-      throw new Error('Setting Model (secret) : Value must be a string');
-    } else if (type === SettingType.select && typeof value !== 'string') {
-      throw new Error('Setting Model (select): Value must be a string!');
+    } else if (type === SettingType.secret && typeof value !== "string") {
+      throw new Error("Setting Model (secret) : Value must be a string");
+    } else if (type === SettingType.select && typeof value !== "string") {
+      throw new Error("Setting Model (select): Value must be a string!");
     }
   }
 
   private isArrayOfString(value: any): boolean {
-    return Array.isArray(value) && value.every((v) => typeof v === 'string');
+    return Array.isArray(value) && value.every((v) => typeof v === "string");
   }
 }

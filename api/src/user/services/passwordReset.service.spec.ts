@@ -6,36 +6,36 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { NotFoundException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { getModelToken } from '@nestjs/mongoose';
-import { ISendMailOptions } from '@nestjs-modules/mailer';
-import { compareSync } from 'bcryptjs';
-import { Model } from 'mongoose';
-import { SentMessageInfo } from 'nodemailer';
+import { NotFoundException } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { getModelToken } from "@nestjs/mongoose";
+import { ISendMailOptions } from "@nestjs-modules/mailer";
+import { compareSync } from "bcryptjs";
+import { Model } from "mongoose";
+import { SentMessageInfo } from "nodemailer";
 
-import { I18nService } from '@/i18n/services/i18n.service';
-import { MailerService } from '@/mailer/mailer.service';
-import { installLanguageFixtures } from '@/utils/test/fixtures/language';
-import { installUserFixtures, users } from '@/utils/test/fixtures/user';
+import { I18nService } from "@/i18n/services/i18n.service";
+import { MailerService } from "@/mailer/mailer.service";
+import { installLanguageFixtures } from "@/utils/test/fixtures/language";
+import { installUserFixtures, users } from "@/utils/test/fixtures/user";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { User } from '../schemas/user.schema';
+import { User } from "../schemas/user.schema";
 
-import { PasswordResetService } from './passwordReset.service';
+import { PasswordResetService } from "./passwordReset.service";
 
-describe('PasswordResetService', () => {
+describe("PasswordResetService", () => {
   let passwordResetService: PasswordResetService;
   let mailerService: MailerService;
   let jwtService: JwtService;
   let userModel: Model<User>;
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['providers'],
+      autoInjectFrom: ["providers"],
       imports: [
         rootMongooseTestModule(async () => {
           await installLanguageFixtures();
@@ -49,7 +49,7 @@ describe('PasswordResetService', () => {
           useValue: {
             sendMail: jest.fn(
               (_options: ISendMailOptions): Promise<SentMessageInfo> =>
-                Promise.resolve('Mail sent successfully'),
+                Promise.resolve("Mail sent successfully"),
             ),
           },
         },
@@ -74,10 +74,10 @@ describe('PasswordResetService', () => {
 
   afterEach(jest.clearAllMocks);
 
-  describe('requestReset', () => {
-    it('should send an email with a token', async () => {
-      const sendMailSpy = jest.spyOn(mailerService, 'sendMail');
-      const signSpy = jest.spyOn(passwordResetService, 'sign');
+  describe("requestReset", () => {
+    it("should send an email with a token", async () => {
+      const sendMailSpy = jest.spyOn(mailerService, "sendMail");
+      const signSpy = jest.spyOn(passwordResetService, "sign");
       const promise = passwordResetService.requestReset({
         email: users[0].email,
       });
@@ -87,16 +87,16 @@ describe('PasswordResetService', () => {
       expect(signSpy).toHaveBeenCalled();
     });
 
-    it('should throw a 404 error', async () => {
+    it("should throw a 404 error", async () => {
       const promise = passwordResetService.requestReset({
-        email: 'a@b.ca',
+        email: "a@b.ca",
       });
       await expect(promise).rejects.toThrow(NotFoundException);
     });
 
-    it('should return change the password', async () => {
-      const spy = jest.spyOn(passwordResetService, 'sign');
-      const verifySpy = jest.spyOn(passwordResetService, 'verify');
+    it("should return change the password", async () => {
+      const spy = jest.spyOn(passwordResetService, "sign");
+      const verifySpy = jest.spyOn(passwordResetService, "verify");
       const token = jwtService.sign(
         { email: users[0].email },
         passwordResetService.jwtSignOptions,
@@ -105,7 +105,7 @@ describe('PasswordResetService', () => {
       await passwordResetService.requestReset({ email: users[0].email });
 
       const promise = passwordResetService.reset(
-        { password: 'newPassword' },
+        { password: "newPassword" },
         token,
       );
 
@@ -114,7 +114,7 @@ describe('PasswordResetService', () => {
 
       const user = await userModel.findOne({ email: users[0].email });
       expect(user!.resetToken).toBeNull();
-      expect(compareSync('newPassword', user!.password)).toBeTruthy();
+      expect(compareSync("newPassword", user!.password)).toBeTruthy();
     });
   });
 });

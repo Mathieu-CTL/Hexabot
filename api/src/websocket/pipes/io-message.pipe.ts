@@ -11,11 +11,11 @@ import {
   BadRequestException,
   Injectable,
   PipeTransform,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
-import { config } from '@/config';
+import { config } from "@/config";
 
-import { Room } from '../types';
+import { Room } from "../types";
 
 export interface IOOutgoingMessage {
   statusCode: number;
@@ -43,31 +43,31 @@ export class IOMessagePipe implements PipeTransform<string, IOIncomingMessage> {
     try {
       // TODO: Investigate why it arrives parsed
       message =
-        typeof value === 'string'
+        typeof value === "string"
           ? JSON.parse(value)
           : (value as any as IOIncomingMessage);
     } catch (error) {
-      throw new BadRequestException('Invalid JSON format');
+      throw new BadRequestException("Invalid JSON format");
     }
 
     if (!message.method || !message.url) {
-      throw new BadRequestException('Missing required fields: method, url');
+      throw new BadRequestException("Missing required fields: method, url");
     }
 
-    const url = message.url.startsWith('http')
+    const url = message.url.startsWith("http")
       ? message.url
       : `${config.apiBaseUrl}${message.url}`;
 
     if (!URL.canParse(url)) {
-      throw new BadRequestException('Cannot parse url');
+      throw new BadRequestException("Cannot parse url");
     }
 
     if (
-      !['get', 'post', 'put', 'delete', 'patch', 'options', 'head'].includes(
+      !["get", "post", "put", "delete", "patch", "options", "head"].includes(
         message.method,
       )
     ) {
-      throw new BadRequestException('Invalid method!');
+      throw new BadRequestException("Invalid method!");
     }
 
     return message;

@@ -11,9 +11,9 @@ import {
   ArgumentsHost,
   ExceptionFilter,
   NotFoundException,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
-import { SocketResponse } from '../utils/socket-response';
+import { SocketResponse } from "../utils/socket-response";
 
 @Catch()
 export class WebSocketExceptionsFilter implements ExceptionFilter {
@@ -23,9 +23,9 @@ export class WebSocketExceptionsFilter implements ExceptionFilter {
     const response = new SocketResponse(client);
 
     if (exception instanceof NotFoundException) {
-      response.status(404).json({ error: 'Not Found' });
+      response.status(404).json({ error: "Not Found" });
     } else {
-      response.status(500).json({ error: 'Internal Server Error' });
+      response.status(500).json({ error: "Internal Server Error" });
     }
   }
 }

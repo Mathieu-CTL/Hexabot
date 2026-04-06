@@ -6,7 +6,7 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { z } from 'zod';
+import { z } from "zod";
 
 import {
   OutgoingMessageFormat,
@@ -24,21 +24,21 @@ import {
   stdOutgoingSystemEnvelopeSchema,
   StdOutgoingTextEnvelope,
   stdOutgoingTextEnvelopeSchema,
-} from '../schemas/types/message';
+} from "../schemas/types/message";
 
 type ArrayKeys<T> = {
   [K in keyof T]: NonNullable<T[K]> extends Array<any> ? K : never;
 }[keyof T];
 
 export type IEnvelopeBuilder<T extends StdOutgoingEnvelope> = {
-  [K in keyof T['message'] as `set${Capitalize<string & K>}`]-?: (
-    arg: T['message'][K],
+  [K in keyof T["message"] as `set${Capitalize<string & K>}`]-?: (
+    arg: T["message"][K],
   ) => IEnvelopeBuilder<T>;
 } & {
-  [K in keyof T['message'] as `get${Capitalize<string & K>}`]-?: () => T['message'][K];
+  [K in keyof T["message"] as `get${Capitalize<string & K>}`]-?: () => T["message"][K];
 } & {
-  [K in ArrayKeys<T['message']> as `appendTo${Capitalize<string & K>}`]: (
-    item: NonNullable<T['message'][K]> extends (infer U)[] ? U : never,
+  [K in ArrayKeys<T["message"]> as `appendTo${Capitalize<string & K>}`]: (
+    item: NonNullable<T["message"][K]> extends (infer U)[] ? U : never,
   ) => IEnvelopeBuilder<T>;
 } & {
   build(): T;
@@ -53,7 +53,7 @@ export type IEnvelopeBuilder<T extends StdOutgoingEnvelope> = {
  */
 function getAttributeNameFromProp(prop: string, prefix: RegExp) {
   // e.g. "appendToButtons" => "Buttons"
-  const rawKey = prop.toString().replace(prefix, '');
+  const rawKey = prop.toString().replace(prefix, "");
   // e.g. "Buttons" -> "buttons"
   const messageKey = rawKey.charAt(0).toLowerCase() + rawKey.slice(1);
   return messageKey;
@@ -111,11 +111,11 @@ function getAttributeNameFromProp(prop: string, prefix: RegExp) {
  *   .build();
  */
 export function EnvelopeBuilder<T extends StdOutgoingEnvelope>(
-  format: T['format'],
-  template: Partial<T['message']> = {},
+  format: T["format"],
+  template: Partial<T["message"]> = {},
   schema: z.ZodSchema,
 ): IEnvelopeBuilder<T> {
-  let built: { format: T['format']; message: Partial<T['message']> } = {
+  let built: { format: T["format"]; message: Partial<T["message"]> } = {
     format,
     message: template,
   };
@@ -124,7 +124,7 @@ export function EnvelopeBuilder<T extends StdOutgoingEnvelope>(
     {},
     {
       get(target, prop) {
-        if ('build' === prop) {
+        if ("build" === prop) {
           // No type information - just return the object.
           return () => {
             const result = schema.parse(built);
@@ -136,7 +136,7 @@ export function EnvelopeBuilder<T extends StdOutgoingEnvelope>(
           };
         }
 
-        if (typeof prop === 'string' && prop.startsWith('appendTo')) {
+        if (typeof prop === "string" && prop.startsWith("appendTo")) {
           const messageKey = getAttributeNameFromProp(prop, /^appendTo/);
 
           return (item: unknown) => {

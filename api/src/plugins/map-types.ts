@@ -6,10 +6,10 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { BaseBlockPlugin } from './base-block-plugin';
-import { BaseEventPlugin } from './base-event-plugin';
-import { BasePlugin } from './base-plugin.service';
-import { PluginType } from './types';
+import { BaseBlockPlugin } from "./base-block-plugin";
+import { BaseEventPlugin } from "./base-event-plugin";
+import { BasePlugin } from "./base-plugin.service";
+import { PluginType } from "./types";
 
 const PLUGIN_TYPE_MAP = {
   [PluginType.event]: BaseEventPlugin,

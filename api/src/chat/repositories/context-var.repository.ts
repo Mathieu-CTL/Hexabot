@@ -10,16 +10,16 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Document, Model, Query } from 'mongoose';
+} from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Document, Model, Query } from "mongoose";
 
-import { BaseRepository, DeleteResult } from '@/utils/generics/base-repository';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { BaseRepository, DeleteResult } from "@/utils/generics/base-repository";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
-import { ContextVarDto } from '../dto/context-var.dto';
-import { ContextVar } from '../schemas/context-var.schema';
-import { BlockService } from '../services/block.service';
+import { ContextVarDto } from "../dto/context-var.dto";
+import { ContextVar } from "../schemas/context-var.schema";
+import { BlockService } from "../services/block.service";
 
 @Injectable()
 export class ContextVarRepository extends BaseRepository<
@@ -49,7 +49,7 @@ export class ContextVarRepository extends BaseRepository<
       Document<ContextVar, any, any>,
       unknown,
       ContextVar,
-      'deleteOne' | 'deleteMany'
+      "deleteOne" | "deleteMany"
     >,
     criteria: TFilterQuery<ContextVar>,
   ) {
@@ -68,7 +68,7 @@ export class ContextVarRepository extends BaseRepository<
       if (associatedBlocks?.length > 0) {
         const blockNames = associatedBlocks
           .map((block) => block.name)
-          .join(', ');
+          .join(", ");
         throw new ForbiddenException(
           `Context var "${contextVar.name}" is associated with the following block(s): ${blockNames} and cannot be deleted.`,
         );

@@ -6,17 +6,17 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
-import { Strategy } from 'passport-local';
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { PassportStrategy } from "@nestjs/passport";
+import { Strategy } from "passport-local";
 
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from "../../services/auth.service";
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly authService: AuthService) {
     super({
-      usernameField: 'identifier',
+      usernameField: "identifier",
     });
   }
 
@@ -24,12 +24,12 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     const user = await this.authService.validateUser(username, password);
 
     if (!user) {
-      throw new UnauthorizedException('Unable to login, check credentials');
+      throw new UnauthorizedException("Unable to login, check credentials");
     }
 
     return Object.entries(user)
       .filter(
-        ([field]) => !field.startsWith('_') && !field.startsWith('password'),
+        ([field]) => !field.startsWith("_") && !field.startsWith("password"),
       )
       .reduce(
         (acc, [field, value]) => ({

@@ -6,18 +6,18 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { HelperSetting } from '@/helper/types';
-import { SettingType } from '@/setting/schemas/types';
+import { HelperSetting } from "@/helper/types";
+import { SettingType } from "@/setting/schemas/types";
 
-export const TEST_HELPER_NAME = 'test-helper';
+export const TEST_HELPER_NAME = "test-helper";
 
-export const TEST_HELPER_NAMESPACE = 'test_helper';
+export const TEST_HELPER_NAMESPACE = "test_helper";
 
 export default [
   {
     group: TEST_HELPER_NAMESPACE,
-    label: 'test',
-    value: 'test',
+    label: "test",
+    value: "test",
     type: SettingType.text,
   },
 ] as const satisfies HelperSetting<typeof TEST_HELPER_NAME>[];

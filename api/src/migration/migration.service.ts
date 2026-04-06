@@ -1,31 +1,31 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2026 Hexastack. All rights reserved.
  *
  * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import fs from 'fs';
-import { join } from 'path';
+import fs from "fs";
+import { join } from "path";
 
-import { HttpService } from '@nestjs/axios';
-import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
-import { InjectModel } from '@nestjs/mongoose';
-import { kebabCase } from 'lodash';
-import mongoose, { Model } from 'mongoose';
-import leanDefaults from 'mongoose-lean-defaults';
-import leanGetters from 'mongoose-lean-getters';
-import leanVirtuals from 'mongoose-lean-virtuals';
+import { HttpService } from "@nestjs/axios";
+import { Injectable, OnApplicationBootstrap } from "@nestjs/common";
+import { ModuleRef } from "@nestjs/core";
+import { InjectModel } from "@nestjs/mongoose";
+import { kebabCase } from "lodash";
+import mongoose, { Model } from "mongoose";
+import leanDefaults from "mongoose-lean-defaults";
+import leanGetters from "mongoose-lean-getters";
+import leanVirtuals from "mongoose-lean-virtuals";
 
-import { AttachmentService } from '@/attachment/services/attachment.service';
-import { config } from '@/config';
-import { LoggerService } from '@/logger/logger.service';
-import { MetadataService } from '@/setting/services/metadata.service';
-import idPlugin from '@/utils/schema-plugin/id.plugin';
+import { AttachmentService } from "@/attachment/services/attachment.service";
+import { config } from "@/config";
+import { LoggerService } from "@/logger/logger.service";
+import { MetadataService } from "@/setting/services/metadata.service";
+import idPlugin from "@/utils/schema-plugin/id.plugin";
 
-import { Migration, MigrationDocument } from './migration.schema';
+import { Migration, MigrationDocument } from "./migration.schema";
 import {
   MigrationAction,
   MigrationName,
@@ -33,10 +33,10 @@ import {
   MigrationRunParams,
   MigrationSuccessCallback,
   MigrationVersion,
-} from './types';
+} from "./types";
 
 // Version starting which we added the migrations
-const INITIAL_DB_VERSION = 'v2.1.9';
+const INITIAL_DB_VERSION = "v2.1.9";
 
 @Injectable()
 export class MigrationService implements OnApplicationBootstrap {
@@ -56,10 +56,10 @@ export class MigrationService implements OnApplicationBootstrap {
     if (mongoose.connection.readyState !== 1) {
       await this.connect();
     }
-    this.logger.log('Mongoose connection established!');
+    this.logger.info("Mongoose connection established!");
 
     if (!this.isCLI && config.mongo.autoMigrate) {
-      this.logger.log('Executing migrations ...');
+      this.logger.info("Executing migrations ...");
       await this.run({
         action: MigrationAction.UP,
         isAutoMigrate: true,
@@ -76,7 +76,7 @@ export class MigrationService implements OnApplicationBootstrap {
    * @returns The migrations dir path
    */
   public get migrationFilePath() {
-    return this.moduleRef.get('MONGO_MIGRATION_DIR');
+    return this.moduleRef.get("MONGO_MIGRATION_DIR");
   }
 
   /**
@@ -101,7 +101,7 @@ export class MigrationService implements OnApplicationBootstrap {
    * Checks if the migration path is well set and exists
    */
   private async ensureMigrationPathExists() {
-    if (config.env !== 'test' && !fs.existsSync(this.migrationFilePath)) {
+    if (config.env !== "test" && !fs.existsSync(this.migrationFilePath)) {
       await fs.promises.mkdir(this.migrationFilePath, {
         recursive: true,
       });
@@ -138,7 +138,7 @@ export class MigrationService implements OnApplicationBootstrap {
     const template = this.getMigrationTemplate();
     try {
       fs.writeFileSync(filePath, template);
-      this.logger.log(
+      this.logger.info(
         `Migration file for "${version}" created: ${migrationFileName}`,
       );
     } catch (e) {
@@ -174,7 +174,7 @@ module.exports = {
    */
   private async connect() {
     // Disable for unit tests
-    if (config.env === 'test') {
+    if (config.env === "test") {
       return;
     }
 
@@ -188,7 +188,7 @@ module.exports = {
       connection.plugin(leanGetters);
       connection.plugin(leanDefaults);
     } catch (err) {
-      this.logger.error('Failed to connect to MongoDB');
+      this.logger.error("Failed to connect to MongoDB");
       throw err;
     }
   }
@@ -210,7 +210,7 @@ module.exports = {
     if (!this.isCLI) {
       if (isAutoMigrate) {
         const metadata = await this.metadataService.findOne({
-          name: 'db-version',
+          name: "db-version",
         });
         const version = metadata ? metadata.value : INITIAL_DB_VERSION;
         await this.runUpgrades(action, version);
@@ -273,7 +273,7 @@ module.exports = {
         version,
         action,
       });
-      this.logger.log(e.stack);
+      this.logger.info(e.stack);
       return false;
     }
   }
@@ -290,8 +290,8 @@ module.exports = {
     version2: MigrationVersion,
   ): boolean {
     // Split both versions into their numeric components
-    const v1Parts = version1.replace('v', '').split('.').map(Number);
-    const v2Parts = version2.replace('v', '').split('.').map(Number);
+    const v1Parts = version1.replace("v", "").split(".").map(Number);
+    const v2Parts = version2.replace("v", "").split(".").map(Number);
 
     // Compare each part of the version number
     for (let i = 0; i < Math.max(v1Parts.length, v2Parts.length); i++) {
@@ -327,7 +327,7 @@ module.exports = {
     );
 
     if (!filteredVersions.length) {
-      this.logger.log('No migrations to execute ...');
+      this.logger.info("No migrations to execute ...");
       return version;
     }
 
@@ -411,10 +411,10 @@ module.exports = {
    * @returns The extracted migration name (e.g., 'my-migration').
    */
   private getMigrationName(filename: string): MigrationName {
-    const [, ...migrationNameParts] = filename.split('-');
-    const migrationName = migrationNameParts.join('-');
+    const [, ...migrationNameParts] = filename.split("-");
+    const migrationName = migrationNameParts.join("-");
 
-    return migrationName.replace(/\.migration\.(js|ts)/, '') as MigrationName;
+    return migrationName.replace(/\.migration\.(js|ts)/, "") as MigrationName;
   }
 
   /**
@@ -430,8 +430,8 @@ module.exports = {
     return filenames
       .map((filename) => this.getMigrationName(filename))
       .map((name) => {
-        const [, ...migrationVersion] = name.split('-');
-        return `v${migrationVersion.join('.')}` as MigrationVersion;
+        const [, ...migrationVersion] = name.split("-");
+        return `v${migrationVersion.join(".")}` as MigrationVersion;
       })
       .filter((value, index, self) => self.indexOf(value) === index);
   }
@@ -473,8 +473,8 @@ module.exports = {
       const migration = await import(filePath);
       if (
         !migration ||
-        typeof migration.up !== 'function' ||
-        typeof migration.down !== 'function'
+        typeof migration.up !== "function" ||
+        typeof migration.down !== "function"
       ) {
         throw new Error(
           `Migration file "${version}" must export an object with "up" and "down" methods.`,
@@ -499,7 +499,7 @@ module.exports = {
     version,
     action,
     migrationDocument,
-  }: Omit<MigrationSuccessCallback, 'terminal'>) {
+  }: Omit<MigrationSuccessCallback, "terminal">) {
     const document =
       migrationDocument ||
       new this.migrationModel({
@@ -525,10 +525,10 @@ module.exports = {
   }: MigrationSuccessCallback): Promise<void> {
     await this.updateStatus({ version, action, migrationDocument });
     const migrationDisplayName = `${version} [${action}]`;
-    this.logger.log(`"${migrationDisplayName}" migration done`);
+    this.logger.info(`"${migrationDisplayName}" migration done`);
     // Create or Update DB version
     await this.metadataService.updateOne(
-      { name: 'db-version' },
+      { name: "db-version" },
       {
         value: version,
       },
@@ -538,7 +538,7 @@ module.exports = {
         new: true,
       },
     );
-    this.logger.log(`db-version metadata "${version}"`);
+    this.logger.info(`db-version metadata "${version}"`);
   }
 
   /**

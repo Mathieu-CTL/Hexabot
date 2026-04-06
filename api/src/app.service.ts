@@ -6,15 +6,15 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
-import { I18nService } from './i18n/services/i18n.service';
+import { I18nService } from "./i18n/services/i18n.service";
 
 @Injectable()
 export class AppService {
   constructor(private readonly i18n: I18nService) {}
 
   getHello(): string {
-    return this.i18n.t('welcome', { lang: 'en' });
+    return this.i18n.t("welcome", { lang: "en" });
   }
 }

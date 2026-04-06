@@ -1,20 +1,20 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2026 Hexastack. All rights reserved.
  *
  * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Controller, Get, Param, Post, Query, Req, Res } from '@nestjs/common';
-import { Request, Response } from 'express'; // Import the Express request and response types
+import { Controller, Get, Param, Post, Query, Req, Res } from "@nestjs/common";
+import { Request, Response } from "express"; // Import the Express request and response types
 
-import { LoggerService } from '@/logger/logger.service';
-import { Roles } from '@/utils/decorators/roles.decorator';
+import { LoggerService } from "@/logger/logger.service";
+import { Roles } from "@/utils/decorators/roles.decorator";
 
-import { ChannelService } from './channel.service';
+import { ChannelService } from "./channel.service";
 
-@Controller('webhook')
+@Controller("webhook")
 export class WebhookController {
   constructor(
     private readonly channelService: ChannelService,
@@ -31,15 +31,15 @@ export class WebhookController {
    *
    * @returns A promise that resolves a streamable file.
    */
-  @Roles('public')
-  @Get(':channel/download/:name')
+  @Roles("public")
+  @Get(":channel/download/:name")
   async handleDownload(
-    @Param('channel') channel: string,
-    @Param('name') name: string,
-    @Query('t') token: string,
+    @Param("channel") channel: string,
+    @Param("name") name: string,
+    @Query("t") token: string,
     @Req() req: Request,
   ) {
-    this.logger.log('Channel download request: ', channel, name);
+    this.logger.info("Channel download request: ", channel, name);
     return await this.channelService.download(channel, token, req);
   }
 
@@ -55,14 +55,14 @@ export class WebhookController {
    *
    * @returns A promise that resolves with the result of the `channelService.handle` method.
    */
-  @Roles('public')
-  @Get(':channel')
+  @Roles("public")
+  @Get(":channel")
   async handleGet(
-    @Param('channel') channel: string,
+    @Param("channel") channel: string,
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<any> {
-    this.logger.log('Channel notification : ', req.method, channel);
+    this.logger.info("Channel notification : ", req.method, channel);
     return await this.channelService.handle(channel, req, res);
   }
 
@@ -78,20 +78,20 @@ export class WebhookController {
    *
    * @returns A promise that resolves with the result of the `channelService.handle` method.
    */
-  @Roles('public')
-  @Post(':channel')
+  @Roles("public")
+  @Post(":channel")
   async handlePost(
-    @Param('channel') channel: string,
+    @Param("channel") channel: string,
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<void> {
-    this.logger.log('Channel notification : ', req.method, channel);
+    this.logger.info("Channel notification : ", req.method, channel);
     return await this.channelService.handle(channel, req, res);
   }
 
-  @Roles('public')
-  @Get(':channel/not-found')
+  @Roles("public")
+  @Get(":channel/not-found")
   async handleNotFound(@Res() res: Response) {
-    return res.status(404).send({ error: 'Resource not found!' });
+    return res.status(404).send({ error: "Resource not found!" });
   }
 }

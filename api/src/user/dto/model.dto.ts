@@ -6,25 +6,25 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsObject, IsString, IsOptional } from 'class-validator';
+import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsObject, IsString, IsOptional } from "class-validator";
 
-import { TRelation } from '../types/index.type';
-import { TModel } from '../types/model.type';
+import { TRelation } from "../types/index.type";
+import { TModel } from "../types/model.type";
 
 export class ModelCreateDto {
-  @ApiProperty({ description: 'Name of the model', type: String })
+  @ApiProperty({ description: "Name of the model", type: String })
   @IsNotEmpty()
   @IsString()
   name: string;
 
-  @ApiProperty({ description: 'Identity of the model', type: String })
+  @ApiProperty({ description: "Identity of the model", type: String })
   @IsNotEmpty()
   @IsString()
   identity: TModel;
 
   @ApiProperty({
-    description: 'Attributes of the model',
+    description: "Attributes of the model",
     type: Object,
     nullable: true,
   })
@@ -33,7 +33,7 @@ export class ModelCreateDto {
   attributes: object;
 
   @ApiProperty({
-    description: 'relation of the model',
+    description: "relation of the model",
     type: String,
   })
   @IsString()

@@ -1,36 +1,38 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2026 Hexastack. All rights reserved.
  *
  * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Injectable } from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
+import { InjectMetric } from "@willsoto/nestjs-prometheus";
+import { Counter } from "prom-client";
 
-import { BotStatsType } from '@/analytics/schemas/bot-stats.schema';
-import EventWrapper from '@/channel/lib/EventWrapper';
-import { HelperService } from '@/helper/helper.service';
-import { FlowEscape, HelperType } from '@/helper/types';
-import { LoggerService } from '@/logger/logger.service';
-import { SettingService } from '@/setting/services/setting.service';
+import { BotStatsType } from "@/analytics/schemas/bot-stats.schema";
+import EventWrapper from "@/channel/lib/EventWrapper";
+import { HelperService } from "@/helper/helper.service";
+import { FlowEscape, HelperType } from "@/helper/types";
+import { LoggerService } from "@/logger/logger.service";
+import { SettingService } from "@/setting/services/setting.service";
 
-import { getDefaultConversationContext } from '../constants/conversation';
-import { MessageCreateDto } from '../dto/message.dto';
-import { BlockFull } from '../schemas/block.schema';
-import { Conversation, ConversationFull } from '../schemas/conversation.schema';
-import { Context } from '../schemas/types/context';
+import { getDefaultConversationContext } from "../constants/conversation";
+import { MessageCreateDto } from "../dto/message.dto";
+import { BlockFull } from "../schemas/block.schema";
+import { Conversation, ConversationFull } from "../schemas/conversation.schema";
+import { Context } from "../schemas/types/context";
 import {
   IncomingMessageType,
   OutgoingMessageFormat,
   StdOutgoingMessageEnvelope,
-} from '../schemas/types/message';
-import { FallbackOptions } from '../schemas/types/options';
+} from "../schemas/types/message";
+import { FallbackOptions } from "../schemas/types/options";
 
-import { BlockService } from './block.service';
-import { ConversationService } from './conversation.service';
-import { SubscriberService } from './subscriber.service';
+import { BlockService } from "./block.service";
+import { ConversationService } from "./conversation.service";
+import { SubscriberService } from "./subscriber.service";
 
 @Injectable()
 export class BotService {
@@ -42,6 +44,8 @@ export class BotService {
     private readonly subscriberService: SubscriberService,
     private readonly settingService: SettingService,
     private readonly helperService: HelperService,
+    @InjectMetric("messages_processed_total")
+    private readonly messagesCounter: Counter<string>,
   ) {}
 
   /**
@@ -62,43 +66,43 @@ export class BotService {
     const options = block.options;
     const recipient = event.getSender();
     // Send message through the right channel
-    this.logger.debug('Sending message ... ', event.getSenderForeignId());
+    this.logger.debug("Sending message ... ", event.getSenderForeignId());
     const response = await event
       .getHandler()
       .sendMessage(event, envelope, options, context);
 
     this.eventEmitter.emit(
-      'hook:stats:entry',
+      "hook:stats:entry",
       BotStatsType.outgoing,
-      'Outgoing',
+      "Outgoing",
     );
     this.eventEmitter.emit(
-      'hook:stats:entry',
+      "hook:stats:entry",
       BotStatsType.all_messages,
-      'All Messages',
+      "All Messages",
     );
 
     // Trigger sent message event
     const sentMessage: MessageCreateDto = {
-      mid: response && 'mid' in response ? response.mid : '',
+      mid: response && "mid" in response ? response.mid : "",
       message: envelope.message,
       recipient: recipient.id,
       handover: !!(options && options.assignTo),
       read: false,
       delivery: false,
     };
-    await this.eventEmitter.emitAsync('hook:chatbot:sent', sentMessage, event);
+    await this.eventEmitter.emitAsync("hook:chatbot:sent", sentMessage, event);
 
     // analytics log block or local fallback
     if (fallback) {
       this.eventEmitter.emit(
-        'hook:analytics:fallback-local',
+        "hook:analytics:fallback-local",
         block,
         event,
         context,
       );
     } else {
-      this.eventEmitter.emit('hook:analytics:block', block, event, context);
+      this.eventEmitter.emit("hook:analytics:block", block, event, context);
     }
 
     // Apply updates : Assign block labels to user
@@ -109,7 +113,7 @@ export class BotService {
 
     // Apply labels update (no-op if labels is empty)
     if (blockLabels.length > 0) {
-      this.logger.debug('Assigning labels ', blockLabels);
+      this.logger.debug("Assigning labels ", blockLabels);
 
       subscriber = await this.subscriberService.assignLabels(
         subscriber,
@@ -181,13 +185,13 @@ export class BotService {
           );
           if (!attachedBlock) {
             throw new Error(
-              'No attached block to be found with id ' + block.attachedBlock,
+              "No attached block to be found with id " + block.attachedBlock,
             );
           }
           return await this.triggerBlock(event, convo, attachedBlock, fallback);
         } catch (err) {
-          this.logger.error('Unable to retrieve attached block', err);
-          this.eventEmitter.emit('hook:conversation:end', convo);
+          this.logger.error("Unable to retrieve attached block", err);
+          this.eventEmitter.emit("hook:conversation:end", convo);
         }
       } else if (
         Array.isArray(block.nextBlocks) &&
@@ -197,7 +201,7 @@ export class BotService {
           if (envelope.format === OutgoingMessageFormat.system) {
             // System message: Trigger the next block based on the outcome
             this.logger.debug(
-              'Matching the outcome against the next blocks ...',
+              "Matching the outcome against the next blocks ...",
               convo.id,
             );
             const match = this.blockService.matchOutcome(
@@ -212,7 +216,7 @@ export class BotService {
               );
               if (!nextBlock) {
                 throw new Error(
-                  'No attached block to be found with id ' +
+                  "No attached block to be found with id " +
                     block.attachedBlock,
                 );
               }
@@ -227,14 +231,14 @@ export class BotService {
               return await this.triggerBlock(event, convo, nextBlock, fallback);
             } else {
               this.logger.warn(
-                'Block outcome did not match any of the next blocks',
+                "Block outcome did not match any of the next blocks",
                 convo,
               );
-              this.eventEmitter.emit('hook:conversation:end', convo);
+              this.eventEmitter.emit("hook:conversation:end", convo);
             }
           } else {
             // Conversation continues : Go forward to next blocks
-            this.logger.debug('Conversation continues ...', convo.id);
+            this.logger.debug("Conversation continues ...", convo.id);
             const nextIds = block.nextBlocks.map(({ id }) => id);
             await this.conversationService.updateOne(convo.id, {
               current: block.id,
@@ -242,17 +246,17 @@ export class BotService {
             });
           }
         } catch (err) {
-          this.logger.error('Unable to continue the flow', convo, err);
+          this.logger.error("Unable to continue the flow", convo, err);
           return;
         }
       } else {
         // We need to end the conversation in this case
-        this.logger.debug('No attached/next blocks to execute ...');
-        this.eventEmitter.emit('hook:conversation:end', convo);
+        this.logger.debug("No attached/next blocks to execute ...");
+        this.eventEmitter.emit("hook:conversation:end", convo);
       }
     } catch (err) {
-      this.logger.error('Unable to process/send message.', err);
-      this.eventEmitter.emit('hook:conversation:end', convo);
+      this.logger.error("Unable to process/send message.", err);
+      this.eventEmitter.emit("hook:conversation:end", convo);
     }
   }
 
@@ -273,7 +277,7 @@ export class BotService {
     fallback: boolean,
   ): Promise<boolean> {
     // Increment stats about popular blocks
-    this.eventEmitter.emit('hook:stats:entry', BotStatsType.popular, next.name);
+    this.eventEmitter.emit("hook:stats:entry", BotStatsType.popular, next.name);
     this.logger.debug(
       `Proceeding to next block ${next.id} for conversation ${convo.id}`,
     );
@@ -292,8 +296,8 @@ export class BotService {
       await this.triggerBlock(event, updatedConversation, next, fallback);
       return true;
     } catch (err) {
-      this.logger.error('Unable to proceed to the next block!', err);
-      this.eventEmitter.emit('hook:conversation:end', convo);
+      this.logger.error("Unable to proceed to the next block!", err);
+      this.eventEmitter.emit("hook:conversation:end", convo);
       return false;
     }
   }
@@ -364,7 +368,7 @@ export class BotService {
   ) {
     try {
       let fallback = false;
-      this.logger.debug('Handling ongoing conversation message ...', convo.id);
+      this.logger.debug("Handling ongoing conversation message ...", convo.id);
       const matchedBlock = await this.findNextMatchingBlock(convo, event);
       let fallbackBlock: BlockFull | undefined = undefined;
       if (!matchedBlock && this.shouldAttemptLocalFallback(convo, event)) {
@@ -378,7 +382,7 @@ export class BotService {
 
       const next = matchedBlock || fallbackBlock;
 
-      this.logger.debug('Responding ...', convo.id);
+      this.logger.debug("Responding ...", convo.id);
 
       if (next) {
         // Proceed to the execution of the next block
@@ -386,13 +390,13 @@ export class BotService {
       } else {
         // Conversation is still active, but there's no matching block to call next
         // We'll end the conversation but this message is probably lost in time and space.
-        this.logger.debug('No matching block found to call next ', convo.id);
-        this.eventEmitter.emit('hook:conversation:end', convo);
+        this.logger.debug("No matching block found to call next ", convo.id);
+        this.eventEmitter.emit("hook:conversation:end", convo);
         return false;
       }
     } catch (err) {
-      this.logger.error('Unable to populate the next blocks!', err);
-      this.eventEmitter.emit('hook:conversation:end', convo);
+      this.logger.error("Unable to populate the next blocks!", err);
+      this.eventEmitter.emit("hook:conversation:end", convo);
       throw err;
     }
   }
@@ -447,8 +451,8 @@ export class BotService {
           this.logger.debug(`Coercing option to the next block ...`, convo.id);
           const proxiedEvent = new Proxy(event, {
             get(target, prop, receiver) {
-              if (prop === 'getText') {
-                return () => result.coercedOption + '';
+              if (prop === "getText") {
+                return () => result.coercedOption + "";
               }
               return Reflect.get(target, prop, receiver);
             },
@@ -475,7 +479,7 @@ export class BotService {
       }
     } catch (err) {
       this.logger.warn(
-        'Unable to handle flow escape, using default local fallback ...',
+        "Unable to handle flow escape, using default local fallback ...",
         err,
       );
       return { nextBlock: fallbackBlock, fallback: true };
@@ -492,7 +496,7 @@ export class BotService {
    */
   async processConversationMessage(event: EventWrapper<any, any>) {
     this.logger.debug(
-      'Is this message apart of an active conversation ? Searching ... ',
+      "Is this message apart of an active conversation ? Searching ... ",
     );
     const subscriber = event.getSender();
     try {
@@ -502,20 +506,20 @@ export class BotService {
       });
       // No active conversation found
       if (!conversation) {
-        this.logger.debug('No active conversation found ', subscriber.id);
+        this.logger.debug("No active conversation found ", subscriber.id);
         return false;
       }
 
       this.eventEmitter.emit(
-        'hook:stats:entry',
+        "hook:stats:entry",
         BotStatsType.existing_conversations,
-        'Existing conversations',
+        "Existing conversations",
       );
-      this.logger.debug('Conversation has been captured! Responding ...');
+      this.logger.debug("Conversation has been captured! Responding ...");
       return await this.handleOngoingConversationMessage(conversation, event);
     } catch (err) {
       this.logger.error(
-        'An error occurred when searching for a conversation ',
+        "An error occurred when searching for a conversation ",
         err,
       );
       return null;
@@ -531,7 +535,7 @@ export class BotService {
   async startConversation(event: EventWrapper<any, any>, block: BlockFull) {
     // Increment popular stats
     this.eventEmitter.emit(
-      'hook:stats:entry',
+      "hook:stats:entry",
       BotStatsType.popular,
       block.name,
     );
@@ -543,9 +547,9 @@ export class BotService {
         sender: subscriber.id,
       });
       this.eventEmitter.emit(
-        'hook:stats:entry',
+        "hook:stats:entry",
         BotStatsType.new_conversations,
-        'New conversations',
+        "New conversations",
       );
 
       try {
@@ -558,7 +562,7 @@ export class BotService {
           );
 
         this.logger.debug(
-          'Started a new conversation with ',
+          "Started a new conversation with ",
           subscriber.id,
           block.name,
         );
@@ -569,11 +573,11 @@ export class BotService {
           false,
         );
       } catch (err) {
-        this.logger.error('Unable to store context data!', err);
-        this.eventEmitter.emit('hook:conversation:end', convo);
+        this.logger.error("Unable to store context data!", err);
+        this.eventEmitter.emit("hook:conversation:end", convo);
       }
     } catch (err) {
-      this.logger.error('Unable to start a new conversation with ', err);
+      this.logger.error("Unable to start a new conversation with ", err);
     }
   }
 
@@ -592,12 +596,12 @@ export class BotService {
       );
 
       if (!block) {
-        throw new Error('Unable to retrieve global fallback block.');
+        throw new Error("Unable to retrieve global fallback block.");
       }
 
       return block;
     }
-    throw new Error('No global fallback block is defined.');
+    throw new Error("No global fallback block is defined.");
   }
 
   /**
@@ -608,6 +612,7 @@ export class BotService {
   async handleMessageEvent(event: EventWrapper<any, any>) {
     const settings = await this.settingService.getSettings();
     try {
+      this.messagesCounter.inc();
       const captured = await this.processConversationMessage(event);
       if (captured) {
         return;
@@ -620,7 +625,7 @@ export class BotService {
         });
 
         if (!blocks.length) {
-          this.logger.debug('No starting message blocks was found');
+          this.logger.debug("No starting message blocks was found");
         }
 
         // Search for a block match
@@ -628,13 +633,13 @@ export class BotService {
 
         // No block match
         if (!block) {
-          this.logger.debug('No message blocks available!');
+          this.logger.debug("No message blocks available!");
           if (
             settings.chatbot_settings &&
             settings.chatbot_settings.global_fallback
           ) {
-            this.eventEmitter.emit('hook:analytics:fallback-global', event);
-            this.logger.debug('Sending global fallback message ...');
+            this.eventEmitter.emit("hook:analytics:fallback-global", event);
+            this.logger.debug("Sending global fallback message ...");
             // If global fallback is defined in a block then launch a new conversation
             // Otherwise, send a simple text message as defined in global settings
             try {
@@ -642,12 +647,12 @@ export class BotService {
               return this.startConversation(event, fallbackBlock);
             } catch (err) {
               this.logger.warn(
-                'No global fallback block defined, sending a message ...',
+                "No global fallback block defined, sending a message ...",
                 err,
               );
               const globalFallbackBlock: BlockFull = {
-                id: 'global-fallback',
-                name: 'Global Fallback',
+                id: "global-fallback",
+                name: "Global Fallback",
                 message: settings.chatbot_settings.fallback_message,
                 options: {},
                 patterns: [],
@@ -686,13 +691,13 @@ export class BotService {
         this.startConversation(event, block);
       } catch (err) {
         this.logger.error(
-          'An error occurred while retrieving starting message blocks ',
+          "An error occurred while retrieving starting message blocks ",
           err,
         );
       }
     } catch (err) {
       this.logger.debug(
-        'Either something went wrong, no active conservation was found or user changed subject',
+        "Either something went wrong, no active conservation was found or user changed subject",
         err,
       );
     }

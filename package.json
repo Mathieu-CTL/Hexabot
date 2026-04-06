@@ -25,5 +25,12 @@
   },
   "engines": {
     "node": "^20.18.1"
+  },
+  "dependencies": {
+    "@nestjs/mongoose": "^11.0.4",
+    "hexabot-plugin-gemini": "^2.2.2",
+    "hexabot-plugin-ollama": "^2.2.2",
+    "mongodb-memory-server": "^11.0.1",
+    "mongoose": "^9.3.0"
   }
 }

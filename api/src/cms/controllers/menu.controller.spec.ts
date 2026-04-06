@@ -11,25 +11,25 @@ import {
   offerMenuFixture,
   offersMenuFixtures,
   websiteMenuFixture,
-} from '@/utils/test/fixtures/menu';
+} from "@/utils/test/fixtures/menu";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { MenuType } from '../schemas/types/menu';
-import { MenuService } from '../services/menu.service';
-import { verifyTree } from '../utilities/verifyTree';
+import { MenuType } from "../schemas/types/menu";
+import { MenuService } from "../services/menu.service";
+import { verifyTree } from "../utilities/verifyTree";
 
-import { MenuController } from './menu.controller';
+import { MenuController } from "./menu.controller";
 
-describe('MenuController', () => {
+describe("MenuController", () => {
   let menuController: MenuController;
   let menuService: MenuService;
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['controllers'],
+      autoInjectFrom: ["controllers"],
       imports: [rootMongooseTestModule(installMenuFixtures)],
       controllers: [MenuController],
     });
@@ -42,19 +42,19 @@ describe('MenuController', () => {
   afterAll(closeInMongodConnection);
 
   afterEach(jest.clearAllMocks);
-  describe('create', () => {
-    it('should create the item successfully', async () => {
+  describe("create", () => {
+    it("should create the item successfully", async () => {
       const initialData = {
-        title: 'new Item',
+        title: "new Item",
         type: MenuType.postback,
-        payload: 'string',
+        payload: "string",
       };
       const result = await menuController.create(initialData);
       expect(result).toEqualPayload(initialData);
     });
   });
-  describe('findOne', () => {
-    it('should find an element by id', async () => {
+  describe("findOne", () => {
+    it("should find an element by id", async () => {
       const websiteMenu = await menuService.findOne({
         title: websiteMenuFixture.title,
       });
@@ -63,15 +63,15 @@ describe('MenuController', () => {
     });
   });
 
-  describe('getTree', () => {
-    it('should return a valid tree', async () => {
+  describe("getTree", () => {
+    it("should return a valid tree", async () => {
       const tree = await menuController.getTree();
       expect(verifyTree(tree)).toBeTruthy();
     });
   });
 
-  describe('delete', () => {
-    it('should delete the subtree', async () => {
+  describe("delete", () => {
+    it("should delete the subtree", async () => {
       const offersEntry = await menuService.findOne({
         title: offerMenuFixture.title,
       });

@@ -20,21 +20,21 @@ import {
   Session,
   UnauthorizedException,
   UseGuards,
-} from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Request, Response } from 'express';
-import { Session as ExpressSession } from 'express-session';
+} from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
+import { Request, Response } from "express";
+import { Session as ExpressSession } from "express-session";
 
-import { config } from '@/config';
-import { LoggerService } from '@/logger/logger.service';
-import { Roles } from '@/utils/decorators/roles.decorator';
+import { config } from "@/config";
+import { LoggerService } from "@/logger/logger.service";
+import { Roles } from "@/utils/decorators/roles.decorator";
 
-import { InvitationCreateDto } from '../dto/invitation.dto';
-import { UserCreateDto } from '../dto/user.dto';
-import { LocalAuthGuard } from '../guards/local-auth.guard';
-import { InvitationService } from '../services/invitation.service';
-import { UserService } from '../services/user.service';
-import { ValidateAccountService } from '../services/validate-account.service';
+import { InvitationCreateDto } from "../dto/invitation.dto";
+import { UserCreateDto } from "../dto/user.dto";
+import { LocalAuthGuard } from "../guards/local-auth.guard";
+import { InvitationService } from "../services/invitation.service";
+import { UserService } from "../services/user.service";
+import { ValidateAccountService } from "../services/validate-account.service";
 
 export class BaseAuthController {
   @Inject(EventEmitter2)
@@ -49,7 +49,7 @@ export class BaseAuthController {
    *
    * @returns The user object from the request.
    */
-  @Get('me')
+  @Get("me")
   me(@Req() req: Request) {
     return req.user;
   }
@@ -62,12 +62,12 @@ export class BaseAuthController {
    *
    * @returns A status object indicating successful logout.
    */
-  @Post('logout')
+  @Post("logout")
   logout(
     @Session() session: ExpressSession,
     @Res({ passthrough: true }) res: Response,
   ) {
-    this.eventEmitter.emit('hook:user:logout', session);
+    this.eventEmitter.emit("hook:user:logout", session);
     res.clearCookie(config.session.name);
 
     session.destroy((error) => {
@@ -77,11 +77,11 @@ export class BaseAuthController {
       }
     });
 
-    return { status: 'ok' };
+    return { status: "ok" };
   }
 }
 
-@Controller('auth')
+@Controller("auth")
 export class LocalAuthController extends BaseAuthController {
   constructor(
     logger: LoggerService,
@@ -100,8 +100,8 @@ export class LocalAuthController extends BaseAuthController {
    * @returns The logged-in user object.
    */
   @UseGuards(LocalAuthGuard)
-  @Roles('public')
-  @Post('local')
+  @Roles("public")
+  @Post("local")
   login(@Req() req: Request) {
     return req.user;
   }
@@ -115,11 +115,11 @@ export class LocalAuthController extends BaseAuthController {
    *
    * @returns Void, upon successful creation of the user.
    */
-  @Roles('public')
-  @Post('accept-invite/:token')
+  @Roles("public")
+  @Post("accept-invite/:token")
   async acceptInvite(
     @Body() userCreateDto: UserCreateDto,
-    @Param('token') token: string,
+    @Param("token") token: string,
   ) {
     let decodedToken: InvitationCreateDto;
 
@@ -127,8 +127,8 @@ export class LocalAuthController extends BaseAuthController {
     try {
       decodedToken = await this.invitationService.verify(token);
     } catch (error) {
-      if (error.name === 'TokenExpiredError')
-        throw new UnauthorizedException('Token expired');
+      if (error.name === "TokenExpiredError")
+        throw new UnauthorizedException("Token expired");
       else throw new BadRequestException(error.name, error.message);
     }
 
@@ -136,7 +136,7 @@ export class LocalAuthController extends BaseAuthController {
     if (decodedToken.email !== userCreateDto.email)
       throw new BadRequestException("Email doesn't match invitation email");
     if (decodedToken.roles.some((item) => !userCreateDto.roles.includes(item)))
-      throw new BadRequestException('invitation roles do not match user roles');
+      throw new BadRequestException("invitation roles do not match user roles");
 
     try {
       // Create user
@@ -150,12 +150,12 @@ export class LocalAuthController extends BaseAuthController {
       await this.invitationService.deleteOne({ email: decodedToken.email });
     } catch (e) {
       this.logger.error(
-        'Could not send email',
+        "Could not send email",
         e.message,
         e.stack,
-        'AcceptInvite',
+        "AcceptInvite",
       );
-      throw new InternalServerErrorException('Could not send email');
+      throw new InternalServerErrorException("Could not send email");
     }
   }
 }

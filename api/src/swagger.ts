@@ -6,15 +6,15 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { INestApplication } from '@nestjs/common';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { INestApplication } from "@nestjs/common";
+import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 
 export function swagger(app: INestApplication) {
   const config = new DocumentBuilder()
-    .setTitle('Hexabot')
-    .setDescription('Hexabot API documentation')
-    .setVersion('2.0')
+    .setTitle("Hexabot")
+    .setDescription("Hexabot API documentation")
+    .setVersion("2.0")
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document);
+  SwaggerModule.setup("docs", app, document);
 }

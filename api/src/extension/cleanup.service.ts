@@ -6,15 +6,15 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
-import { ChannelService } from '@/channel/channel.service';
-import { HelperService } from '@/helper/helper.service';
-import { LoggerService } from '@/logger/logger.service';
-import { SettingService } from '@/setting/services/setting.service';
-import { DeleteResult } from '@/utils/generics/base-repository';
+import { ChannelService } from "@/channel/channel.service";
+import { HelperService } from "@/helper/helper.service";
+import { LoggerService } from "@/logger/logger.service";
+import { SettingService } from "@/setting/services/setting.service";
+import { DeleteResult } from "@/utils/generics/base-repository";
 
-import { TCriteria, TExtractExtension, TExtractNamespace } from './types';
+import { TCriteria, TExtractExtension, TExtractNamespace } from "./types";
 
 @Injectable()
 export class CleanupService {
@@ -48,10 +48,10 @@ export class CleanupService {
    *
    * @returns An array of channel Namespaces.
    */
-  public getChannelNamespaces(): TExtractNamespace<'channel'>[] {
+  public getChannelNamespaces(): TExtractNamespace<"channel">[] {
     return this.channelService
       .getAll()
-      .map((channel) => channel.getNamespace<TExtractExtension<'channel'>>());
+      .map((channel) => channel.getNamespace<TExtractExtension<"channel">>());
   }
 
   /**
@@ -59,10 +59,10 @@ export class CleanupService {
    *
    * @returns An array of helper Namespaces.
    */
-  public getHelperNamespaces(): TExtractNamespace<'helper'>[] {
+  public getHelperNamespaces(): TExtractNamespace<"helper">[] {
     return this.helperService
       .getAll()
-      .map((helper) => helper.getNamespace<TExtractExtension<'helper'>>());
+      .map((helper) => helper.getNamespace<TExtractExtension<"helper">>());
   }
 
   /**
@@ -73,13 +73,13 @@ export class CleanupService {
     const channels = this.getChannelNamespaces();
     const helpers = this.getHelperNamespaces();
     const { deletedCount } = await this.deleteManyBySuffixAndNamespaces([
-      { suffix: '_channel', namespaces: channels },
-      { suffix: '_helper', namespaces: helpers },
+      { suffix: "_channel", namespaces: channels },
+      { suffix: "_helper", namespaces: helpers },
     ]);
 
     if (deletedCount > 0) {
       this.loggerService.log(
-        `${deletedCount} unused setting${deletedCount === 1 ? '' : 's'} ${deletedCount === 1 ? 'is' : 'are'} successfully deleted!`,
+        `${deletedCount} unused setting${deletedCount === 1 ? "" : "s"} ${deletedCount === 1 ? "is" : "are"} successfully deleted!`,
       );
     }
   }

@@ -6,16 +6,16 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Document, Model, Query } from 'mongoose';
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Document, Model, Query } from "mongoose";
 
-import { BaseRepository, DeleteResult } from '@/utils/generics/base-repository';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { BaseRepository, DeleteResult } from "@/utils/generics/base-repository";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
-import { LabelGroupDto } from '../dto/label-group.dto';
-import { LabelGroup } from '../schemas/label-group.schema';
-import { LabelService } from '../services/label.service';
+import { LabelGroupDto } from "../dto/label-group.dto";
+import { LabelGroup } from "../schemas/label-group.schema";
+import { LabelService } from "../services/label.service";
 
 @Injectable()
 export class LabelGroupRepository extends BaseRepository<
@@ -43,7 +43,7 @@ export class LabelGroupRepository extends BaseRepository<
       Document<LabelGroup, any, any>,
       unknown,
       LabelGroup,
-      'deleteOne' | 'deleteMany'
+      "deleteOne" | "deleteMany"
     >,
     criteria: TFilterQuery<LabelGroup>,
   ) {

@@ -6,25 +6,25 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 
-import { BaseService } from '@/utils/generics/base-service';
+import { BaseService } from "@/utils/generics/base-service";
 import {
   SocketGet,
   SocketPost,
-} from '@/websocket/decorators/socket-method.decorator';
-import { SocketReq } from '@/websocket/decorators/socket-req.decorator';
-import { SocketRes } from '@/websocket/decorators/socket-res.decorator';
-import { IOOutgoingSubscribeMessage } from '@/websocket/pipes/io-message.pipe';
-import { Room } from '@/websocket/types';
-import { SocketRequest } from '@/websocket/utils/socket-request';
-import { SocketResponse } from '@/websocket/utils/socket-response';
-import { WebsocketGateway } from '@/websocket/websocket.gateway';
+} from "@/websocket/decorators/socket-method.decorator";
+import { SocketReq } from "@/websocket/decorators/socket-req.decorator";
+import { SocketRes } from "@/websocket/decorators/socket-res.decorator";
+import { IOOutgoingSubscribeMessage } from "@/websocket/pipes/io-message.pipe";
+import { Room } from "@/websocket/types";
+import { SocketRequest } from "@/websocket/utils/socket-request";
+import { SocketResponse } from "@/websocket/utils/socket-response";
+import { WebsocketGateway } from "@/websocket/websocket.gateway";
 
-import { MessageRepository } from '../repositories/message.repository';
-import { MessageFull, MessagePopulate } from '../schemas/message.schema';
-import { Subscriber, SubscriberStub } from '../schemas/subscriber.schema';
-import { AnyMessage } from '../schemas/types/message';
+import { MessageRepository } from "../repositories/message.repository";
+import { MessageFull, MessagePopulate } from "../schemas/message.schema";
+import { Subscriber, SubscriberStub } from "../schemas/subscriber.schema";
+import { AnyMessage } from "../schemas/types/message";
 
 @Injectable()
 export class MessageService extends BaseService<
@@ -45,8 +45,8 @@ export class MessageService extends BaseService<
    * @param req - The socket request object
    * @param res - The socket response object
    */
-  @SocketGet('/message/subscribe/')
-  @SocketPost('/message/subscribe/')
+  @SocketGet("/message/subscribe/")
+  @SocketPost("/message/subscribe/")
   async subscribe(
     @SocketReq() req: SocketRequest,
     @SocketRes() res: SocketResponse,
@@ -59,7 +59,7 @@ export class MessageService extends BaseService<
         subscribe: Room.MESSAGE,
       });
     } catch (e) {
-      this.logger.error('Websocket subscription', e);
+      this.logger.error("Websocket subscription", e);
       throw new InternalServerErrorException(e);
     }
   }
@@ -121,7 +121,7 @@ export class MessageService extends BaseService<
       {
         $or: [{ sender: subscriber.id }, { recipient: subscriber.id }],
       },
-      { sort: ['createdAt', 'desc'], skip: 0, limit },
+      { sort: ["createdAt", "desc"], skip: 0, limit },
     );
 
     return lastMessages.reverse();

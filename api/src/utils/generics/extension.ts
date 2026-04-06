@@ -6,14 +6,14 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { promises as fs } from 'fs';
-import path from 'path';
+import { promises as fs } from "fs";
+import path from "path";
 
-import { OnModuleInit } from '@nestjs/common';
-import { I18nJsonLoader, I18nTranslation } from 'nestjs-i18n';
-import { Observable } from 'rxjs';
+import { OnModuleInit } from "@nestjs/common";
+import { I18nJsonLoader, I18nTranslation } from "nestjs-i18n";
+import { Observable } from "rxjs";
 
-import { ExtensionName, HyphenToUnderscore } from '../types/extension';
+import { ExtensionName, HyphenToUnderscore } from "../types/extension";
 
 export abstract class Extension implements OnModuleInit {
   private translations: I18nTranslation | Observable<I18nTranslation>;
@@ -27,12 +27,12 @@ export abstract class Extension implements OnModuleInit {
   }
 
   getNamespace<N extends ExtensionName = ExtensionName>() {
-    return this.name.replaceAll('-', '_') as HyphenToUnderscore<N>;
+    return this.name.replaceAll("-", "_") as HyphenToUnderscore<N>;
   }
 
   async onModuleInit() {
     // Load i18n
-    const i18nPath = path.join(this.getPath(), 'i18n');
+    const i18nPath = path.join(this.getPath(), "i18n");
     try {
       // Check if the i18n directory exists
       await fs.access(i18nPath);

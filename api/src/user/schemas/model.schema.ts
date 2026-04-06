@@ -6,19 +6,19 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Exclude, Type } from 'class-transformer';
+import { ModelDefinition, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Exclude, Type } from "class-transformer";
 
-import { BaseSchema } from '@/utils/generics/base-schema';
-import { LifecycleHookManager } from '@/utils/generics/lifecycle-hook-manager';
+import { BaseSchema } from "@/utils/generics/base-schema";
+import { LifecycleHookManager } from "@/utils/generics/lifecycle-hook-manager";
 import {
   TFilterPopulateFields,
   THydratedDocument,
-} from '@/utils/types/filter.types';
+} from "@/utils/types/filter.types";
 
-import { TRelation } from '../types/index.type';
+import { TRelation } from "../types/index.type";
 
-import { Permission } from './permission.schema';
+import { Permission } from "./permission.schema";
 
 @Schema({ timestamps: true })
 export class ModelStub extends BaseSchema {
@@ -44,7 +44,7 @@ export class ModelStub extends BaseSchema {
   @Prop({
     type: String,
     //TODO: need to be updated
-    default: 'role',
+    default: "role",
   })
   relation?: TRelation;
 }
@@ -68,14 +68,14 @@ export const ModelModel: ModelDefinition = LifecycleHookManager.attach({
   schema: SchemaFactory.createForClass(ModelStub),
 });
 
-ModelModel.schema.virtual('permissions', {
-  ref: 'Permission',
-  localField: '_id',
-  foreignField: 'model',
+ModelModel.schema.virtual("permissions", {
+  ref: "Permission",
+  localField: "_id",
+  foreignField: "model",
 });
 
 export default ModelModel.schema;
 
 export type ModelPopulate = keyof TFilterPopulateFields<Model, ModelStub>;
 
-export const MODEL_POPULATE: ModelPopulate[] = ['permissions'];
+export const MODEL_POPULATE: ModelPopulate[] = ["permissions"];

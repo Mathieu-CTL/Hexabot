@@ -6,10 +6,10 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
-import { IsObjectId } from '@/utils/validation-rules/is-object-id';
+import { IsObjectId } from "@/utils/validation-rules/is-object-id";
 
 export class NlpSampleEntityCreateDto {
   @ApiPropertyOptional({ type: Number })
@@ -25,18 +25,18 @@ export class NlpSampleEntityCreateDto {
   @ApiProperty({ type: String })
   @IsString()
   @IsNotEmpty()
-  @IsObjectId({ message: 'Entity must be a valid ObjectId' })
+  @IsObjectId({ message: "Entity must be a valid ObjectId" })
   entity: string;
 
   @ApiProperty({ type: String })
   @IsString()
   @IsNotEmpty()
-  @IsObjectId({ message: 'Value must be a valid ObjectId' })
+  @IsObjectId({ message: "Value must be a valid ObjectId" })
   value: string;
 
   @ApiProperty({ type: String })
   @IsString()
   @IsNotEmpty()
-  @IsObjectId({ message: 'Sample must be a valid ObjectId' })
+  @IsObjectId({ message: "Sample must be a valid ObjectId" })
   sample: string;
 }

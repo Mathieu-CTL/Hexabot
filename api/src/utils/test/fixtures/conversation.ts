@@ -6,95 +6,95 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-import { ConversationCreateDto } from '@/chat/dto/conversation.dto';
-import { ConversationModel } from '@/chat/schemas/conversation.schema';
-import { Subscriber } from '@/chat/schemas/subscriber.schema';
+import { ConversationCreateDto } from "@/chat/dto/conversation.dto";
+import { ConversationModel } from "@/chat/schemas/conversation.schema";
+import { Subscriber } from "@/chat/schemas/subscriber.schema";
 
-import { getFixturesWithDefaultValues } from '../defaultValues';
-import { TFixturesDefaultValues } from '../types';
+import { getFixturesWithDefaultValues } from "../defaultValues";
+import { TFixturesDefaultValues } from "../types";
 
-import { installBlockFixtures } from './block';
-import { installSubscriberFixtures } from './subscriber';
+import { installBlockFixtures } from "./block";
+import { installSubscriberFixtures } from "./subscriber";
 
 const conversations: ConversationCreateDto[] = [
   {
-    sender: '0',
+    sender: "0",
     active: true,
     context: {
-      channel: 'messenger-channel',
-      text: 'Hi',
-      payload: '',
+      channel: "messenger-channel",
+      text: "Hi",
+      payload: "",
       nlp: {
         entities: [
           {
-            entity: 'intent',
-            value: 'greeting',
+            entity: "intent",
+            value: "greeting",
             confidence: 0.999,
           },
         ],
       },
       vars: {
         age: 30,
-        email: 'email@example.com',
+        email: "email@example.com",
       },
       user_location: {
-        address: { country: 'FR' },
+        address: { country: "FR" },
         lat: 35,
         lon: 45,
       },
       user: {
-        id: '1',
-        first_name: 'Jhon',
-        last_name: 'Doe',
-        language: 'fr',
+        id: "1",
+        first_name: "Jhon",
+        last_name: "Doe",
+        language: "fr",
       } as Subscriber,
       skip: {},
       attempt: 0,
     },
-    current: '0',
-    next: ['1', '2'],
+    current: "0",
+    next: ["1", "2"],
   },
   {
-    sender: '1',
+    sender: "1",
     context: {
-      channel: 'web-channel',
-      text: 'Hello',
-      payload: '',
+      channel: "web-channel",
+      text: "Hello",
+      payload: "",
       nlp: {
         entities: [
           {
-            entity: 'intent',
-            value: 'greeting',
+            entity: "intent",
+            value: "greeting",
             confidence: 0.999,
           },
         ],
       },
       vars: {
         age: 30,
-        email: 'email@example.com',
+        email: "email@example.com",
       },
       user_location: {
-        address: { country: 'US' },
+        address: { country: "US" },
         lat: 15,
         lon: 45,
       },
       user: {
-        id: '2',
+        id: "2",
         createdAt: new Date(),
         updatedAt: new Date(),
-        first_name: 'Maynard',
-        last_name: 'James Keenan',
-        language: 'en',
-        locale: 'en_EN',
+        first_name: "Maynard",
+        last_name: "James Keenan",
+        language: "en",
+        locale: "en_EN",
         timezone: 0,
-        gender: 'male',
-        country: 'US',
-        foreign_id: '',
+        gender: "male",
+        country: "US",
+        foreign_id: "",
         labels: [],
         assignedTo: null,
-        channel: { name: 'web-channel' },
+        channel: { name: "web-channel" },
         avatar: null,
         context: {},
         assignedAt: new Date(),
@@ -102,8 +102,8 @@ const conversations: ConversationCreateDto[] = [
       skip: {},
       attempt: 0,
     },
-    current: '4',
-    next: ['3', '4'],
+    current: "4",
+    next: ["3", "4"],
   },
 ];
 

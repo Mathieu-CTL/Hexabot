@@ -6,20 +6,20 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Transform, Type } from 'class-transformer';
-import { Schema as MongooseSchema } from 'mongoose';
+import { ModelDefinition, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Transform, Type } from "class-transformer";
+import { Schema as MongooseSchema } from "mongoose";
 
-import { BaseSchema } from '@/utils/generics/base-schema';
-import { LifecycleHookManager } from '@/utils/generics/lifecycle-hook-manager';
+import { BaseSchema } from "@/utils/generics/base-schema";
+import { LifecycleHookManager } from "@/utils/generics/lifecycle-hook-manager";
 import {
   TFilterPopulateFields,
   THydratedDocument,
-} from '@/utils/types/filter.types';
+} from "@/utils/types/filter.types";
 
-import { NlpEntity } from './nlp-entity.schema';
-import { NlpSample } from './nlp-sample.schema';
-import { NlpValue } from './nlp-value.schema';
+import { NlpEntity } from "./nlp-entity.schema";
+import { NlpSample } from "./nlp-sample.schema";
+import { NlpValue } from "./nlp-value.schema";
 
 @Schema({ timestamps: true })
 export class NlpSampleEntityStub extends BaseSchema {
@@ -40,7 +40,7 @@ export class NlpSampleEntityStub extends BaseSchema {
    */
   @Prop({
     type: MongooseSchema.Types.ObjectId,
-    ref: 'NlpEntity',
+    ref: "NlpEntity",
     required: true,
   })
   entity: unknown;
@@ -50,7 +50,7 @@ export class NlpSampleEntityStub extends BaseSchema {
    */
   @Prop({
     type: MongooseSchema.Types.ObjectId,
-    ref: 'NlpValue',
+    ref: "NlpValue",
     required: true,
   })
   value: unknown;
@@ -60,7 +60,7 @@ export class NlpSampleEntityStub extends BaseSchema {
    */
   @Prop({
     type: MongooseSchema.Types.ObjectId,
-    ref: 'NlpSample',
+    ref: "NlpSample",
     required: true,
   })
   sample: unknown;
@@ -122,7 +122,7 @@ export type NlpSampleEntityPopulate = keyof TFilterPopulateFields<
 >;
 
 export const NLP_SAMPLE_ENTITY_POPULATE: NlpSampleEntityPopulate[] = [
-  'entity',
-  'value',
-  'sample',
+  "entity",
+  "value",
+  "sample",
 ];

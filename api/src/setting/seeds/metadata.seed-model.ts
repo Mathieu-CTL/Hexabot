@@ -6,11 +6,11 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { MetadataCreateDto } from '../dto/metadata.dto';
+import { MetadataCreateDto } from "../dto/metadata.dto";
 
 export const DEFAULT_METADATA = [
   {
-    name: 'db-version',
+    name: "db-version",
     value: process.env.npm_package_version,
   },
 ] as const satisfies MetadataCreateDto[];

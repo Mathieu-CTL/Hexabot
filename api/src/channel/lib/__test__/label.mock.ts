@@ -6,58 +6,58 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Label } from '@/chat/schemas/label.schema';
+import { Label } from "@/chat/schemas/label.schema";
 
-import { modelInstance } from './base.mock';
+import { modelInstance } from "./base.mock";
 
 const baseLabel: Label = {
   ...modelInstance,
-  title: '',
-  name: '',
+  title: "",
+  name: "",
   label_id: {
-    messenger: '',
-    web: '',
-    dimelo: '',
-    twitter: '',
+    messenger: "",
+    web: "",
+    dimelo: "",
+    twitter: "",
   },
-  description: '',
+  description: "",
   builtin: false,
   group: null,
 };
 
 export const labelMock: Label = {
   ...baseLabel,
-  title: 'Label',
-  name: 'label',
+  title: "Label",
+  name: "label",
   label_id: {
-    messenger: 'none',
-    web: 'none',
-    dimelo: 'none',
-    twitter: 'none',
+    messenger: "none",
+    web: "none",
+    dimelo: "none",
+    twitter: "none",
   },
 };
 
 export const customerLabelsMock: Label[] = [
   {
     ...baseLabel,
-    title: 'Client',
-    name: 'client',
+    title: "Client",
+    name: "client",
     label_id: {
-      messenger: 'none',
-      web: 'none',
-      dimelo: 'none',
-      twitter: 'none',
+      messenger: "none",
+      web: "none",
+      dimelo: "none",
+      twitter: "none",
     },
   },
   {
     ...baseLabel,
-    title: 'Professional',
-    name: 'profressional',
+    title: "Professional",
+    name: "profressional",
     label_id: {
-      messenger: 'none',
-      web: 'none',
-      dimelo: 'none',
-      twitter: 'none',
+      messenger: "none",
+      web: "none",
+      dimelo: "none",
+      twitter: "none",
     },
   },
 ];

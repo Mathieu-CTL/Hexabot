@@ -6,10 +6,10 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable, NestMiddleware } from '@nestjs/common';
-import { NextFunction, Request, Response } from 'express';
+import { Injectable, NestMiddleware } from "@nestjs/common";
+import { NextFunction, Request, Response } from "express";
 
-import { ChannelService } from './channel.service';
+import { ChannelService } from "./channel.service";
 
 @Injectable()
 export class ChannelMiddleware implements NestMiddleware {
@@ -18,8 +18,8 @@ export class ChannelMiddleware implements NestMiddleware {
   async use(req: Request, res: Response, next: NextFunction) {
     // Iterate through channel handlers to execute a certain middleware if needed
     try {
-      const [_, path, channelName] = req.path.split('/');
-      if (path === 'webhook' && channelName) {
+      const [_, path, channelName] = req.path.split("/");
+      if (path === "webhook" && channelName) {
         const channel = this.channelService.getChannelHandler(
           `${channelName}-channel`,
         );

@@ -6,28 +6,28 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
 import {
   Document,
   Model,
   Query,
   UpdateQuery,
   UpdateWithAggregationPipeline,
-} from 'mongoose';
+} from "mongoose";
 
-import { BotStatsType } from '@/analytics/schemas/bot-stats.schema';
-import { BaseRepository } from '@/utils/generics/base-repository';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { BotStatsType } from "@/analytics/schemas/bot-stats.schema";
+import { BaseRepository } from "@/utils/generics/base-repository";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
-import { SubscriberDto, SubscriberUpdateDto } from '../dto/subscriber.dto';
+import { SubscriberDto, SubscriberUpdateDto } from "../dto/subscriber.dto";
 import {
   Subscriber,
   SUBSCRIBER_POPULATE,
   SubscriberDocument,
   SubscriberFull,
   SubscriberPopulate,
-} from '../schemas/subscriber.schema';
+} from "../schemas/subscriber.schema";
 
 @Injectable()
 export class SubscriberRepository extends BaseRepository<
@@ -47,9 +47,9 @@ export class SubscriberRepository extends BaseRepository<
    */
   async postCreate(created: SubscriberDocument): Promise<void> {
     this.eventEmitter.emit(
-      'hook:stats:entry',
+      "hook:stats:entry",
       BotStatsType.new_users,
-      'New users',
+      "New users",
       created,
     );
   }
@@ -68,33 +68,33 @@ export class SubscriberRepository extends BaseRepository<
       Document<Subscriber, any, any>,
       unknown,
       Subscriber,
-      'findOneAndUpdate'
+      "findOneAndUpdate"
     >,
     criteria: TFilterQuery<Subscriber>,
     updates:
       | UpdateWithAggregationPipeline
       | UpdateQuery<Document<Subscriber, any, any>>,
   ): Promise<void> {
-    const subscriberUpdates: SubscriberUpdateDto = updates?.['$set'];
+    const subscriberUpdates: SubscriberUpdateDto = updates?.["$set"];
 
-    if ('assignedTo' in subscriberUpdates) {
+    if ("assignedTo" in subscriberUpdates) {
       // In case of a handover or handback, emit events
       const oldSubscriber = await this.findOne(criteria);
 
       if (!oldSubscriber) {
-        throw new Error('Something went wrong: subscriber does not exist');
+        throw new Error("Something went wrong: subscriber does not exist");
       }
 
       if (subscriberUpdates.assignedTo !== oldSubscriber?.assignedTo) {
         this.eventEmitter.emit(
-          'hook:subscriber:assign',
+          "hook:subscriber:assign",
           subscriberUpdates,
           oldSubscriber,
         );
 
         if (!(subscriberUpdates.assignedTo && oldSubscriber?.assignedTo)) {
           this.eventEmitter.emit(
-            'hook:analytics:passation',
+            "hook:analytics:passation",
             oldSubscriber,
             !!subscriberUpdates?.assignedTo,
           );
@@ -114,7 +114,7 @@ export class SubscriberRepository extends BaseRepository<
   findByForeignIdQuery(id: string) {
     return this.findQuery(
       { foreign_id: id },
-      { skip: 0, limit: 1, sort: ['lastvisit', 'desc'] },
+      { skip: 0, limit: 1, sort: ["lastvisit", "desc"] },
     );
   }
 

@@ -6,10 +6,10 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ParseArrayPipe } from '@nestjs/common';
+import { ParseArrayPipe } from "@nestjs/common";
 
 export const populateQueryPipe = new ParseArrayPipe({
   items: String,
-  separator: ',',
+  separator: ",",
   optional: true,
 });

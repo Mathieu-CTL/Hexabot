@@ -9,23 +9,23 @@
 import {
   botstatsFixtures,
   installBotStatsFixtures,
-} from '@/utils/test/fixtures/botstats';
+} from "@/utils/test/fixtures/botstats";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { BotStatsType } from '../schemas/bot-stats.schema';
+import { BotStatsType } from "../schemas/bot-stats.schema";
 
-import { BotStatsService } from './bot-stats.service';
+import { BotStatsService } from "./bot-stats.service";
 
-describe('BotStatsService', () => {
+describe("BotStatsService", () => {
   let botStatsService: BotStatsService;
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['providers'],
+      autoInjectFrom: ["providers"],
       imports: [rootMongooseTestModule(installBotStatsFixtures)],
       providers: [BotStatsService],
     });
@@ -36,8 +36,8 @@ describe('BotStatsService', () => {
 
   afterEach(jest.clearAllMocks);
 
-  describe('findMessages', () => {
-    it('should return all messages', async () => {
+  describe("findMessages", () => {
+    it("should return all messages", async () => {
       const from = botstatsFixtures[0].day;
       const to = new Date();
       const result = await botStatsService.findMessages(
@@ -49,7 +49,7 @@ describe('BotStatsService', () => {
       expect(result).toEqualPayload(botstatsFixtures);
     });
 
-    it('should return messages between the given date range', async () => {
+    it("should return messages between the given date range", async () => {
       const from = botstatsFixtures[0].day;
       const to = botstatsFixtures[2].day;
       const result = await botStatsService.findMessages(
@@ -60,7 +60,7 @@ describe('BotStatsService', () => {
       expect(result).toEqualPayload(botstatsFixtures.slice(0, 3));
     });
 
-    it('should return messages of a given type', async () => {
+    it("should return messages of a given type", async () => {
       const from = botstatsFixtures[0].day;
       const to = new Date();
       const result = await botStatsService.findMessages(from, to, [
@@ -69,7 +69,7 @@ describe('BotStatsService', () => {
       expect(result).toEqualPayload([botstatsFixtures[5]]);
     });
 
-    it('should return messages of type conversation', async () => {
+    it("should return messages of type conversation", async () => {
       const from = botstatsFixtures[0].day;
       const to = new Date();
       const result = await botStatsService.findMessages(from, to, [
@@ -79,7 +79,7 @@ describe('BotStatsService', () => {
       expect(result).toEqualPayload([botstatsFixtures[3]]);
     });
 
-    it('should return messages of type audiance', async () => {
+    it("should return messages of type audiance", async () => {
       const from = botstatsFixtures[0].day;
       const to = new Date();
       const result = await botStatsService.findMessages(from, to, [
@@ -91,15 +91,15 @@ describe('BotStatsService', () => {
     });
   });
 
-  describe('findPopularBlocks', () => {
-    it('should return popular blocks', async () => {
+  describe("findPopularBlocks", () => {
+    it("should return popular blocks", async () => {
       const from = botstatsFixtures[0].day;
       const to = new Date();
       const result = await botStatsService.findPopularBlocks(from, to);
 
       expect(result).toEqual([
         {
-          id: 'Global Fallback',
+          id: "Global Fallback",
           value: 68,
         },
       ]);

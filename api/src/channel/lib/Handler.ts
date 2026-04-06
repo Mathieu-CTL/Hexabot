@@ -6,7 +6,7 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import path from 'path';
+import path from "path";
 
 import {
   ForbiddenException,
@@ -14,42 +14,42 @@ import {
   Injectable,
   NotFoundException,
   OnModuleInit,
-} from '@nestjs/common';
-import { JwtService, JwtSignOptions } from '@nestjs/jwt';
-import { plainToClass } from 'class-transformer';
-import { NextFunction, Request, Response } from 'express';
-import mime from 'mime';
-import { v4 as uuidv4 } from 'uuid';
+} from "@nestjs/common";
+import { JwtService, JwtSignOptions } from "@nestjs/jwt";
+import { plainToClass } from "class-transformer";
+import { NextFunction, Request, Response } from "express";
+import mime from "mime";
+import { v4 as uuidv4 } from "uuid";
 
-import { Attachment } from '@/attachment/schemas/attachment.schema';
-import { AttachmentService } from '@/attachment/services/attachment.service';
+import { Attachment } from "@/attachment/schemas/attachment.schema";
+import { AttachmentService } from "@/attachment/services/attachment.service";
 import {
   AttachmentAccess,
   AttachmentCreatedByRef,
   AttachmentFile,
   AttachmentResourceRef,
-} from '@/attachment/types';
-import { SubscriberCreateDto } from '@/chat/dto/subscriber.dto';
-import { AttachmentRef } from '@/chat/schemas/types/attachment';
+} from "@/attachment/types";
+import { SubscriberCreateDto } from "@/chat/dto/subscriber.dto";
+import { AttachmentRef } from "@/chat/schemas/types/attachment";
 import {
   IncomingMessageType,
   StdEventType,
   StdOutgoingEnvelope,
   StdOutgoingMessage,
-} from '@/chat/schemas/types/message';
-import { config } from '@/config';
-import { LoggerService } from '@/logger/logger.service';
-import { SettingService } from '@/setting/services/setting.service';
-import { Extension } from '@/utils/generics/extension';
-import { buildURL } from '@/utils/helpers/URL';
-import { HyphenToUnderscore } from '@/utils/types/extension';
-import { SocketRequest } from '@/websocket/utils/socket-request';
-import { SocketResponse } from '@/websocket/utils/socket-response';
+} from "@/chat/schemas/types/message";
+import { config } from "@/config";
+import { LoggerService } from "@/logger/logger.service";
+import { SettingService } from "@/setting/services/setting.service";
+import { Extension } from "@/utils/generics/extension";
+import { buildURL } from "@/utils/helpers/URL";
+import { HyphenToUnderscore } from "@/utils/types/extension";
+import { SocketRequest } from "@/websocket/utils/socket-request";
+import { SocketResponse } from "@/websocket/utils/socket-response";
 
-import { ChannelService } from '../channel.service';
-import { ChannelName, ChannelSetting } from '../types';
+import { ChannelService } from "../channel.service";
+import { ChannelName, ChannelSetting } from "../types";
 
-import EventWrapper from './EventWrapper';
+import EventWrapper from "./EventWrapper";
 
 @Injectable()
 export default abstract class ChannelHandler<
@@ -69,8 +69,8 @@ export default abstract class ChannelHandler<
   protected readonly jwtSignOptions: JwtSignOptions = {
     secret: config.parameters.signedUrl.secret,
     expiresIn: config.parameters.signedUrl.expiresIn,
-    algorithm: 'HS256',
-    encoding: 'utf-8',
+    algorithm: "HS256",
+    encoding: "utf-8",
   };
 
   constructor(
@@ -81,7 +81,7 @@ export default abstract class ChannelHandler<
   ) {
     super(name);
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    this.settings = require(path.join(this.getPath(), 'settings')).default;
+    this.settings = require(path.join(this.getPath(), "settings")).default;
   }
 
   getName() {
@@ -274,7 +274,7 @@ export default abstract class ChannelHandler<
       event._adapter.attachments = await Promise.all(
         metadatas.map(({ file, name, type, size }) => {
           return this.attachmentService.store(file, {
-            name: `${name ? `${name}-` : ''}${uuidv4()}.${mime.extension(type)}`,
+            name: `${name ? `${name}-` : ""}${uuidv4()}.${mime.extension(type)}`,
             type,
             size,
             resourceRef: AttachmentResourceRef.MessageAttachment,
@@ -308,17 +308,17 @@ export default abstract class ChannelHandler<
    * @return A signed URL string for downloading the specified attachment.
    */
   public async getPublicUrl(attachment: AttachmentRef | Attachment) {
-    const [name, _suffix] = this.getName().split('-');
-    if (attachment && 'id' in attachment) {
+    const [name, _suffix] = this.getName().split("-");
+    if (attachment && "id" in attachment) {
       if (!attachment || !attachment.id) {
-        this.logger.warn('Unable to build public URL: Empty attachment ID');
+        this.logger.warn("Unable to build public URL: Empty attachment ID");
         return buildURL(config.apiBaseUrl, `/webhook/${name}/not-found`);
       }
 
       const resource = await this.attachmentService.findOne(attachment.id);
 
       if (!resource) {
-        this.logger.warn('Unable to find attachment sending fallback image');
+        this.logger.warn("Unable to find attachment sending fallback image");
         return buildURL(config.apiBaseUrl, `/webhook/${name}/not-found`);
       }
 
@@ -327,12 +327,12 @@ export default abstract class ChannelHandler<
         config.apiBaseUrl,
         `/webhook/${name}/download/${resource.name}?t=${encodeURIComponent(token)}`,
       );
-    } else if ('url' in attachment && attachment.url) {
+    } else if ("url" in attachment && attachment.url) {
       // In case the url is external
       return attachment.url;
     } else {
       this.logger.warn(
-        'Unable to resolve the attachment public URL.',
+        "Unable to resolve the attachment public URL.",
         attachment,
       );
       return buildURL(config.apiBaseUrl, `/webhook/${name}/not-found`);
@@ -376,14 +376,14 @@ export default abstract class ChannelHandler<
       const canDownload = await this.hasDownloadAccess(attachment, req);
       if (!canDownload) {
         throw new ForbiddenException(
-          'You are not authorized to download the attachment',
+          "You are not authorized to download the attachment",
         );
       }
 
       return await this.attachmentService.download(attachment);
     } catch (err) {
-      this.logger.error('Failed to download attachment', err);
-      throw new NotFoundException('Unable to locate attachment');
+      this.logger.error("Failed to download attachment", err);
+      throw new NotFoundException("Unable to locate attachment");
     }
   }
 }

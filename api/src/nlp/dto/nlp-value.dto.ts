@@ -6,7 +6,7 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
   IsArray,
   IsBoolean,
@@ -14,21 +14,21 @@ import {
   IsObject,
   IsOptional,
   IsString,
-} from 'class-validator';
+} from "class-validator";
 
-import { DtoConfig } from '@/utils/types/dto.types';
-import { IsObjectId } from '@/utils/validation-rules/is-object-id';
+import { DtoConfig } from "@/utils/types/dto.types";
+import { IsObjectId } from "@/utils/validation-rules/is-object-id";
 
-import { NlpMetadata } from '../schemas/types';
+import { NlpMetadata } from "../schemas/types";
 
 export class NlpValueCreateDto {
-  @ApiProperty({ description: 'Nlp value', type: String })
+  @ApiProperty({ description: "Nlp value", type: String })
   @IsString()
   @IsNotEmpty()
   value: string;
 
   @ApiPropertyOptional({
-    description: 'Nlp value expressions',
+    description: "Nlp value expressions",
     isArray: true,
     type: Array,
   })
@@ -36,41 +36,41 @@ export class NlpValueCreateDto {
   @IsArray()
   expressions?: string[];
 
-  @ApiPropertyOptional({ description: 'Nlp value metadata', type: Object })
+  @ApiPropertyOptional({ description: "Nlp value metadata", type: Object })
   @IsOptional()
   @IsObject()
   metadata?: NlpMetadata;
 
-  @ApiPropertyOptional({ description: 'Nlp Value Description', type: String })
+  @ApiPropertyOptional({ description: "Nlp Value Description", type: String })
   @IsString()
   @IsOptional()
   doc?: string;
 
-  @ApiPropertyOptional({ description: 'Nlp value is builtin', type: Boolean })
+  @ApiPropertyOptional({ description: "Nlp value is builtin", type: Boolean })
   @IsOptional()
   @IsBoolean()
   builtin?: boolean;
 
-  @ApiProperty({ description: 'Nlp value entity', type: String })
+  @ApiProperty({ description: "Nlp value entity", type: String })
   @IsString()
   @IsNotEmpty()
-  @IsObjectId({ message: 'Entity must be a valid ObjectId' })
+  @IsObjectId({ message: "Entity must be a valid ObjectId" })
   entity: string | null;
 }
 
 export class NlpValueUpdateDto {
-  @ApiPropertyOptional({ description: 'Foreign ID', type: String })
+  @ApiPropertyOptional({ description: "Foreign ID", type: String })
   @IsOptional()
   @IsString()
   foreign_id?: string;
 
-  @ApiPropertyOptional({ description: 'Nlp value', type: String })
+  @ApiPropertyOptional({ description: "Nlp value", type: String })
   @IsOptional()
   @IsString()
   value?: string;
 
   @ApiPropertyOptional({
-    description: 'Nlp value expressions',
+    description: "Nlp value expressions",
     isArray: true,
     type: Array,
   })
@@ -78,23 +78,23 @@ export class NlpValueUpdateDto {
   @IsArray()
   expressions?: string[];
 
-  @ApiPropertyOptional({ description: 'Nlp value entity', type: String })
+  @ApiPropertyOptional({ description: "Nlp value entity", type: String })
   @IsOptional()
   @IsString()
-  @IsObjectId({ message: 'Entity must be a valid ObjectId' })
+  @IsObjectId({ message: "Entity must be a valid ObjectId" })
   entity?: string | null;
 
-  @ApiPropertyOptional({ description: 'Nlp Metadata', type: Object })
+  @ApiPropertyOptional({ description: "Nlp Metadata", type: Object })
   @IsObject()
   @IsOptional()
   metadata?: NlpMetadata;
 
-  @ApiPropertyOptional({ description: 'Nlp Value Description', type: String })
+  @ApiPropertyOptional({ description: "Nlp Value Description", type: String })
   @IsString()
   @IsOptional()
   doc?: string;
 
-  @ApiPropertyOptional({ description: 'Nlp value is builtin', type: Boolean })
+  @ApiPropertyOptional({ description: "Nlp value is builtin", type: Boolean })
   @IsOptional()
   @IsBoolean()
   builtin?: boolean;

@@ -6,19 +6,19 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional, PartialType } from "@nestjs/swagger";
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
-import { DtoConfig } from '@/utils/types/dto.types';
+import { DtoConfig } from "@/utils/types/dto.types";
 
 export class RoleCreateDto {
-  @ApiProperty({ description: 'Name of the role', type: String })
+  @ApiProperty({ description: "Name of the role", type: String })
   @IsNotEmpty()
   @IsString()
   name: string;
 
   @ApiPropertyOptional({
-    description: 'Is the role active',
+    description: "Is the role active",
     type: String,
     default: true,
   })

@@ -6,15 +6,15 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
+import { Injectable } from "@nestjs/common";
+import { OnEvent } from "@nestjs/event-emitter";
 
-import { Subscriber } from '@/chat/schemas/subscriber.schema';
-import { config } from '@/config';
-import { BaseService } from '@/utils/generics/base-service';
+import { Subscriber } from "@/chat/schemas/subscriber.schema";
+import { config } from "@/config";
+import { BaseService } from "@/utils/generics/base-service";
 
-import { BotStatsRepository } from '../repositories/bot-stats.repository';
-import { BotStats, BotStatsType } from '../schemas/bot-stats.schema';
+import { BotStatsRepository } from "../repositories/bot-stats.repository";
+import { BotStats, BotStatsType } from "../schemas/bot-stats.schema";
 
 @Injectable()
 export class BotStatsService extends BaseService<BotStats> {
@@ -62,16 +62,16 @@ export class BotStatsService extends BaseService<BotStats> {
    *
    * @param {Subscriber} subscriber - The subscriber object that contains last visit and retention data.
    */
-  @OnEvent('hook:user:lastvisit')
+  @OnEvent("hook:user:lastvisit")
   handleLastVisit(subscriber: Subscriber) {
     const now = +new Date();
     if (subscriber.lastvisit) {
       // A loyal subscriber is a subscriber that comes back after some inactivity
       if (now - +subscriber.lastvisit > config.analytics.thresholds.loyalty) {
         this.eventEmitter.emit(
-          'hook:stats:entry',
+          "hook:stats:entry",
           BotStatsType.returning_users,
-          'Loyalty',
+          "Loyalty",
           subscriber,
         );
       }
@@ -79,9 +79,9 @@ export class BotStatsService extends BaseService<BotStats> {
       // Returning subscriber is a subscriber that comes back after some inactivity
       if (now - +subscriber.lastvisit > config.analytics.thresholds.returning) {
         this.eventEmitter.emit(
-          'hook:stats:entry',
+          "hook:stats:entry",
           BotStatsType.returning_users,
-          'Returning users',
+          "Returning users",
           subscriber,
         );
       }
@@ -92,9 +92,9 @@ export class BotStatsService extends BaseService<BotStats> {
       now - +subscriber.retainedFrom > config.analytics.thresholds.retention
     ) {
       this.eventEmitter.emit(
-        'hook:stats:entry',
+        "hook:stats:entry",
         BotStatsType.retention,
-        'Retentioned users',
+        "Retentioned users",
       );
     }
   }
@@ -105,7 +105,7 @@ export class BotStatsService extends BaseService<BotStats> {
    * @param type - The type of bot statistics being tracked (e.g., user messages, bot responses).
    * @param name - The name or identifier of the statistics entry (e.g., a specific feature or component being tracked).
    */
-  @OnEvent('hook:stats:entry')
+  @OnEvent("hook:stats:entry")
   async handleStatEntry(type: BotStatsType, name: string): Promise<void> {
     const day = new Date();
     day.setMilliseconds(0);
@@ -122,10 +122,10 @@ export class BotStatsService extends BaseService<BotStats> {
       try {
         await this.updateOne(insight.id, { value: insight.value + 1 });
       } catch (err) {
-        this.logger.error('Unable to update insight', err);
+        this.logger.error("Unable to update insight", err);
       }
     } catch (err) {
-      this.logger.error('Unable to find or create insight', err);
+      this.logger.error("Unable to find or create insight", err);
     }
   }
 }

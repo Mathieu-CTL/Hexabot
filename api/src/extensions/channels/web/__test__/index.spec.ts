@@ -6,8 +6,8 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { JwtService } from '@nestjs/jwt';
-import { Request } from 'express';
+import { JwtService } from "@nestjs/jwt";
+import { Request } from "express";
 
 import {
   attachmentMessage,
@@ -15,20 +15,20 @@ import {
   contentMessage,
   quickRepliesMessage,
   textMessage,
-} from '@/channel/lib/__test__/common.mock';
-import { OutgoingMessageFormat } from '@/chat/schemas/types/message';
-import { SubscriberService } from '@/chat/services/subscriber.service';
-import { I18nService } from '@/i18n/services/i18n.service';
-import { installMessageFixtures } from '@/utils/test/fixtures/message';
+} from "@/channel/lib/__test__/common.mock";
+import { OutgoingMessageFormat } from "@/chat/schemas/types/message";
+import { SubscriberService } from "@/chat/services/subscriber.service";
+import { I18nService } from "@/i18n/services/i18n.service";
+import { installMessageFixtures } from "@/utils/test/fixtures/message";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
-import { SocketRequest } from '@/websocket/utils/socket-request';
-import { SocketResponse } from '@/websocket/utils/socket-response';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
+import { SocketRequest } from "@/websocket/utils/socket-request";
+import { SocketResponse } from "@/websocket/utils/socket-response";
 
-import WebChannelHandler from '../index.channel';
+import WebChannelHandler from "../index.channel";
 
 import {
   webAttachment,
@@ -37,16 +37,16 @@ import {
   webList,
   webQuickReplies,
   webText,
-} from './data.mock';
+} from "./data.mock";
 
-describe('WebChannelHandler', () => {
+describe("WebChannelHandler", () => {
   let subscriberService: SubscriberService;
   let handler: WebChannelHandler;
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      models: ['LabelModel', 'UserModel'],
-      autoInjectFrom: ['providers'],
+      models: ["LabelModel", "UserModel"],
+      autoInjectFrom: ["providers"],
       imports: [
         rootMongooseTestModule(async () => {
           await installMessageFixtures();
@@ -69,8 +69,8 @@ describe('WebChannelHandler', () => {
     ]);
 
     jest
-      .spyOn(handler, 'getPublicUrl')
-      .mockResolvedValue('http://public.url/download/filename.extension?t=any');
+      .spyOn(handler, "getPublicUrl")
+      .mockResolvedValue("http://public.url/download/filename.extension?t=any");
   });
 
   afterAll(async () => {
@@ -78,87 +78,87 @@ describe('WebChannelHandler', () => {
     await closeInMongodConnection();
   });
 
-  it('should have correct name', () => {
+  it("should have correct name", () => {
     expect(handler).toBeDefined();
-    expect(handler.getName()).toEqual('web-channel');
+    expect(handler.getName()).toEqual("web-channel");
   });
 
-  it('should allow the request if the origin is in the allowed domains', async () => {
+  it("should allow the request if the origin is in the allowed domains", async () => {
     const req = {
       headers: {
-        origin: 'https://example.com',
+        origin: "https://example.com",
       },
-      method: 'GET',
+      method: "GET",
     } as unknown as Request;
 
     const res = {
       set: jest.fn(),
     } as any;
 
-    jest.spyOn(handler, 'getSettings').mockResolvedValue({
+    jest.spyOn(handler, "getSettings").mockResolvedValue({
       allowed_domains:
-        'https://example.com/,https://test.com,http://invalid-url',
+        "https://example.com/,https://test.com,http://invalid-url",
     });
 
-    await expect(handler['validateCors'](req, res)).resolves.not.toThrow();
+    await expect(handler["validateCors"](req, res)).resolves.not.toThrow();
 
     expect(res.set).toHaveBeenCalledWith(
-      'Access-Control-Allow-Origin',
-      'https://example.com',
+      "Access-Control-Allow-Origin",
+      "https://example.com",
     );
     expect(res.set).toHaveBeenCalledWith(
-      'Access-Control-Allow-Credentials',
-      'true',
+      "Access-Control-Allow-Credentials",
+      "true",
     );
   });
 
-  it('should reject the request if the origin is not in the allowed domains', async () => {
+  it("should reject the request if the origin is not in the allowed domains", async () => {
     const req = {
       headers: {
-        origin: 'https://notallowed.com',
+        origin: "https://notallowed.com",
       },
-      method: 'GET',
+      method: "GET",
     } as unknown as Request;
 
-    jest.spyOn(handler, 'getSettings').mockResolvedValue({
+    jest.spyOn(handler, "getSettings").mockResolvedValue({
       allowed_domains:
-        'https://example.com/,https://test.com,http://invalid-url',
+        "https://example.com/,https://test.com,http://invalid-url",
     });
 
     const res = {
       set: jest.fn(),
     } as any;
 
-    await expect(handler['validateCors'](req, res)).rejects.toThrow(
-      'CORS - Domain not allowed!',
+    await expect(handler["validateCors"](req, res)).rejects.toThrow(
+      "CORS - Domain not allowed!",
     );
 
-    expect(res.set).toHaveBeenCalledWith('Access-Control-Allow-Origin', '');
+    expect(res.set).toHaveBeenCalledWith("Access-Control-Allow-Origin", "");
   });
 
-  it('should format text properly', () => {
+  it("should format text properly", () => {
     const formatted = handler._textFormat(textMessage, {});
     expect(formatted).toEqual(webText);
   });
 
-  it('should format quick replies properly', () => {
+  it("should format quick replies properly", () => {
     const formatted = handler._quickRepliesFormat(quickRepliesMessage, {});
     expect(formatted).toEqual(webQuickReplies);
   });
 
-  it('should format buttons properly', () => {
+  it("should format buttons properly", () => {
     const formatted = handler._buttonsFormat(buttonsMessage, {});
     expect(formatted).toEqual(webButtons);
   });
 
-  it('should format list properly', async () => {
+  it("should format list properly", async () => {
     const formatted = await handler._listFormat(contentMessage, {
       content: contentMessage.options,
     });
     expect(formatted).toEqual(webList);
   });
 
-  it('should format carousel properly', async () => {
+  it("should format carousel properly", async () => {
     const formatted = await handler._carouselFormat(contentMessage, {
       content: {
         ...contentMessage.options,
@@ -168,41 +168,41 @@ describe('WebChannelHandler', () => {
     expect(formatted).toEqual(webCarousel);
   });
 
-  it('should format attachment properly', async () => {
+  it("should format attachment properly", async () => {
     const formatted = await handler._attachmentFormat(attachmentMessage, {});
     expect(formatted).toEqual(webAttachment);
   });
 
-  it('creates a new subscriber if needed + set a new session', async () => {
+  it("creates a new subscriber if needed + set a new session", async () => {
     const req = {
       isSocket: false,
-      query: { first_name: 'New', last_name: 'Subscriber' },
+      query: { first_name: "New", last_name: "Subscriber" },
       session: {},
-      headers: { 'user-agent': 'browser' },
+      headers: { "user-agent": "browser" },
       user: {},
     } as any as Request;
 
-    const generatedId = 'web-test';
+    const generatedId = "web-test";
     const clearMock = jest
-      .spyOn(handler, 'generateId')
+      .spyOn(handler, "generateId")
       .mockImplementation(() => generatedId);
-    const subscriber = await handler['getOrCreateSession'](req);
+    const subscriber = await handler["getOrCreateSession"](req);
     const expectedAttrs = {
       assignedAt: null,
       assignedTo: null,
       channel: {
-        agent: req.headers['user-agent'],
-        ipAddress: '0.0.0.0',
+        agent: req.headers["user-agent"],
+        ipAddress: "0.0.0.0",
         isSocket: false,
-        name: 'web-channel',
+        name: "web-channel",
       },
-      country: '',
+      country: "",
       first_name: req.query.first_name,
       foreign_id: generatedId,
-      gender: 'male',
+      gender: "male",
       labels: [],
       last_name: req.query.last_name,
-      locale: '',
+      locale: "",
       timezone: 0,
     };
     const subscriberAttrs = Object.keys(expectedAttrs).reduce((acc, curr) => {
@@ -221,7 +221,7 @@ describe('WebChannelHandler', () => {
     clearMock.mockRestore();
 
     // Subsequent request
-    const subscriber2nd = await handler['getOrCreateSession'](req);
+    const subscriber2nd = await handler["getOrCreateSession"](req);
     expect(subscriber2nd.id).toBe(subscriber.id);
     expect(req.session).toEqual({
       web: {
@@ -233,9 +233,9 @@ describe('WebChannelHandler', () => {
     });
   });
 
-  it('subscribes and returns the message history', async () => {
+  it("subscribes and returns the message history", async () => {
     const subscriber =
-      await subscriberService.findOneByForeignIdAndPopulate('foreign-id-web-1');
+      await subscriberService.findOneByForeignIdAndPopulate("foreign-id-web-1");
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     const req = {
@@ -250,7 +250,7 @@ describe('WebChannelHandler', () => {
           profile: subscriber,
         },
       },
-      headers: { 'user-agent': 'browser' },
+      headers: { "user-agent": "browser" },
       socket: {
         join: (_foreignId: string) => {},
       },
@@ -268,12 +268,12 @@ describe('WebChannelHandler', () => {
     let joinedSocket = false;
 
     const clearMock = jest
-      .spyOn(req.socket, 'join')
+      .spyOn(req.socket, "join")
       .mockImplementation((foreignId: string) => {
         expect(foreignId).toBe(subscriber.foreign_id);
         joinedSocket = true;
       });
-    await handler['subscribe'](req, res);
+    await handler["subscribe"](req, res);
     expect(joinedSocket).toBe(true);
     clearMock.mockRestore();
   });

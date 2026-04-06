@@ -6,9 +6,9 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { z } from 'zod';
+import { z } from "zod";
 
-import { PayloadType } from './button';
+import { PayloadType } from "./button";
 
 export const payloadPatternSchema = z.object({
   label: z.string(),
@@ -20,20 +20,20 @@ export type PayloadPattern = z.infer<typeof payloadPatternSchema>;
 
 export const nlpEntityMatchPatternSchema = z.object({
   entity: z.string(),
-  match: z.literal('entity'),
+  match: z.literal("entity"),
 });
 
 export type NlpEntityMatchPattern = z.infer<typeof nlpEntityMatchPatternSchema>;
 
 export const nlpValueMatchPatternSchema = z.object({
   entity: z.string(),
-  match: z.literal('value'),
+  match: z.literal("value"),
   value: z.string(),
 });
 
 export type NlpValueMatchPattern = z.infer<typeof nlpValueMatchPatternSchema>;
 
-export const nlpPatternSchema = z.discriminatedUnion('match', [
+export const nlpPatternSchema = z.discriminatedUnion("match", [
   nlpEntityMatchPatternSchema,
   nlpValueMatchPatternSchema,
 ]);
@@ -42,25 +42,25 @@ export type NlpPattern = NlpEntityMatchPattern | NlpValueMatchPattern;
 
 export const stringRegexPatternSchema = z.string().refine(
   (value) => {
-    if (value.startsWith('/') && value.endsWith('/')) {
+    if (value.startsWith("/") && value.endsWith("/")) {
       if (value.length === 2) return false;
       try {
-        new RegExp(value.slice(1, -1), 'gi');
+        new RegExp(value.slice(1, -1), "gi");
         return true;
       } catch (err) {
         return false;
       }
     }
-    return value !== '';
+    return value !== "";
   },
   (value) => {
-    if (value.startsWith('/') && value.endsWith('/')) {
+    if (value.startsWith("/") && value.endsWith("/")) {
       if (value.length === 2) {
-        return { message: 'Empty regex' };
+        return { message: "Empty regex" };
       }
-      return { message: 'Invalid regex' };
+      return { message: "Invalid regex" };
     } else if (value.length === 0) {
-      return { message: 'Empty string' };
+      return { message: "Empty string" };
     } else {
       return {};
     }

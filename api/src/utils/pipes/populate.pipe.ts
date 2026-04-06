@@ -6,7 +6,7 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
+import { ArgumentMetadata, Injectable, PipeTransform } from "@nestjs/common";
 
 @Injectable()
 export class PopulatePipe implements PipeTransform<string, string[]> {
@@ -16,7 +16,7 @@ export class PopulatePipe implements PipeTransform<string, string[]> {
     }
 
     const { populate } = value;
-    const fields = populate.split(',').map((field: string) => field.trim());
+    const fields = populate.split(",").map((field: string) => field.trim());
 
     return fields;
   }

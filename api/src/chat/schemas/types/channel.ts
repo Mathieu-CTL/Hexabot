@@ -6,12 +6,12 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { z } from 'zod';
+import { z } from "zod";
 
-import { ChannelName } from '@/channel/types';
+import { ChannelName } from "@/channel/types";
 
-export type SubscriberChannelData<C extends ChannelName = 'unknown-channel'> =
-  C extends 'unknown-channel'
+export type SubscriberChannelData<C extends ChannelName = "unknown-channel"> =
+  C extends "unknown-channel"
     ? { name: ChannelName }
     : {
         name: C;

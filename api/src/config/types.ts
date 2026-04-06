@@ -6,22 +6,22 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import SMTPConnection from 'nodemailer/lib/smtp-connection';
-import type { ServerOptions, Socket } from 'socket.io';
+import SMTPConnection from "nodemailer/lib/smtp-connection";
+import type { ServerOptions, Socket } from "socket.io";
 
 type TJwtOptions = {
   salt: number;
   secret: string;
   expiresIn: string;
 };
-type TMethods = 'GET' | 'PATCH' | 'POST' | 'DELETE' | 'OPTIONS' | 'HEAD';
-type TLogLevel = 'log' | 'fatal' | 'error' | 'warn' | 'debug' | 'verbose';
+type TMethods = "GET" | "PATCH" | "POST" | "DELETE" | "OPTIONS" | "HEAD";
+type TLogLevel = "log" | "fatal" | "error" | "warn" | "debug" | "verbose";
 type TCacheConfig = {
   ttl: number;
   max: number;
   host: string;
   port: number;
-  type: 'memory' | 'redis';
+  type: "memory" | "redis";
 };
 type SocketCookie =
   | {
@@ -53,7 +53,7 @@ export type Config = {
   };
   sockets: {
     path: string;
-    transports: ServerOptions['transports'];
+    transports: ServerOptions["transports"];
     beforeConnect(_handshake: any): boolean;
     afterDisconnect(_socket: Socket): Promise<void>;
     serveClient: boolean;
@@ -88,7 +88,7 @@ export type Config = {
   parameters: {
     uploadDir: string;
     avatarDir: string;
-    storageMode: 'disk' | 'memory';
+    storageMode: "disk" | "memory";
     maxUploadSize: number;
     appName: string;
     signedUrl: TJwtOptions;

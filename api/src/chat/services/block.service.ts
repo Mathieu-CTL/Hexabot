@@ -6,49 +6,49 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
+import { Injectable } from "@nestjs/common";
+import { OnEvent } from "@nestjs/event-emitter";
 
-import EventWrapper from '@/channel/lib/EventWrapper';
-import { ChannelName } from '@/channel/types';
-import { ContentService } from '@/cms/services/content.service';
-import { NLU } from '@/helper/types';
-import { I18nService } from '@/i18n/services/i18n.service';
-import { LanguageService } from '@/i18n/services/language.service';
-import { NlpService } from '@/nlp/services/nlp.service';
-import { PluginService } from '@/plugins/plugins.service';
-import { PluginType } from '@/plugins/types';
-import { SettingService } from '@/setting/services/setting.service';
-import { FALLBACK_DEFAULT_NLU_PENALTY_FACTOR } from '@/utils/constants/nlp';
-import { BaseService } from '@/utils/generics/base-service';
-import { getRandomElement } from '@/utils/helpers/safeRandom';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import EventWrapper from "@/channel/lib/EventWrapper";
+import { ChannelName } from "@/channel/types";
+import { ContentService } from "@/cms/services/content.service";
+import { NLU } from "@/helper/types";
+import { I18nService } from "@/i18n/services/i18n.service";
+import { LanguageService } from "@/i18n/services/language.service";
+import { NlpService } from "@/nlp/services/nlp.service";
+import { PluginService } from "@/plugins/plugins.service";
+import { PluginType } from "@/plugins/types";
+import { SettingService } from "@/setting/services/setting.service";
+import { FALLBACK_DEFAULT_NLU_PENALTY_FACTOR } from "@/utils/constants/nlp";
+import { BaseService } from "@/utils/generics/base-service";
+import { getRandomElement } from "@/utils/helpers/safeRandom";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
 import {
   DEFAULT_BLOCK_SEARCH_LIMIT,
   getDefaultFallbackOptions,
-} from '../constants/block';
-import { BlockDto } from '../dto/block.dto';
-import { EnvelopeFactory } from '../helpers/envelope-factory';
-import { BlockRepository } from '../repositories/block.repository';
+} from "../constants/block";
+import { BlockDto } from "../dto/block.dto";
+import { EnvelopeFactory } from "../helpers/envelope-factory";
+import { BlockRepository } from "../repositories/block.repository";
 import {
   Block,
   BlockFull,
   BlockPopulate,
   BlockStub,
-} from '../schemas/block.schema';
-import { Label } from '../schemas/label.schema';
-import { Subscriber } from '../schemas/subscriber.schema';
-import { Context } from '../schemas/types/context';
+} from "../schemas/block.schema";
+import { Label } from "../schemas/label.schema";
+import { Subscriber } from "../schemas/subscriber.schema";
+import { Context } from "../schemas/types/context";
 import {
   OutgoingMessageFormat,
   StdOutgoingEnvelope,
   StdOutgoingSystemEnvelope,
-} from '../schemas/types/message';
-import { FallbackOptions } from '../schemas/types/options';
-import { NlpPattern, PayloadPattern } from '../schemas/types/pattern';
-import { Payload } from '../schemas/types/quick-reply';
-import { SubscriberContext } from '../schemas/types/subscriberContext';
+} from "../schemas/types/message";
+import { FallbackOptions } from "../schemas/types/options";
+import { NlpPattern, PayloadPattern } from "../schemas/types/pattern";
+import { Payload } from "../schemas/types/quick-reply";
+import { SubscriberContext } from "../schemas/types/subscriberContext";
 
 @Injectable()
 export class BlockService extends BaseService<
@@ -122,7 +122,7 @@ export class BlockService extends BaseService<
     }
 
     const triggerLabels = block.trigger_labels.map((l: string | Label) =>
-      typeof l === 'string' ? l : l.id,
+      typeof l === "string" ? l : l.id,
     );
     return (
       triggerLabels.length === 0 ||
@@ -250,17 +250,17 @@ export class BlockService extends BaseService<
     block: BlockFull | Block,
   ): PayloadPattern | undefined {
     const payloadPatterns = block.patterns?.filter(
-      (p) => typeof p === 'object' && 'label' in p,
+      (p) => typeof p === "object" && "label" in p,
     ) as PayloadPattern[];
 
     return payloadPatterns.find((pt: PayloadPattern) => {
       // Either button postback payload Or content payload (ex. BTN_TITLE:CONTENT_PAYLOAD)
       return (
-        (typeof payload === 'string' &&
+        (typeof payload === "string" &&
           pt.value &&
-          (pt.value === payload || payload.startsWith(pt.value + ':'))) ||
+          (pt.value === payload || payload.startsWith(pt.value + ":"))) ||
         // Or attachment postback (ex. Like location quick reply for example)
-        (typeof payload === 'object' && pt.type && pt.type === payload.type)
+        (typeof payload === "object" && pt.type && pt.type === payload.type)
       );
     });
   }
@@ -280,11 +280,11 @@ export class BlockService extends BaseService<
     // Filter text patterns & Instanciate Regex patterns
     const patterns = block.patterns?.map((pattern) => {
       if (
-        typeof pattern === 'string' &&
-        pattern.endsWith('/') &&
-        pattern.startsWith('/')
+        typeof pattern === "string" &&
+        pattern.endsWith("/") &&
+        pattern.startsWith("/")
       ) {
-        return new RegExp(pattern.slice(1, -1), 'i');
+        return new RegExp(pattern.slice(1, -1), "i");
       }
       return pattern;
     });
@@ -306,14 +306,14 @@ export class BlockService extends BaseService<
           }
           continue;
         } else if (
-          typeof pattern === 'object' &&
-          'label' in pattern &&
+          typeof pattern === "object" &&
+          "label" in pattern &&
           text.trim().toLowerCase() === pattern.label.toLowerCase()
         ) {
           // Payload (quick reply)
           return [text];
         } else if (
-          typeof pattern === 'string' &&
+          typeof pattern === "string" &&
           text.trim().toLowerCase() === pattern.toLowerCase()
         ) {
           // Equals
@@ -361,19 +361,19 @@ export class BlockService extends BaseService<
     // Filter NLP patterns match based on best guessed entities
     return nlpPatterns.filter((patterns: NlpPattern[]) => {
       return patterns.every((p: NlpPattern) => {
-        if (p.match === 'value') {
+        if (p.match === "value") {
           return entities.find((e) => {
             return (
               e.entity === p.entity &&
               (e.value === p.value || e.canonicalValue === p.value)
             );
           });
-        } else if (p.match === 'entity') {
+        } else if (p.match === "entity") {
           return entities.find((e) => {
             return e.entity === p.entity;
           });
         } else {
-          this.logger.warn('Unknown NLP match type', p);
+          this.logger.warn("Unknown NLP match type", p);
           return false;
         }
       });
@@ -484,7 +484,7 @@ export class BlockService extends BaseService<
   ): boolean {
     return (
       entity === pattern.entity &&
-      (pattern.match !== 'value' ||
+      (pattern.match !== "value" ||
         value === pattern.value ||
         canonicalValue === pattern.value)
     );
@@ -513,7 +513,7 @@ export class BlockService extends BaseService<
 
     // In case the pattern matches the entity regardless of the value (any)
     // we apply a penalty so that we prioritize other patterns where both entity and value matches
-    const penalty = pattern.match === 'entity' ? penaltyFactor : 1;
+    const penalty = pattern.match === "entity" ? penaltyFactor : 1;
 
     return entity.score * penalty;
   }
@@ -548,10 +548,10 @@ export class BlockService extends BaseService<
     return candidates.find((b) => {
       return b.patterns
         .filter(
-          (p) => typeof p === 'object' && 'type' in p && p.type === 'outcome',
+          (p) => typeof p === "object" && "type" in p && p.type === "outcome",
         )
         .some((p: PayloadPattern) =>
-          ['any', envelope.message.outcome].includes(p.value),
+          ["any", envelope.message.outcome].includes(p.value),
         );
     });
   }
@@ -637,12 +637,12 @@ export class BlockService extends BaseService<
   checkDeprecatedAttachmentUrl(block: Block | BlockFull) {
     if (
       block.message &&
-      'attachment' in block.message &&
+      "attachment" in block.message &&
       block.message.attachment.payload &&
-      'url' in block.message.attachment.payload
+      "url" in block.message.attachment.payload
     ) {
       this.logger.error(
-        'Attachment Block : `url` payload has been deprecated in favor of `id`',
+        "Attachment Block : `url` payload has been deprecated in favor of `id`",
         block.id,
         block.message,
       );
@@ -685,9 +685,9 @@ export class BlockService extends BaseService<
       return envelopeFactory.buildTextEnvelope(
         fallback ? fallback.message : block.message,
       );
-    } else if ('text' in block.message) {
+    } else if ("text" in block.message) {
       if (
-        'quickReplies' in block.message &&
+        "quickReplies" in block.message &&
         Array.isArray(block.message.quickReplies) &&
         block.message.quickReplies.length > 0
       ) {
@@ -696,7 +696,7 @@ export class BlockService extends BaseService<
           block.message.quickReplies,
         );
       } else if (
-        'buttons' in block.message &&
+        "buttons" in block.message &&
         Array.isArray(block.message.buttons) &&
         block.message.buttons.length > 0
       ) {
@@ -705,12 +705,12 @@ export class BlockService extends BaseService<
           block.message.buttons,
         );
       }
-    } else if ('attachment' in block.message) {
+    } else if ("attachment" in block.message) {
       const attachmentPayload = block.message.attachment.payload;
-      if (!('id' in attachmentPayload)) {
+      if (!("id" in attachmentPayload)) {
         this.checkDeprecatedAttachmentUrl(block);
         throw new Error(
-          'Remote attachments in blocks are no longer supported!',
+          "Remote attachments in blocks are no longer supported!",
         );
       }
       const quickReplies = block.message.quickReplies
@@ -734,7 +734,7 @@ export class BlockService extends BaseService<
       );
     } else if (
       block.message &&
-      'elements' in block.message &&
+      "elements" in block.message &&
       block.options?.content
     ) {
       const contentBlockOptions = block.options.content;
@@ -766,12 +766,12 @@ export class BlockService extends BaseService<
             );
       } catch (err) {
         this.logger.error(
-          'Unable to retrieve content for list template process',
+          "Unable to retrieve content for list template process",
           err,
         );
         throw err;
       }
-    } else if (block.message && 'plugin' in block.message) {
+    } else if (block.message && "plugin" in block.message) {
       if (fallback) {
         return envelopeFactory.buildTextEnvelope(fallback.message);
       }
@@ -785,16 +785,16 @@ export class BlockService extends BaseService<
         const envelope = await plugin?.process(block, context, conversationId);
 
         if (!envelope) {
-          throw new Error('Unable to find envelope');
+          throw new Error("Unable to find envelope");
         }
 
         return envelope;
       } catch (e) {
-        this.logger.error('Plugin was unable to load/process ', e);
+        this.logger.error("Plugin was unable to load/process ", e);
         throw new Error(`Plugin Error - ${JSON.stringify(block.message)}`);
       }
     }
-    throw new Error('Invalid message format.');
+    throw new Error("Invalid message format.");
   }
 
   /**
@@ -813,7 +813,7 @@ export class BlockService extends BaseService<
    * @param _query - The Mongoose query object used for deletion.
    * @param criteria - The filter criteria for finding the labels to be deleted.
    */
-  @OnEvent('hook:label:preDelete')
+  @OnEvent("hook:label:preDelete")
   async handleLabelPreDelete(
     _query: unknown,
     criteria: TFilterQuery<Label>,
@@ -834,7 +834,7 @@ export class BlockService extends BaseService<
         },
       );
     } else {
-      throw new Error('Attempted to delete label using unknown criteria');
+      throw new Error("Attempted to delete label using unknown criteria");
     }
   }
 }

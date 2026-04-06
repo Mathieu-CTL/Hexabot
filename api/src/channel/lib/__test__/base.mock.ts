@@ -7,7 +7,7 @@
  */
 
 export const modelInstance = {
-  id: '1',
+  id: "1",
   createdAt: new Date(),
   updatedAt: new Date(),
 };

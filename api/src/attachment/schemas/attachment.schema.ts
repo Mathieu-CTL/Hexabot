@@ -6,29 +6,29 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Transform, Type } from 'class-transformer';
-import { Schema as MongooseSchema } from 'mongoose';
+import { ModelDefinition, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Transform, Type } from "class-transformer";
+import { Schema as MongooseSchema } from "mongoose";
 
-import { ChannelName } from '@/channel/types';
-import { Subscriber } from '@/chat/schemas/subscriber.schema';
-import { FileType } from '@/chat/schemas/types/attachment';
-import { config } from '@/config';
-import { User } from '@/user/schemas/user.schema';
-import { BaseSchema } from '@/utils/generics/base-schema';
-import { LifecycleHookManager } from '@/utils/generics/lifecycle-hook-manager';
-import { buildURL } from '@/utils/helpers/URL';
+import { ChannelName } from "@/channel/types";
+import { Subscriber } from "@/chat/schemas/subscriber.schema";
+import { FileType } from "@/chat/schemas/types/attachment";
+import { config } from "@/config";
+import { User } from "@/user/schemas/user.schema";
+import { BaseSchema } from "@/utils/generics/base-schema";
+import { LifecycleHookManager } from "@/utils/generics/lifecycle-hook-manager";
+import { buildURL } from "@/utils/helpers/URL";
 import {
   TFilterPopulateFields,
   THydratedDocument,
-} from '@/utils/types/filter.types';
+} from "@/utils/types/filter.types";
 
 import {
   AttachmentAccess,
   AttachmentCreatedByRef,
   AttachmentResourceRef,
-} from '../types';
-import { MIME_REGEX } from '../utilities';
+} from "../types";
+import { MIME_REGEX } from "../utilities";
 
 @Schema({ timestamps: true })
 export class AttachmentStub extends BaseSchema {
@@ -82,7 +82,7 @@ export class AttachmentStub extends BaseSchema {
    */
   @Prop({
     type: MongooseSchema.Types.ObjectId,
-    refPath: 'createdByRef',
+    refPath: "createdByRef",
     default: null,
   })
   createdBy: unknown;
@@ -123,7 +123,7 @@ export class AttachmentStub extends BaseSchema {
    */
   static getAttachmentUrl(
     attachmentId: string,
-    attachmentName: string = '',
+    attachmentName: string = "",
   ): string {
     return buildURL(
       config.apiBaseUrl,
@@ -174,14 +174,14 @@ export const AttachmentModel: ModelDefinition = LifecycleHookManager.attach({
   schema: SchemaFactory.createForClass(Attachment),
 });
 
-AttachmentModel.schema.virtual('url').get(function () {
+AttachmentModel.schema.virtual("url").get(function () {
   if (this._id && this.name)
     return buildURL(
       config.apiBaseUrl,
       `/attachment/download/${this._id}/${this.name}`,
     );
 
-  return '';
+  return "";
 });
 
 export default AttachmentModel.schema;
@@ -191,4 +191,4 @@ export type AttachmentPopulate = keyof TFilterPopulateFields<
   AttachmentStub
 >;
 
-export const ATTACHMENT_POPULATE: AttachmentPopulate[] = ['createdBy'];
+export const ATTACHMENT_POPULATE: AttachmentPopulate[] = ["createdBy"];

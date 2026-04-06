@@ -6,22 +6,22 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
-import { Document, Query } from 'mongoose';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { OnEvent } from "@nestjs/event-emitter";
+import { Document, Query } from "mongoose";
 
-import { HelperService } from '@/helper/helper.service';
-import { HelperType, NLU } from '@/helper/types';
-import { LoggerService } from '@/logger/logger.service';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { HelperService } from "@/helper/helper.service";
+import { HelperType, NLU } from "@/helper/types";
+import { LoggerService } from "@/logger/logger.service";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
-import { NlpEntity, NlpEntityDocument } from '../schemas/nlp-entity.schema';
-import { NlpValue, NlpValueDocument } from '../schemas/nlp-value.schema';
+import { NlpEntity, NlpEntityDocument } from "../schemas/nlp-entity.schema";
+import { NlpValue, NlpValueDocument } from "../schemas/nlp-value.schema";
 
-import { NlpEntityService } from './nlp-entity.service';
-import { NlpSampleEntityService } from './nlp-sample-entity.service';
-import { NlpSampleService } from './nlp-sample.service';
-import { NlpValueService } from './nlp-value.service';
+import { NlpEntityService } from "./nlp-entity.service";
+import { NlpSampleEntityService } from "./nlp-sample-entity.service";
+import { NlpSampleService } from "./nlp-sample.service";
+import { NlpValueService } from "./nlp-value.service";
 
 @Injectable()
 export class NlpService {
@@ -70,7 +70,7 @@ export class NlpService {
    *
    * @param entity - The NLP entity to be created.
    */
-  @OnEvent('hook:nlpEntity:postCreate')
+  @OnEvent("hook:nlpEntity:postCreate")
   async handleEntityPostCreate(created: NlpEntityDocument) {
     if (!created.builtin) {
       // Synchonize new entity with NLP
@@ -79,7 +79,7 @@ export class NlpService {
           HelperType.NLU,
         );
         const foreignId = await helper.addEntity(created);
-        this.logger.debug('New entity successfully synced!', foreignId);
+        this.logger.debug("New entity successfully synced!", foreignId);
         await this.nlpEntityService.updateOne(
           { _id: created._id },
           {
@@ -87,7 +87,7 @@ export class NlpService {
           },
         );
       } catch (err) {
-        this.logger.error('Unable to sync a new entity', err);
+        this.logger.error("Unable to sync a new entity", err);
       }
     }
   }
@@ -97,14 +97,14 @@ export class NlpService {
    *
    * @param entity - The NLP entity to be updated.
    */
-  @OnEvent('hook:nlpEntity:postUpdate')
+  @OnEvent("hook:nlpEntity:postUpdate")
   async handleEntityPostUpdate(
     _query: Query<
       Document<NlpEntity>,
       Document<NlpEntity>,
       unknown,
       NlpEntity,
-      'findOneAndUpdate'
+      "findOneAndUpdate"
     >,
     updated: NlpEntity,
   ) {
@@ -115,9 +115,9 @@ export class NlpService {
           HelperType.NLU,
         );
         await helper.updateEntity(updated);
-        this.logger.debug('Updated entity successfully synced!', updated);
+        this.logger.debug("Updated entity successfully synced!", updated);
       } catch (err) {
-        this.logger.error('Unable to sync updated entity', err);
+        this.logger.error("Unable to sync updated entity", err);
       }
     }
   }
@@ -128,7 +128,7 @@ export class NlpService {
    * @param _query - The Mongoose query object used for deletion.
    * @param criteria - The filter criteria for finding the nlpEntities to be deleted.
    */
-  @OnEvent('hook:nlpEntity:preDelete')
+  @OnEvent("hook:nlpEntity:preDelete")
   async handleEntityDelete(
     _query: unknown,
     criteria: TFilterQuery<NlpEntity>,
@@ -138,7 +138,7 @@ export class NlpService {
       await this.nlpSampleEntityService.deleteMany({ entity: criteria._id });
 
       const entities = await this.nlpEntityService.find({
-        ...(typeof criteria === 'string' ? { _id: criteria } : criteria),
+        ...(typeof criteria === "string" ? { _id: criteria } : criteria),
         builtin: false,
       });
       const helper = await this.helperService.getDefaultHelper(HelperType.NLU);
@@ -148,7 +148,7 @@ export class NlpService {
         try {
           if (entity.foreign_id) {
             await helper.deleteEntity(entity.foreign_id);
-            this.logger.debug('Deleted entity successfully synced!', entity);
+            this.logger.debug("Deleted entity successfully synced!", entity);
           } else {
             this.logger.error(`Entity ${entity} is missing foreign_id`);
             throw new NotFoundException(
@@ -156,7 +156,7 @@ export class NlpService {
             );
           }
         } catch (err) {
-          this.logger.error('Unable to sync deleted entity', err);
+          this.logger.error("Unable to sync deleted entity", err);
         }
       }
     }
@@ -167,7 +167,7 @@ export class NlpService {
    *
    * @param value - The NLP value to be created.
    */
-  @OnEvent('hook:nlpValue:postCreate')
+  @OnEvent("hook:nlpValue:postCreate")
   async handleValuePostCreate(created: NlpValueDocument) {
     if (!created.builtin) {
       // Synchonize new value with NLP provider
@@ -176,7 +176,7 @@ export class NlpService {
           HelperType.NLU,
         );
         const foreignId = await helper.addValue(created);
-        this.logger.debug('New value successfully synced!', foreignId);
+        this.logger.debug("New value successfully synced!", foreignId);
         await this.nlpValueService.updateOne(
           { _id: created._id },
           {
@@ -184,7 +184,7 @@ export class NlpService {
           },
         );
       } catch (err) {
-        this.logger.error('Unable to sync a new value', err);
+        this.logger.error("Unable to sync a new value", err);
       }
     }
   }
@@ -194,14 +194,14 @@ export class NlpService {
    *
    * @param value - The NLP value to be updated.
    */
-  @OnEvent('hook:nlpValue:postUpdate')
+  @OnEvent("hook:nlpValue:postUpdate")
   async handleValuePostUpdate(
     _query: Query<
       Document<NlpValue, any, any>,
       Document<NlpValue, any, any>,
       unknown,
       NlpValue,
-      'findOneAndUpdate'
+      "findOneAndUpdate"
     >,
     updated: NlpValue,
   ) {
@@ -212,9 +212,9 @@ export class NlpService {
           HelperType.NLU,
         );
         await helper.updateValue(updated);
-        this.logger.debug('Updated value successfully synced!', updated);
+        this.logger.debug("Updated value successfully synced!", updated);
       } catch (err) {
-        this.logger.error('Unable to sync updated value', err);
+        this.logger.error("Unable to sync updated value", err);
       }
     }
   }
@@ -225,7 +225,7 @@ export class NlpService {
    * @param _query - The Mongoose query object used for deletion.
    * @param criteria - The filter criteria for finding the nlpValues to be deleted.
    */
-  @OnEvent('hook:nlpValue:preDelete')
+  @OnEvent("hook:nlpValue:preDelete")
   async handleValueDelete(
     _query: unknown,
     criteria: TFilterQuery<NlpValue>,
@@ -236,7 +236,7 @@ export class NlpService {
       });
 
       const values = await this.nlpValueService.find({
-        ...(typeof criteria === 'string' ? { _id: criteria } : criteria),
+        ...(typeof criteria === "string" ? { _id: criteria } : criteria),
         builtin: false,
       });
       const helper = await this.helperService.getDefaultHelper(HelperType.NLU);
@@ -249,16 +249,16 @@ export class NlpService {
           );
           if (populatedValue) {
             await helper.deleteValue(populatedValue);
-            this.logger.debug('Deleted value successfully synced!', value);
+            this.logger.debug("Deleted value successfully synced!", value);
           }
         } catch (err) {
-          this.logger.error('Unable to sync deleted value', err);
+          this.logger.error("Unable to sync deleted value", err);
         }
       }
     } else if (criteria.entity) {
       // Do nothing : cascading deletes coming from Nlp Sample Entity
     } else {
-      throw new Error('Attempted to delete a NLP value using unknown criteria');
+      throw new Error("Attempted to delete a NLP value using unknown criteria");
     }
   }
 }

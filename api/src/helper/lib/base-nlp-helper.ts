@@ -6,27 +6,27 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { escapeRegExp } from 'lodash';
-import { v4 as uuidv4 } from 'uuid';
+import { escapeRegExp } from "lodash";
+import { v4 as uuidv4 } from "uuid";
 
-import { LoggerService } from '@/logger/logger.service';
+import { LoggerService } from "@/logger/logger.service";
 import {
   NlpEntity,
   NlpEntityDocument,
   NlpEntityFull,
-} from '@/nlp/schemas/nlp-entity.schema';
-import { NlpSample, NlpSampleFull } from '@/nlp/schemas/nlp-sample.schema';
+} from "@/nlp/schemas/nlp-entity.schema";
+import { NlpSample, NlpSampleFull } from "@/nlp/schemas/nlp-sample.schema";
 import {
   NlpValue,
   NlpValueDocument,
   NlpValueFull,
-} from '@/nlp/schemas/nlp-value.schema';
-import { SettingService } from '@/setting/services/setting.service';
+} from "@/nlp/schemas/nlp-value.schema";
+import { SettingService } from "@/setting/services/setting.service";
 
-import { HelperService } from '../helper.service';
-import { HelperName, HelperType, NLU } from '../types';
+import { HelperService } from "../helper.service";
+import { HelperName, HelperType, NLU } from "../types";
 
-import BaseHelper from './base-helper';
+import BaseHelper from "./base-helper";
 
 // eslint-disable-next-line prettier/prettier
 export default abstract class BaseNlpHelper<
@@ -133,19 +133,19 @@ export default abstract class BaseNlpHelper<
       .filter((s) => s.entities.length > 0)
       .map((s) => {
         const intent = s.entities.find(
-          (e) => entityMap[e.entity].name === 'intent',
+          (e) => entityMap[e.entity].name === "intent",
         );
         if (!intent) {
-          throw new Error('Unable to find the `intent` nlp entity.');
+          throw new Error("Unable to find the `intent` nlp entity.");
         }
         const sampleEntities = s.entities
-          .filter((e) => entityMap[<string>e.entity].name !== 'intent')
+          .filter((e) => entityMap[<string>e.entity].name !== "intent")
           .map((e) => {
             const res = {
               entity: entityMap[<string>e.entity].name,
               value: valueMap[<string>e.value].value,
             };
-            if ('start' in e && 'end' in e) {
+            if ("start" in e && "end" in e) {
               Object.assign(res, {
                 start: e.start,
                 end: e.end,
@@ -154,7 +154,7 @@ export default abstract class BaseNlpHelper<
             return res;
           })
           .concat({
-            entity: 'language',
+            entity: "language",
             value: s.language!.code,
           });
 
@@ -241,7 +241,7 @@ export default abstract class BaseNlpHelper<
    */
   private buildUnicodeRegexExpression(term: string): RegExp {
     const escapedTerm = escapeRegExp(term);
-    return new RegExp(`(?<!\\p{L})${escapedTerm}(?!\\p{L})`, 'gui');
+    return new RegExp(`(?<!\\p{L})${escapedTerm}(?!\\p{L})`, "gui");
   }
 
   /**
@@ -261,7 +261,7 @@ export default abstract class BaseNlpHelper<
     entity: NlpEntityFull,
   ): NLU.ParseEntity[] {
     if (!entity.values?.length) {
-      this.logger.warn('NLP entity has no values');
+      this.logger.warn("NLP entity has no values");
       return [];
     }
 
@@ -301,7 +301,7 @@ export default abstract class BaseNlpHelper<
     entity: NlpEntityFull,
   ): NLU.ParseEntity[] {
     if (!entity.values?.length) {
-      this.logger.warn('NLP entity has no values');
+      this.logger.warn("NLP entity has no values");
       return [];
     }
 
@@ -310,7 +310,7 @@ export default abstract class BaseNlpHelper<
         const pattern = nlpValue.metadata?.pattern;
 
         if (!pattern) {
-          this.logger.error('Missing NLP regex pattern');
+          this.logger.error("Missing NLP regex pattern");
           return [];
         }
 
@@ -319,10 +319,10 @@ export default abstract class BaseNlpHelper<
           const shouldWrap = nlpValue.metadata?.wordBoundary;
           regex = new RegExp(
             shouldWrap ? `(?<!\\p{L})${pattern}(?!\\p{L})` : pattern,
-            'gui',
+            "gui",
           );
         } catch {
-          this.logger.error('Invalid NLP regex pattern');
+          this.logger.error("Invalid NLP regex pattern");
           return [];
         }
 
@@ -333,7 +333,7 @@ export default abstract class BaseNlpHelper<
 
           // Apply preprocessing if needed
           if (nlpValue.metadata?.removeSpaces) {
-            value = value.replace(/\s+/g, '');
+            value = value.replace(/\s+/g, "");
           }
 
           if (nlpValue.metadata?.toLowerCase) {
@@ -341,7 +341,7 @@ export default abstract class BaseNlpHelper<
           }
 
           if (nlpValue.metadata?.stripDiacritics) {
-            value = value.normalize('NFD').replace(/\p{Diacritic}/gu, '');
+            value = value.normalize("NFD").replace(/\p{Diacritic}/gu, "");
           }
 
           return {
@@ -377,9 +377,9 @@ export default abstract class BaseNlpHelper<
     entities: NlpEntityFull[],
   ): NLU.ParseEntity[] {
     return entities.flatMap((e) => {
-      if (e.lookups.includes('keywords')) {
+      if (e.lookups.includes("keywords")) {
         return this.extractKeywordBasedSlots(text, e);
-      } else if (e.lookups.includes('pattern')) {
+      } else if (e.lookups.includes("pattern")) {
         return this.extractPatternBasedSlots(text, e);
       } else {
         return [];

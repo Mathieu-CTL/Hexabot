@@ -6,16 +6,16 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query } from "@nestjs/common";
 
-import { BotStatsFindDatumDto, BotStatsFindDto } from '../dto/bot-stats.dto';
-import { BotStats, BotStatsType } from '../schemas/bot-stats.schema';
-import { BotStatsService } from '../services/bot-stats.service';
-import { aMonthAgo } from '../utilities';
+import { BotStatsFindDatumDto, BotStatsFindDto } from "../dto/bot-stats.dto";
+import { BotStats, BotStatsType } from "../schemas/bot-stats.schema";
+import { BotStatsService } from "../services/bot-stats.service";
+import { aMonthAgo } from "../utilities";
 
-import { ToLinesType } from './../schemas/bot-stats.schema';
+import { ToLinesType } from "./../schemas/bot-stats.schema";
 
-@Controller('botstats')
+@Controller("botstats")
 export class BotStatsController {
   constructor(private readonly botStatsService: BotStatsService) {}
 
@@ -25,7 +25,7 @@ export class BotStatsController {
    * @param dto - Parameters for filtering messages (Start & End dates).
    * @returns A promise that resolves to an array of messages formatted for the line chart.
    */
-  @Get('messages')
+  @Get("messages")
   async findMessages(
     @Query()
     dto: BotStatsFindDto,
@@ -46,7 +46,7 @@ export class BotStatsController {
    * @param dto - Parameters for filtering data (Start & End dates, Type).
    * @returns A promise that resolves to an array of data formatted as lines.
    */
-  @Get('datum')
+  @Get("datum")
   async datum(
     @Query()
     dto: BotStatsFindDatumDto,
@@ -63,7 +63,7 @@ export class BotStatsController {
    * @param dto - Parameters for filtering data (Start & End dates, Type).
    * @returns A promise that resolves to an array of data formatted for the line chart.
    */
-  @Get('conversation')
+  @Get("conversation")
   async conversation(
     @Query()
     dto: BotStatsFindDto,
@@ -84,7 +84,7 @@ export class BotStatsController {
    * @param dto - Parameters for filtering messages (Start & End dates).
    * @returns A promise that resolves to an array of data formatted for the line chart.
    */
-  @Get('audiance')
+  @Get("audiance")
   async audiance(
     @Query()
     dto: BotStatsFindDto,
@@ -106,7 +106,7 @@ export class BotStatsController {
    * @param dto - Parameters for filtering messages (Start & End dates).
    * @returns A promise that resolves to an array of data formatted for the bar chart.
    */
-  @Get('popularBlocks')
+  @Get("popularBlocks")
   async popularBlocks(
     @Query()
     dto: BotStatsFindDto,

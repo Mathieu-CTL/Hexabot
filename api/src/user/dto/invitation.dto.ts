@@ -6,19 +6,19 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNotEmpty, IsEmail, IsString } from 'class-validator';
+import { ApiProperty } from "@nestjs/swagger";
+import { IsArray, IsNotEmpty, IsEmail, IsString } from "class-validator";
 
-import { IsObjectId } from '@/utils/validation-rules/is-object-id';
+import { IsObjectId } from "@/utils/validation-rules/is-object-id";
 
 export class InvitationCreateDto {
-  @ApiProperty({ description: 'Invitation roles', type: String })
+  @ApiProperty({ description: "Invitation roles", type: String })
   @IsNotEmpty()
   @IsArray()
-  @IsObjectId({ each: true, message: 'Invalid Object Id' })
+  @IsObjectId({ each: true, message: "Invalid Object Id" })
   roles: string[];
 
-  @ApiProperty({ description: 'Invitation email', type: String })
+  @ApiProperty({ description: "Invitation email", type: String })
   @IsNotEmpty()
   @IsString()
   @IsEmail()

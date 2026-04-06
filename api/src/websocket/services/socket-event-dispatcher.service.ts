@@ -12,22 +12,22 @@ import {
   Injectable,
   OnModuleInit,
   UnauthorizedException,
-} from '@nestjs/common';
-import { ModulesContainer } from '@nestjs/core';
-import { InstanceWrapper } from '@nestjs/core/injector/instance-wrapper';
-import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
-import { Mutex } from 'async-mutex';
-import { Socket } from 'socket.io';
+} from "@nestjs/common";
+import { ModulesContainer } from "@nestjs/core";
+import { InstanceWrapper } from "@nestjs/core/injector/instance-wrapper";
+import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
+import { Mutex } from "async-mutex";
+import { Socket } from "socket.io";
 
-import { LoggerService } from '@/logger/logger.service';
+import { LoggerService } from "@/logger/logger.service";
 
-import { SocketEventMetadataStorage } from '../storage/socket-event-metadata.storage';
-import { SocketRequest } from '../utils/socket-request';
-import { SocketResponse } from '../utils/socket-response';
+import { SocketEventMetadataStorage } from "../storage/socket-event-metadata.storage";
+import { SocketRequest } from "../utils/socket-request";
+import { SocketResponse } from "../utils/socket-response";
 
 type Handler = (req: any, res: SocketResponse) => Promise<any>;
 
-export type SocketMethod = 'get' | 'post' | 'put' | 'patch' | 'delete' | string;
+export type SocketMethod = "get" | "post" | "put" | "patch" | "delete" | string;
 
 @Injectable()
 export class SocketEventDispatcherService implements OnModuleInit {
@@ -45,7 +45,7 @@ export class SocketEventDispatcherService implements OnModuleInit {
     private readonly logger: LoggerService,
   ) {}
 
-  @OnEvent('hook:websocket:connection')
+  @OnEvent("hook:websocket:connection")
   handleConnection(client: Socket) {
     client.data.mutex = new Mutex();
   }
@@ -63,14 +63,14 @@ export class SocketEventDispatcherService implements OnModuleInit {
     try {
       const handlers = this.routeHandlers[socketMethod];
       const foundHandler = Array.from(handlers.entries()).find(([key, _]) => {
-        const urlPathname = new URL(req.url, 'http://localhost').pathname;
-        const keyUrlPathName = new URL(key, 'http://localhost').pathname;
+        const urlPathname = new URL(req.url, "http://localhost").pathname;
+        const keyUrlPathName = new URL(key, "http://localhost").pathname;
 
         return urlPathname === keyUrlPathName;
       });
 
       if (!foundHandler) {
-        return res.status(HttpStatus.NOT_FOUND).send({ message: 'Not Found' });
+        return res.status(HttpStatus.NOT_FOUND).send({ message: "Not Found" });
       }
 
       const [_, handler] = foundHandler;
@@ -91,7 +91,7 @@ export class SocketEventDispatcherService implements OnModuleInit {
       await new Promise<void>((resolve) => {
         req.session.save((err) => {
           if (err) {
-            this.logger.error('WS : Unable to update session!', err);
+            this.logger.error("WS : Unable to update session!", err);
           }
           resolve();
         });
@@ -99,7 +99,7 @@ export class SocketEventDispatcherService implements OnModuleInit {
 
       return response;
     } catch (error) {
-      this.logger.error('Error while handling Web-socket event', error);
+      this.logger.error("Error while handling Web-socket event", error);
       return this.handleException(error, req, res);
     } finally {
       release();
@@ -148,7 +148,7 @@ export class SocketEventDispatcherService implements OnModuleInit {
     { socket }: SocketRequest,
     res: SocketResponse,
   ) {
-    this.eventEmitter.emit('hook:websocket:error', socket, error);
+    this.eventEmitter.emit("hook:websocket:error", socket, error);
 
     if (error instanceof HttpException) {
       // Handle known HTTP exceptions
@@ -157,7 +157,7 @@ export class SocketEventDispatcherService implements OnModuleInit {
       // Handle generic errors
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .send({ message: 'Internal Server Error' });
+        .send({ message: "Internal Server Error" });
     }
   }
 }

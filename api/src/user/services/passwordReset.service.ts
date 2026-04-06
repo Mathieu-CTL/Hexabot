@@ -13,19 +13,19 @@ import {
   InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
-} from '@nestjs/common';
-import { JwtService, JwtSignOptions } from '@nestjs/jwt';
-import { compareSync } from 'bcryptjs';
+} from "@nestjs/common";
+import { JwtService, JwtSignOptions } from "@nestjs/jwt";
+import { compareSync } from "bcryptjs";
 
-import { config } from '@/config';
-import { I18nService } from '@/i18n/services/i18n.service';
-import { LanguageService } from '@/i18n/services/language.service';
-import { LoggerService } from '@/logger/logger.service';
-import { MailerService } from '@/mailer/mailer.service';
+import { config } from "@/config";
+import { I18nService } from "@/i18n/services/i18n.service";
+import { LanguageService } from "@/i18n/services/language.service";
+import { LoggerService } from "@/logger/logger.service";
+import { MailerService } from "@/mailer/mailer.service";
 
-import { UserRequestResetDto, UserResetPasswordDto } from '../dto/user.dto';
+import { UserRequestResetDto, UserResetPasswordDto } from "../dto/user.dto";
 
-import { UserService } from './user.service';
+import { UserService } from "./user.service";
 
 @Injectable()
 export class PasswordResetService {
@@ -41,7 +41,7 @@ export class PasswordResetService {
   public readonly jwtSignOptions: JwtSignOptions = {
     secret: config.password_reset.jwtOptions.secret,
     expiresIn: config.password_reset.jwtOptions.expiresIn,
-    encoding: 'utf-8',
+    encoding: "utf-8",
   };
 
   /**
@@ -54,7 +54,7 @@ export class PasswordResetService {
     // verify if the user exists
     const user = await this.userService.findOne({ email: dto.email });
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException("User not found");
     }
     const jwt = await this.sign({ ...dto });
 
@@ -62,7 +62,7 @@ export class PasswordResetService {
       const defaultLanguage = await this.languageService.getDefaultLanguage();
       await this.mailerService.sendMail({
         to: dto.email,
-        template: 'password_reset.mjml',
+        template: "password_reset.mjml",
         context: {
           appName: config.parameters.appName,
           appUrl: config.uiBaseUrl,
@@ -70,16 +70,16 @@ export class PasswordResetService {
           first_name: user.first_name,
           t: (key: string) => this.i18n.t(key, { lang: defaultLanguage.code }),
         },
-        subject: this.i18n.t('password_reset_subject'),
+        subject: this.i18n.t("password_reset_subject"),
       });
     } catch (e) {
       this.logger.error(
-        'Could not send email',
+        "Could not send email",
         e.message,
         e.stack,
-        'PasswordResetService',
+        "PasswordResetService",
       );
-      throw new InternalServerErrorException('Could not send email');
+      throw new InternalServerErrorException("Could not send email");
     }
 
     // TODO: hash the token before saving it
@@ -95,8 +95,8 @@ export class PasswordResetService {
   async reset(dto: UserResetPasswordDto, token: string): Promise<void> {
     // check validity of token fist
     const payload = await this.verify(token).catch((error) => {
-      if (error.name === 'TokenExpiredError')
-        throw new UnauthorizedException('Token expired');
+      if (error.name === "TokenExpiredError")
+        throw new UnauthorizedException("Token expired");
       else throw new BadRequestException(error.name, error.message);
     });
 
@@ -104,7 +104,7 @@ export class PasswordResetService {
     const user = await this.userService.findOne({ email: payload.email });
 
     if (!user?.resetToken || compareSync(user.resetToken, token)) {
-      throw new UnauthorizedException('Invalid token');
+      throw new UnauthorizedException("Invalid token");
     }
 
     // invalidate the token and update password

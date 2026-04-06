@@ -6,7 +6,7 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
   IsArray,
   IsBoolean,
@@ -17,16 +17,16 @@ import {
   IsString,
   Matches,
   Validate,
-} from 'class-validator';
+} from "class-validator";
 
-import { DtoConfig } from '@/utils/types/dto.types';
+import { DtoConfig } from "@/utils/types/dto.types";
 
-import { Lookup, LookupStrategy } from '../schemas/types';
+import { Lookup, LookupStrategy } from "../schemas/types";
 
 export class NlpEntityCreateDto {
-  @ApiProperty({ description: 'Name of the nlp entity', type: String })
+  @ApiProperty({ description: "Name of the nlp entity", type: String })
   @Matches(/^[a-zA-Z0-9_]+$/, {
-    message: 'Only alphanumeric characters and underscores are allowed.',
+    message: "Only alphanumeric characters and underscores are allowed.",
   })
   @IsNotEmpty()
   name: string;
@@ -45,27 +45,27 @@ export class NlpEntityCreateDto {
   @IsOptional()
   doc?: string;
 
-  @ApiPropertyOptional({ description: 'Nlp entity is builtin', type: Boolean })
+  @ApiPropertyOptional({ description: "Nlp entity is builtin", type: Boolean })
   @IsBoolean()
   @IsOptional()
   builtin?: boolean;
 
   @ApiPropertyOptional({
-    description: 'Nlp entity associated weight for next block triggering',
+    description: "Nlp entity associated weight for next block triggering",
     type: Number,
   })
   @IsOptional()
   @Validate((value: number) => value > 0, {
-    message: 'Weight must be a strictly positive number',
+    message: "Weight must be a strictly positive number",
   })
   @IsNumber({ allowNaN: false, allowInfinity: false })
   weight?: number;
 }
 
 export class NlpEntityUpdateDto {
-  @ApiPropertyOptional({ description: 'Name of the nlp entity', type: String })
+  @ApiPropertyOptional({ description: "Name of the nlp entity", type: String })
   @Matches(/^[a-zA-Z0-9_]+$/, {
-    message: 'Only alphanumeric characters and underscores are allowed.',
+    message: "Only alphanumeric characters and underscores are allowed.",
   })
   @IsString()
   @IsOptional()
@@ -77,12 +77,12 @@ export class NlpEntityUpdateDto {
   foreign_id?: string;
 
   @ApiPropertyOptional({
-    description: 'Nlp entity associated weight for next block triggering',
+    description: "Nlp entity associated weight for next block triggering",
     type: Number,
   })
   @IsOptional()
   @Validate((value: number) => value > 0, {
-    message: 'Weight must be a strictly positive number',
+    message: "Weight must be a strictly positive number",
   })
   @IsNumber({ allowNaN: false, allowInfinity: false })
   weight?: number;

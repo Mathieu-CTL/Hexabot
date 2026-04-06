@@ -9,4 +9,4 @@
 /**
  * VIEW_MORE_PAYLOAD is declared, but never used.
  */
-export const VIEW_MORE_PAYLOAD = 'VIEW_MORE';
+export const VIEW_MORE_PAYLOAD = "VIEW_MORE";

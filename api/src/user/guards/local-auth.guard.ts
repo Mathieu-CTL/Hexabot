@@ -6,11 +6,11 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ExecutionContext, Injectable } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { ExecutionContext, Injectable } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
 
 @Injectable()
-export class LocalAuthGuard extends AuthGuard('local') {
+export class LocalAuthGuard extends AuthGuard("local") {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const result = (await super.canActivate(context)) as boolean;
     await super.logIn(context.switchToHttp().getRequest());

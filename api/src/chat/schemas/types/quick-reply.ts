@@ -6,16 +6,16 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { z } from 'zod';
+import { z } from "zod";
 
-import { attachmentPayloadSchema } from './attachment';
-import { PayloadType } from './button';
+import { attachmentPayloadSchema } from "./attachment";
+import { PayloadType } from "./button";
 
 export enum QuickReplyType {
-  text = 'text',
-  location = 'location',
-  user_phone_number = 'user_phone_number',
-  user_email = 'user_email',
+  text = "text",
+  location = "location",
+  user_phone_number = "user_phone_number",
+  user_email = "user_email",
 }
 
 export const cordinatesSchema = z.object({
@@ -23,7 +23,7 @@ export const cordinatesSchema = z.object({
   lon: z.number(),
 });
 
-export const payloadSchema = z.discriminatedUnion('type', [
+export const payloadSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal(PayloadType.location),
     coordinates: cordinatesSchema,

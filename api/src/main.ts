@@ -6,31 +6,31 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
-import type { NestExpressApplication } from '@nestjs/platform-express';
-import bodyParser from 'body-parser';
-import moduleAlias from 'module-alias';
-import { resolveDynamicProviders } from 'nestjs-dynamic-providers';
-import passport from 'passport';
+import { ValidationPipe } from "@nestjs/common";
+import { NestFactory } from "@nestjs/core";
+import type { NestExpressApplication } from "@nestjs/platform-express";
+import bodyParser from "body-parser";
+import moduleAlias from "module-alias";
+import { resolveDynamicProviders } from "nestjs-dynamic-providers";
+import passport from "passport";
 
 moduleAlias.addAliases({
-  '@': __dirname,
+  "@": __dirname,
 });
 
-import { AppInstance } from './app.instance';
-import { HexabotModule } from './app.module';
-import { config } from './config';
-import { csrf } from './config/csrf';
-import { seedDatabase } from './seeder';
-import { SettingService } from './setting/services/setting.service';
-import { swagger } from './swagger';
-import { getSessionMiddleware } from './utils/constants/session-middleware';
-import { ObjectIdPipe } from './utils/pipes/object-id.pipe';
-import { RedisIoAdapter } from './websocket/adapters/redis-io.adapter';
+import { AppInstance } from "./app.instance";
+import { HexabotModule } from "./app.module";
+import { config } from "./config";
+import { csrf } from "./config/csrf";
+import { seedDatabase } from "./seeder";
+import { SettingService } from "./setting/services/setting.service";
+import { swagger } from "./swagger";
+import { getSessionMiddleware } from "./utils/constants/session-middleware";
+import { ObjectIdPipe } from "./utils/pipes/object-id.pipe";
+import { RedisIoAdapter } from "./websocket/adapters/redis-io.adapter";
 
 async function bootstrap() {
-  const isProduction = config.env.toLowerCase().includes('prod');
+  const isProduction = config.env.toLowerCase().includes("prod");
 
   await resolveDynamicProviders();
   const app = await NestFactory.create<NestExpressApplication>(HexabotModule, {
@@ -41,11 +41,11 @@ async function bootstrap() {
   AppInstance.setApp(app);
 
   // Disable Express "X-Powered-By" header for all environments
-  app.getHttpAdapter().getInstance().disable('x-powered-by');
+  app.getHttpAdapter().getInstance().disable("x-powered-by");
 
   const rawBodyBuffer = (req, res, buf, encoding) => {
     if (buf?.length) {
-      req.rawBody = buf.toString(encoding || 'utf8');
+      req.rawBody = buf.toString(encoding || "utf8");
     }
   };
   app.use(bodyParser.urlencoded({ verify: rawBodyBuffer, extended: true }));
@@ -71,7 +71,7 @@ async function bootstrap() {
     },
     methods: config.security.cors.methods,
     credentials: config.security.cors.allowCredentials,
-    allowedHeaders: config.security.cors.headers.split(','),
+    allowedHeaders: config.security.cors.headers.split(","),
   });
   app.useGlobalPipes(
     new ValidationPipe({
@@ -90,7 +90,7 @@ async function bootstrap() {
     app.use(csrf.csrfSynchronisedProtection);
   }
 
-  if (config.cache.type === 'redis') {
+  if (config.cache.type === "redis") {
     const redisIoAdapter = new RedisIoAdapter(app);
     await redisIoAdapter.connectToRedis();
     app.useWebSocketAdapter(redisIoAdapter);

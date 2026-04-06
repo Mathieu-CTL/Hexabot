@@ -1,27 +1,27 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2026 Hexastack. All rights reserved.
  *
  * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { BadRequestException, Injectable } from '@nestjs/common';
-import Papa from 'papaparse';
+import { BadRequestException, Injectable } from "@nestjs/common";
+import Papa from "papaparse";
 
-import { StdOutgoingListMessage } from '@/chat/schemas/types/message';
-import { ContentOptions } from '@/chat/schemas/types/options';
-import { BaseService } from '@/utils/generics/base-service';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { StdOutgoingListMessage } from "@/chat/schemas/types/message";
+import { ContentOptions } from "@/chat/schemas/types/options";
+import { BaseService } from "@/utils/generics/base-service";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
-import { ContentDto } from '../dto/content.dto';
-import { ContentRepository } from '../repositories/content.repository';
-import { ContentType } from '../schemas/content-type.schema';
+import { ContentDto } from "../dto/content.dto";
+import { ContentRepository } from "../repositories/content.repository";
+import { ContentType } from "../schemas/content-type.schema";
 import {
   Content,
   ContentFull,
   ContentPopulate,
-} from '../schemas/content.schema';
+} from "../schemas/content.schema";
 
 @Injectable()
 export class ContentService extends BaseService<
@@ -56,14 +56,14 @@ export class ContentService extends BaseService<
   async getContent(
     options: ContentOptions,
     skip: number,
-  ): Promise<Omit<StdOutgoingListMessage, 'options'>> {
+  ): Promise<Omit<StdOutgoingListMessage, "options">> {
     let query: TFilterQuery<Content> = { status: true };
     const limit = options.limit;
 
     if (options.query) {
       query = { ...query, ...options.query };
     }
-    if (typeof options.entity === 'string') {
+    if (typeof options.entity === "string") {
       query = { ...query, entity: options.entity };
     }
 
@@ -71,15 +71,15 @@ export class ContentService extends BaseService<
       const total = await this.count(query);
 
       if (total === 0) {
-        this.logger.warn('No content found', query);
-        throw new Error('No content found');
+        this.logger.warn("No content found", query);
+        throw new Error("No content found");
       }
 
       try {
         const contents = await this.find(query, {
           skip,
           limit,
-          sort: ['createdAt', 'desc'],
+          sort: ["createdAt", "desc"],
         });
         const elements = contents.map(Content.toElement);
         return {
@@ -91,11 +91,11 @@ export class ContentService extends BaseService<
           },
         };
       } catch (err) {
-        this.logger.error('Unable to retrieve content', err, query);
+        this.logger.error("Unable to retrieve content", err, query);
         throw err;
       }
     } catch (err) {
-      this.logger.error('Unable to count content', err, query);
+      this.logger.error("Unable to count content", err, query);
       throw err;
     }
   }
@@ -128,14 +128,14 @@ export class ContentService extends BaseService<
       );
       throw new BadRequestException(result.errors, {
         cause: result.errors,
-        description: 'Error while parsing CSV',
+        description: "Error while parsing CSV",
       });
     }
     if (!result.data.every((row) => row.title && row.status)) {
       throw new BadRequestException(
         'Missing required fields: "title" or "status"',
         {
-          cause: 'Invalid CSV data',
+          cause: "Invalid CSV data",
           description: 'CSV must include "title" and "status" columns',
         },
       );
@@ -145,7 +145,7 @@ export class ContentService extends BaseService<
         ...acc,
         {
           title: String(title),
-          status: status.trim().toLowerCase() === 'true',
+          status: status.trim().toLowerCase() === "true",
           entity: targetContentType,
           dynamicFields: Object.keys(rest)
             .filter((key) =>
@@ -156,11 +156,11 @@ export class ContentService extends BaseService<
       ],
       [],
     );
-    this.logger.log(`Parsed ${result.data.length} rows from CSV.`);
+    this.logger.info(`Parsed ${result.data.length} rows from CSV.`);
     try {
       return await this.createMany(contentsDto);
     } catch (err) {
-      this.logger.error('Error occurred when extracting data. ', err);
+      this.logger.error("Error occurred when extracting data. ", err);
     }
   }
 }

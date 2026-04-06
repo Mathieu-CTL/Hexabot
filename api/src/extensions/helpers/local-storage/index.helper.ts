@@ -6,37 +6,37 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import fs from 'fs';
-import os from 'os';
-import { join, normalize, resolve } from 'path';
-import { Readable, Stream } from 'stream';
+import fs from "fs";
+import os from "os";
+import { join, normalize, resolve } from "path";
+import { Readable, Stream } from "stream";
 
 import {
   Injectable,
   NotFoundException,
   OnModuleInit,
   StreamableFile,
-} from '@nestjs/common';
-import sanitizeFilename from 'sanitize-filename';
+} from "@nestjs/common";
+import sanitizeFilename from "sanitize-filename";
 
 import {
   AttachmentCreateDto,
   AttachmentMetadataDto,
-} from '@/attachment/dto/attachment.dto';
-import { Attachment } from '@/attachment/schemas/attachment.schema';
-import { AttachmentResourceRef } from '@/attachment/types';
+} from "@/attachment/dto/attachment.dto";
+import { Attachment } from "@/attachment/schemas/attachment.schema";
+import { AttachmentResourceRef } from "@/attachment/types";
 import {
   fileExists,
   generateUniqueFilename,
   getStreamableFile,
-} from '@/attachment/utilities';
-import { config } from '@/config';
-import { HelperService } from '@/helper/helper.service';
-import BaseStorageHelper from '@/helper/lib/base-storage-helper';
-import { LoggerService } from '@/logger/logger.service';
-import { SettingService } from '@/setting/services/setting.service';
+} from "@/attachment/utilities";
+import { config } from "@/config";
+import { HelperService } from "@/helper/helper.service";
+import BaseStorageHelper from "@/helper/lib/base-storage-helper";
+import { LoggerService } from "@/logger/logger.service";
+import { SettingService } from "@/setting/services/setting.service";
 
-import { LOCAL_STORAGE_HELPER_NAME } from './settings';
+import { LOCAL_STORAGE_HELPER_NAME } from "./settings";
 
 @Injectable()
 export default class LocalStorageHelper
@@ -90,8 +90,8 @@ export default class LocalStorageHelper
         const writeStream = fs.createWriteStream(filePath);
         file.pipe(writeStream);
         // @TODO: Calc size here?
-        writeStream.on('finish', resolve);
-        writeStream.on('error', reject);
+        writeStream.on("finish", resolve);
+        writeStream.on("error", reject);
       });
     } else {
       if (file.path) {
@@ -102,7 +102,7 @@ export default class LocalStorageHelper
         const normalizedTempDir = normalize(tempDir);
 
         if (!srcFilePath.startsWith(normalizedTempDir)) {
-          throw new Error('Invalid file path');
+          throw new Error("Invalid file path");
         }
 
         await fs.promises.copyFile(srcFilePath, filePath);
@@ -112,7 +112,7 @@ export default class LocalStorageHelper
       }
     }
 
-    const location = filePath.replace(rootDir, '');
+    const location = filePath.replace(rootDir, "");
     return {
       ...metadata,
       location,
@@ -130,7 +130,7 @@ export default class LocalStorageHelper
     const path = resolve(join(rootDir, attachment.location));
 
     if (!fileExists(path)) {
-      throw new NotFoundException('No file was found');
+      throw new NotFoundException("No file was found");
     }
 
     const disposition = `attachment; filename="${encodeURIComponent(
@@ -161,7 +161,7 @@ export default class LocalStorageHelper
     );
 
     if (!fileExists(path)) {
-      throw new NotFoundException('No file was found');
+      throw new NotFoundException("No file was found");
     }
 
     return await fs.promises.readFile(path); // Reads the file content as a Buffer
@@ -182,7 +182,7 @@ export default class LocalStorageHelper
     );
 
     if (!fileExists(path)) {
-      throw new NotFoundException('No file was found');
+      throw new NotFoundException("No file was found");
     }
 
     return fs.createReadStream(path);

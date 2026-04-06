@@ -6,39 +6,39 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-import { PermissionCreateDto } from '@/user/dto/permission.dto';
-import { PermissionModel } from '@/user/schemas/permission.schema';
-import { Action } from '@/user/types/action.type';
+import { PermissionCreateDto } from "@/user/dto/permission.dto";
+import { PermissionModel } from "@/user/schemas/permission.schema";
+import { Action } from "@/user/types/action.type";
 
-import { installModelFixtures } from './model';
-import { installUserFixtures } from './user';
+import { installModelFixtures } from "./model";
+import { installUserFixtures } from "./user";
 
 export const permissionFixtures: PermissionCreateDto[] = [
   {
-    model: '0',
+    model: "0",
     action: Action.CREATE,
-    role: '0',
-    relation: 'role',
+    role: "0",
+    relation: "role",
   },
   {
-    model: '0',
+    model: "0",
     action: Action.DELETE,
-    role: '0',
-    relation: 'role',
+    role: "0",
+    relation: "role",
   },
   {
-    model: '0',
+    model: "0",
     action: Action.READ,
-    role: '1',
-    relation: 'role',
+    role: "1",
+    relation: "role",
   },
   {
-    model: '0',
+    model: "0",
     action: Action.UPDATE,
-    role: '0',
-    relation: 'role',
+    role: "0",
+    relation: "role",
   },
 ];
 

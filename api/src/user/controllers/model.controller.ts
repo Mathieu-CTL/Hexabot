@@ -6,21 +6,21 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query } from "@nestjs/common";
 
-import { BaseController } from '@/utils/generics/base-controller';
-import { PopulatePipe } from '@/utils/pipes/populate.pipe';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { BaseController } from "@/utils/generics/base-controller";
+import { PopulatePipe } from "@/utils/pipes/populate.pipe";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
 import {
   Model,
   ModelFull,
   ModelPopulate,
   ModelStub,
-} from '../schemas/model.schema';
-import { ModelService } from '../services/model.service';
+} from "../schemas/model.schema";
+import { ModelService } from "../services/model.service";
 
-@Controller('model')
+@Controller("model")
 export class ModelController extends BaseController<
   Model,
   ModelStub,

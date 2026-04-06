@@ -19,23 +19,23 @@ import {
   Post,
   Query,
   Req,
-} from '@nestjs/common';
-import { Request } from 'express';
+} from "@nestjs/common";
+import { Request } from "express";
 
-import { BaseController } from '@/utils/generics/base-controller';
-import { PageQueryDto } from '@/utils/pagination/pagination-query.dto';
-import { PageQueryPipe } from '@/utils/pagination/pagination-query.pipe';
-import { PopulatePipe } from '@/utils/pipes/populate.pipe';
-import { SearchFilterPipe } from '@/utils/pipes/search-filter.pipe';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { BaseController } from "@/utils/generics/base-controller";
+import { PageQueryDto } from "@/utils/pagination/pagination-query.dto";
+import { PageQueryPipe } from "@/utils/pagination/pagination-query.pipe";
+import { PopulatePipe } from "@/utils/pipes/populate.pipe";
+import { SearchFilterPipe } from "@/utils/pipes/search-filter.pipe";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
-import { RoleCreateDto, RoleUpdateDto } from '../dto/role.dto';
-import { Role, RoleFull, RolePopulate, RoleStub } from '../schemas/role.schema';
-import { User } from '../schemas/user.schema';
-import { RoleService } from '../services/role.service';
-import { UserService } from '../services/user.service';
+import { RoleCreateDto, RoleUpdateDto } from "../dto/role.dto";
+import { Role, RoleFull, RolePopulate, RoleStub } from "../schemas/role.schema";
+import { User } from "../schemas/user.schema";
+import { RoleService } from "../services/role.service";
+import { UserService } from "../services/user.service";
 
-@Controller('role')
+@Controller("role")
 export class RoleController extends BaseController<
   Role,
   RoleStub,
@@ -59,7 +59,7 @@ export class RoleController extends BaseController<
     @Query(PageQueryPipe) pageQuery: PageQueryDto<Role>,
     @Query(PopulatePipe)
     populate: string[],
-    @Query(new SearchFilterPipe<Role>({ allowedFields: ['name'] }))
+    @Query(new SearchFilterPipe<Role>({ allowedFields: ["name"] }))
     filters: TFilterQuery<Role>,
   ) {
     return this.canPopulate(populate)
@@ -72,9 +72,9 @@ export class RoleController extends BaseController<
    *
    * @returns A promise that resolves to the count of filtered roles.
    */
-  @Get('count')
+  @Get("count")
   async filterCount(
-    @Query(new SearchFilterPipe<Role>({ allowedFields: ['name'] }))
+    @Query(new SearchFilterPipe<Role>({ allowedFields: ["name"] }))
     filters?: TFilterQuery<Role>,
   ) {
     return await this.count(filters);
@@ -87,9 +87,9 @@ export class RoleController extends BaseController<
    *
    * @returns A promise that resolves to the role object.
    */
-  @Get(':id')
+  @Get(":id")
   async findOne(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Query(PopulatePipe)
     populate: string[],
   ) {
@@ -126,8 +126,8 @@ export class RoleController extends BaseController<
    * @returns A promise that resolves to the updated role.
    */
 
-  @Patch(':id')
-  async updateOne(@Param('id') id: string, @Body() roleUpdate: RoleUpdateDto) {
+  @Patch(":id")
+  async updateOne(@Param("id") id: string, @Body() roleUpdate: RoleUpdateDto) {
     return await this.roleService.updateOne(id, roleUpdate);
   }
 
@@ -139,9 +139,9 @@ export class RoleController extends BaseController<
    * @returns A promise that resolves to the result of the deletion.
    */
 
-  @Delete(':id')
+  @Delete(":id")
   @HttpCode(204)
-  async deleteOne(@Param('id') id: string, @Req() req: Request) {
+  async deleteOne(@Param("id") id: string, @Req() req: Request) {
     const userRoles = (req.user as User).roles;
 
     const associatedUser = await this.userService.findOne({
@@ -150,7 +150,7 @@ export class RoleController extends BaseController<
     if (userRoles.includes(id)) {
       throw new ForbiddenException("Your account's role can't be deleted");
     } else if (associatedUser) {
-      throw new ForbiddenException('Role is associated with other users');
+      throw new ForbiddenException("Role is associated with other users");
     } else {
       const result = await this.roleService.deleteOne(id);
       if (result.deletedCount === 0) {

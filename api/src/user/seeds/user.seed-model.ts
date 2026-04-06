@@ -6,16 +6,16 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { UserCreateDto } from '../dto/user.dto';
+import { UserCreateDto } from "../dto/user.dto";
 
 export const userModels = (roles: string[]): UserCreateDto[] => {
   return [
     {
-      username: 'admin',
-      first_name: 'admin',
-      last_name: 'admin',
-      email: 'admin@admin.admin',
-      password: 'adminadmin',
+      username: "admin",
+      first_name: "admin",
+      last_name: "admin",
+      email: "admin@admin.admin",
+      password: "adminadmin",
       roles,
       avatar: null,
     },

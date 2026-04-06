@@ -14,7 +14,7 @@ run_checks() {
         npm run typecheck
         npx lint-staged
         if [ "$path" = "api" ]; then
-            npm run test:half # Run API specific tests
+            npm run test:ci # Run API specific tests sequentially
         fi
         cd - > /dev/null
     else

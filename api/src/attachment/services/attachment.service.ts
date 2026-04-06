@@ -6,17 +6,17 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Readable, Stream } from 'stream';
+import { Readable, Stream } from "stream";
 
-import { Injectable, StreamableFile } from '@nestjs/common';
+import { Injectable, StreamableFile } from "@nestjs/common";
 
-import { HelperService } from '@/helper/helper.service';
-import { HelperType } from '@/helper/types';
-import { BaseService } from '@/utils/generics/base-service';
+import { HelperService } from "@/helper/helper.service";
+import { HelperType } from "@/helper/types";
+import { BaseService } from "@/utils/generics/base-service";
 
-import { AttachmentMetadataDto } from '../dto/attachment.dto';
-import { AttachmentRepository } from '../repositories/attachment.repository';
-import { Attachment } from '../schemas/attachment.schema';
+import { AttachmentMetadataDto } from "../dto/attachment.dto";
+import { AttachmentRepository } from "../repositories/attachment.repository";
+import { Attachment } from "../schemas/attachment.schema";
 
 @Injectable()
 export class AttachmentService extends BaseService<Attachment> {

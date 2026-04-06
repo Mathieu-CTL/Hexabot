@@ -6,17 +6,17 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { createReadStream, existsSync } from 'fs';
-import { extname } from 'path';
-import { Readable } from 'stream';
+import { createReadStream, existsSync } from "fs";
+import { extname } from "path";
+import { Readable } from "stream";
 
-import { Logger, StreamableFile } from '@nestjs/common';
-import { StreamableFileOptions } from '@nestjs/common/file-stream/interfaces/streamable-options.interface';
-import { v4 as uuidv4 } from 'uuid';
+import { Logger, StreamableFile } from "@nestjs/common";
+import { StreamableFileOptions } from "@nestjs/common/file-stream/interfaces/streamable-options.interface";
+import { v4 as uuidv4 } from "uuid";
 
-import { config } from '@/config';
+import { config } from "@/config";
 
-import { AttachmentResourceRef } from '../types';
+import { AttachmentResourceRef } from "../types";
 
 export const MIME_REGEX = /^[a-z-]+\/[0-9a-z\-.]+$/gm;
 
@@ -37,7 +37,7 @@ export const isMime = (type: string): boolean => {
  */
 export const fileExists = (filePath: string): boolean => {
   // bypass test env
-  if (config.env === 'test') {
+  if (config.env === "test") {
     return true;
   }
   try {
@@ -62,8 +62,8 @@ export const getStreamableFile = ({
   options?: StreamableFileOptions;
 }) => {
   // bypass test env
-  if (config.env === 'test') {
-    return new StreamableFile(Readable.from(''), options);
+  if (config.env === "test") {
+    return new StreamableFile(Readable.from(""), options);
   }
 
   const readable = createReadStream(path);

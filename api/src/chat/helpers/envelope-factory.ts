@@ -6,14 +6,14 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import Handlebars from 'handlebars';
+import Handlebars from "handlebars";
 
-import { I18nService } from '@/i18n/services/i18n.service';
-import { getRandomElement } from '@/utils/helpers/safeRandom';
+import { I18nService } from "@/i18n/services/i18n.service";
+import { getRandomElement } from "@/utils/helpers/safeRandom";
 
-import { AttachmentPayload } from '../schemas/types/attachment';
-import { Button, ButtonType } from '../schemas/types/button';
-import { Context, TemplateContext } from '../schemas/types/context';
+import { AttachmentPayload } from "../schemas/types/attachment";
+import { Button, ButtonType } from "../schemas/types/button";
+import { Context, TemplateContext } from "../schemas/types/context";
 import {
   ContentElement,
   ContentPagination,
@@ -24,11 +24,11 @@ import {
   StdOutgoingQuickRepliesEnvelope,
   StdOutgoingSystemEnvelope,
   StdOutgoingTextEnvelope,
-} from '../schemas/types/message';
-import { ContentOptions } from '../schemas/types/options';
-import { StdQuickReply } from '../schemas/types/quick-reply';
+} from "../schemas/types/message";
+import { ContentOptions } from "../schemas/types/options";
+import { StdQuickReply } from "../schemas/types/quick-reply";
 
-import { getEnvelopeBuilder } from './envelope-builder';
+import { getEnvelopeBuilder } from "./envelope-builder";
 
 export class EnvelopeFactory {
   constructor(
@@ -51,7 +51,7 @@ export class EnvelopeFactory {
     }
 
     // Otherwise, replace single curly braces { } with double curly braces {{ }}.
-    return str.replaceAll(/{([^}]+)}/g, '{{$1}}');
+    return str.replaceAll(/{([^}]+)}/g, "{{$1}}");
   }
 
   /**

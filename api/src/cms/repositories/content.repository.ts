@@ -6,8 +6,8 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
 import {
   Document,
   HydratedDocument,
@@ -15,18 +15,18 @@ import {
   Query,
   UpdateQuery,
   UpdateWithAggregationPipeline,
-} from 'mongoose';
+} from "mongoose";
 
-import { BaseRepository } from '@/utils/generics/base-repository';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { BaseRepository } from "@/utils/generics/base-repository";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
-import { ContentDto } from '../dto/content.dto';
+import { ContentDto } from "../dto/content.dto";
 import {
   Content,
   CONTENT_POPULATE,
   ContentFull,
   ContentPopulate,
-} from '../schemas/content.schema';
+} from "../schemas/content.schema";
 
 @Injectable()
 export class ContentRepository extends BaseRepository<
@@ -46,7 +46,7 @@ export class ContentRepository extends BaseRepository<
    * @param doc - The document that is about to be created.
    */
   async preCreate(_doc: HydratedDocument<Content>) {
-    _doc.set('rag', this.stringify(_doc.dynamicFields));
+    _doc.set("rag", this.stringify(_doc.dynamicFields));
   }
 
   /**
@@ -63,15 +63,15 @@ export class ContentRepository extends BaseRepository<
       Document<Content, any, any>,
       unknown,
       Content,
-      'findOneAndUpdate'
+      "findOneAndUpdate"
     >,
     _criteria: TFilterQuery<Content>,
     _updates:
       | UpdateWithAggregationPipeline
       | UpdateQuery<Document<Content, any, any>>,
   ): Promise<void> {
-    if ('dynamicFields' in _updates['$set']) {
-      _query.set('rag', this.stringify(_updates['$set']['dynamicFields']));
+    if ("dynamicFields" in _updates["$set"]) {
+      _query.set("rag", this.stringify(_updates["$set"]["dynamicFields"]));
     }
   }
 
@@ -86,7 +86,7 @@ export class ContentRepository extends BaseRepository<
   private stringify(obj: Record<string, any>): string {
     return Object.entries(obj).reduce(
       (prev, cur) => `${prev}\n${cur[0]} : ${cur[1]}`,
-      '',
+      "",
     );
   }
 

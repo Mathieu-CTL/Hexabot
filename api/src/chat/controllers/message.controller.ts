@@ -16,27 +16,27 @@ import {
   Post,
   Query,
   Req,
-} from '@nestjs/common';
-import { Request } from 'express';
+} from "@nestjs/common";
+import { Request } from "express";
 
-import { ChannelService } from '@/channel/channel.service';
-import { GenericEventWrapper } from '@/channel/lib/EventWrapper';
-import { BaseController } from '@/utils/generics/base-controller';
-import { BaseSchema } from '@/utils/generics/base-schema';
-import { PageQueryDto } from '@/utils/pagination/pagination-query.dto';
-import { PageQueryPipe } from '@/utils/pagination/pagination-query.pipe';
-import { PopulatePipe } from '@/utils/pipes/populate.pipe';
-import { SearchFilterPipe } from '@/utils/pipes/search-filter.pipe';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { ChannelService } from "@/channel/channel.service";
+import { GenericEventWrapper } from "@/channel/lib/EventWrapper";
+import { BaseController } from "@/utils/generics/base-controller";
+import { BaseSchema } from "@/utils/generics/base-schema";
+import { PageQueryDto } from "@/utils/pagination/pagination-query.dto";
+import { PageQueryPipe } from "@/utils/pagination/pagination-query.pipe";
+import { PopulatePipe } from "@/utils/pipes/populate.pipe";
+import { SearchFilterPipe } from "@/utils/pipes/search-filter.pipe";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
-import { MessageCreateDto } from '../dto/message.dto';
+import { MessageCreateDto } from "../dto/message.dto";
 import {
   Message,
   MessageFull,
   MessagePopulate,
   MessageStub,
-} from '../schemas/message.schema';
-import { Subscriber } from '../schemas/subscriber.schema';
+} from "../schemas/message.schema";
+import { Subscriber } from "../schemas/subscriber.schema";
 import {
   AnyMessage,
   OutgoingMessage,
@@ -44,11 +44,11 @@ import {
   StdOutgoingEnvelope,
   StdOutgoingMessage,
   StdOutgoingTextMessage,
-} from '../schemas/types/message';
-import { MessageService } from '../services/message.service';
-import { SubscriberService } from '../services/subscriber.service';
+} from "../schemas/types/message";
+import { MessageService } from "../services/message.service";
+import { SubscriberService } from "../services/subscriber.service";
 
-@Controller('message')
+@Controller("message")
 export class MessageController extends BaseController<
   AnyMessage,
   MessageStub,
@@ -69,7 +69,7 @@ export class MessageController extends BaseController<
     @Query(PopulatePipe)
     populate: string[],
     @Query(
-      new SearchFilterPipe<Message>({ allowedFields: ['recipient', 'sender'] }),
+      new SearchFilterPipe<Message>({ allowedFields: ["recipient", "sender"] }),
     )
     filters: TFilterQuery<Message>,
   ) {
@@ -82,11 +82,11 @@ export class MessageController extends BaseController<
    * Counts the filtered number of messages.
    * @returns A promise that resolves to an object representing the filtered number of messages.
    */
-  @Get('count')
+  @Get("count")
   async filterCount(
     @Query(
       new SearchFilterPipe<Message>({
-        allowedFields: ['recipient', 'sender'],
+        allowedFields: ["recipient", "sender"],
       }),
     )
     filters?: TFilterQuery<Message>,
@@ -94,9 +94,9 @@ export class MessageController extends BaseController<
     return await this.count(filters);
   }
 
-  @Get(':id')
+  @Get(":id")
   async findOne(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Query(PopulatePipe)
     populate: string[],
   ) {
@@ -114,7 +114,7 @@ export class MessageController extends BaseController<
   async create(@Body() messageDto: MessageCreateDto, @Req() req: Request) {
     //TODO : Investigate if recipient and inReplyTo should be updated to required in dto
     if (!messageDto.recipient || !messageDto.inReplyTo) {
-      throw new BadRequestException('MessageController send : invalid params');
+      throw new BadRequestException("MessageController send : invalid params");
     }
 
     const subscriber = await this.subscriberService.findOne(
@@ -159,14 +159,14 @@ export class MessageController extends BaseController<
         read: false,
         delivery: false,
       };
-      this.eventEmitter.emit('hook:chatbot:sent', sentMessage);
+      this.eventEmitter.emit("hook:chatbot:sent", sentMessage);
       return {
         success: true,
       };
     } catch (err) {
-      this.logger.debug('Unable to send message', err);
+      this.logger.debug("Unable to send message", err);
       throw new BadRequestException(
-        'MessageController send : unable to send message',
+        "MessageController send : unable to send message",
       );
     }
   }

@@ -6,23 +6,23 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ConflictException, Inject } from '@nestjs/common';
-import { ClassTransformOptions } from 'class-transformer';
-import { MongoError } from 'mongodb';
+import { ConflictException, Inject } from "@nestjs/common";
+import { ClassTransformOptions } from "class-transformer";
+import { MongoError } from "mongodb";
 
-import { LoggerService } from '@/logger/logger.service';
+import { LoggerService } from "@/logger/logger.service";
 import {
   TFilterQuery,
   TFlattenOption,
   TProjectionType,
   TQueryOptions,
-} from '@/utils/types/filter.types';
+} from "@/utils/types/filter.types";
 
-import { PageQueryDto, QuerySortDto } from '../pagination/pagination-query.dto';
-import { DtoAction, DtoConfig, DtoInfer } from '../types/dto.types';
+import { PageQueryDto, QuerySortDto } from "../pagination/pagination-query.dto";
+import { DtoAction, DtoConfig, DtoInfer } from "../types/dto.types";
 
-import { BaseRepository } from './base-repository';
-import { BaseSchema } from './base-schema';
+import { BaseRepository } from "./base-repository";
+import { BaseSchema } from "./base-schema";
 
 export abstract class BaseService<
   T extends BaseSchema,
@@ -165,7 +165,7 @@ export abstract class BaseService<
     } catch (error) {
       if (error instanceof MongoError && error.code === 11000) {
         throw new ConflictException(
-          'Duplicate key error: element already exists',
+          "Duplicate key error: element already exists",
         );
       }
       throw error;
@@ -199,7 +199,7 @@ export abstract class BaseService<
     } catch (error) {
       if (error instanceof MongoError && error.code === 11000) {
         throw new ConflictException(
-          'Duplicate key error: element already exists',
+          "Duplicate key error: element already exists",
         );
       }
       throw error;

@@ -1,30 +1,30 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2026 Hexastack. All rights reserved.
  *
  * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Request, Response } from "express";
 
-import { SubscriberService } from '@/chat/services/subscriber.service';
-import { CONSOLE_CHANNEL_NAME } from '@/extensions/channels/console/settings';
-import { WEB_CHANNEL_NAME } from '@/extensions/channels/web/settings';
-import { LoggerService } from '@/logger/logger.service';
-import { getSessionStore } from '@/utils/constants/session-store';
+import { SubscriberService } from "@/chat/services/subscriber.service";
+import { CONSOLE_CHANNEL_NAME } from "@/extensions/channels/console/settings";
+import { WEB_CHANNEL_NAME } from "@/extensions/channels/web/settings";
+import { LoggerService } from "@/logger/logger.service";
+import { getSessionStore } from "@/utils/constants/session-store";
 import {
   SocketGet,
   SocketPost,
-} from '@/websocket/decorators/socket-method.decorator';
-import { SocketReq } from '@/websocket/decorators/socket-req.decorator';
-import { SocketRes } from '@/websocket/decorators/socket-res.decorator';
-import { SocketRequest } from '@/websocket/utils/socket-request';
-import { SocketResponse } from '@/websocket/utils/socket-response';
+} from "@/websocket/decorators/socket-method.decorator";
+import { SocketReq } from "@/websocket/decorators/socket-req.decorator";
+import { SocketRes } from "@/websocket/decorators/socket-res.decorator";
+import { SocketRequest } from "@/websocket/utils/socket-request";
+import { SocketResponse } from "@/websocket/utils/socket-response";
 
-import ChannelHandler from './lib/Handler';
-import { ChannelName } from './types';
+import ChannelHandler from "./lib/Handler";
+import { ChannelName } from "./types";
 
 @Injectable()
 export class ChannelService {
@@ -124,7 +124,7 @@ export class ChannelService {
     @SocketReq() req: SocketRequest,
     @SocketRes() res: SocketResponse,
   ) {
-    this.logger.log('Channel notification (Web Socket) : ', req.method);
+    this.logger.info("Channel notification (Web Socket) : ", req.method);
     const handler = this.getChannelHandler(WEB_CHANNEL_NAME);
     return await handler.handle(req, res);
   }
@@ -142,8 +142,8 @@ export class ChannelService {
     @SocketReq() req: SocketRequest,
     @SocketRes() res: SocketResponse,
   ) {
-    this.logger.log(
-      'Channel notification (Admin Chat Console Socket) : ',
+    this.logger.info(
+      "Channel notification (Admin Chat Console Socket) : ",
       req.method,
     );
 
@@ -152,7 +152,7 @@ export class ChannelService {
         req.socket.client.conn.close();
       }, 300);
       throw new UnauthorizedException(
-        'Only authenticated users are allowed to use this channel',
+        "Only authenticated users are allowed to use this channel",
       );
     }
 
@@ -164,12 +164,12 @@ export class ChannelService {
         },
         {
           foreign_id: req.session.passport.user.id,
-          first_name: req.session.passport.user.first_name || 'Anonymous',
-          last_name: req.session.passport.user.last_name || 'Anonymous',
-          locale: '',
-          language: '',
-          gender: '',
-          country: '',
+          first_name: req.session.passport.user.first_name || "Anonymous",
+          last_name: req.session.passport.user.last_name || "Anonymous",
+          locale: "",
+          language: "",
+          gender: "",
+          country: "",
           labels: [],
           channel: {
             name: CONSOLE_CHANNEL_NAME,
@@ -189,7 +189,7 @@ export class ChannelService {
       // @TODO: temporary fix until it's fixed properly: https://github.com/Hexastack/Hexabot/issues/578
       getSessionStore().set(req.session.id, req.session, (err) => {
         if (err) {
-          this.logger.warn('Unable to store WS Console session', err);
+          this.logger.warn("Unable to store WS Console session", err);
         }
       });
     }

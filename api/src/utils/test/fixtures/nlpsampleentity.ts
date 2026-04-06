@@ -6,39 +6,39 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-import { NlpSampleEntityCreateDto } from '@/nlp/dto/nlp-sample-entity.dto';
-import { NlpSampleEntityModel } from '@/nlp/schemas/nlp-sample-entity.schema';
+import { NlpSampleEntityCreateDto } from "@/nlp/dto/nlp-sample-entity.dto";
+import { NlpSampleEntityModel } from "@/nlp/schemas/nlp-sample-entity.schema";
 
-import { installNlpSampleFixtures } from './nlpsample';
-import { installNlpValueFixtures } from './nlpvalue';
+import { installNlpSampleFixtures } from "./nlpsample";
+import { installNlpValueFixtures } from "./nlpvalue";
 
 export const nlpSampleEntityFixtures: NlpSampleEntityCreateDto[] = [
   {
-    sample: '0',
-    entity: '0',
-    value: '0',
+    sample: "0",
+    entity: "0",
+    value: "0",
   },
   {
-    sample: '1',
-    entity: '0',
-    value: '1',
+    sample: "1",
+    entity: "0",
+    value: "1",
   },
   {
-    sample: '2',
-    entity: '0',
-    value: '3',
+    sample: "2",
+    entity: "0",
+    value: "3",
   },
   {
-    sample: '3',
-    entity: '0',
-    value: '3',
+    sample: "3",
+    entity: "0",
+    value: "3",
   },
   {
-    sample: '3',
-    entity: '1',
-    value: '4',
+    sample: "3",
+    entity: "1",
+    value: "4",
   },
 ];
 

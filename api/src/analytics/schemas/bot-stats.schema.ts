@@ -6,23 +6,23 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ModelDefinition, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
-import { BaseSchema } from '@/utils/generics/base-schema';
-import { LifecycleHookManager } from '@/utils/generics/lifecycle-hook-manager';
-import { THydratedDocument } from '@/utils/types/filter.types';
+import { BaseSchema } from "@/utils/generics/base-schema";
+import { LifecycleHookManager } from "@/utils/generics/lifecycle-hook-manager";
+import { THydratedDocument } from "@/utils/types/filter.types";
 
 export enum BotStatsType {
-  outgoing = 'outgoing',
-  new_users = 'new_users',
-  all_messages = 'all_messages',
-  incoming = 'incoming',
-  existing_conversations = 'existing_conversations',
-  popular = 'popular',
-  new_conversations = 'new_conversations',
-  returning_users = 'returning_users',
-  retention = 'retention',
-  echo = 'echo',
+  outgoing = "outgoing",
+  new_users = "new_users",
+  all_messages = "all_messages",
+  incoming = "incoming",
+  existing_conversations = "existing_conversations",
+  popular = "popular",
+  new_conversations = "new_conversations",
+  returning_users = "returning_users",
+  retention = "retention",
+  echo = "echo",
 }
 
 export type ToLinesType = {

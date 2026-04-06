@@ -6,20 +6,20 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Transform, Type } from 'class-transformer';
-import { Schema as MongooseSchema } from 'mongoose';
+import { ModelDefinition, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Transform, Type } from "class-transformer";
+import { Schema as MongooseSchema } from "mongoose";
 
-import { BaseSchema } from '@/utils/generics/base-schema';
-import { LifecycleHookManager } from '@/utils/generics/lifecycle-hook-manager';
+import { BaseSchema } from "@/utils/generics/base-schema";
+import { LifecycleHookManager } from "@/utils/generics/lifecycle-hook-manager";
 import {
   TFilterPopulateFields,
   THydratedDocument,
-} from '@/utils/types/filter.types';
-import { TStubOrFull } from '@/utils/types/format.types';
+} from "@/utils/types/filter.types";
+import { TStubOrFull } from "@/utils/types/format.types";
 
-import { NlpEntity, NlpEntityFull } from './nlp-entity.schema';
-import { NlpMetadata, NlpValueMap } from './types';
+import { NlpEntity, NlpEntityFull } from "./nlp-entity.schema";
+import { NlpMetadata, NlpValueMap } from "./types";
 
 @Schema({ timestamps: true, minimize: false })
 export class NlpValueStub extends BaseSchema {
@@ -50,7 +50,7 @@ export class NlpValueStub extends BaseSchema {
   /**
    * Description of the entity's value purpose.
    */
-  @Prop({ type: String, default: '' })
+  @Prop({ type: String, default: "" })
   doc?: string;
 
   /**
@@ -64,7 +64,7 @@ export class NlpValueStub extends BaseSchema {
    */
   @Prop({
     type: MongooseSchema.Types.ObjectId,
-    ref: 'NlpEntity',
+    ref: "NlpEntity",
     required: true,
   })
   entity: unknown;
@@ -129,7 +129,7 @@ export type NlpValuePopulate = keyof TFilterPopulateFields<
   NlpValueStub
 >;
 
-export const NLP_VALUE_POPULATE: NlpValuePopulate[] = ['entity'];
+export const NLP_VALUE_POPULATE: NlpValuePopulate[] = ["entity"];
 
 export type TNlpValueCount<T> = TStubOrFull<
   T,

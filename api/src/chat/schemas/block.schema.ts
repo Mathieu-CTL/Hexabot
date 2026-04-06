@@ -6,26 +6,26 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Exclude, Expose, Transform, Type } from 'class-transformer';
-import { Schema as MongooseSchema } from 'mongoose';
-import { z } from 'zod';
+import { ModelDefinition, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Exclude, Expose, Transform, Type } from "class-transformer";
+import { Schema as MongooseSchema } from "mongoose";
+import { z } from "zod";
 
-import { BaseSchema } from '@/utils/generics/base-schema';
-import { LifecycleHookManager } from '@/utils/generics/lifecycle-hook-manager';
-import { buildZodSchemaValidator } from '@/utils/helpers/zod-validation';
+import { BaseSchema } from "@/utils/generics/base-schema";
+import { LifecycleHookManager } from "@/utils/generics/lifecycle-hook-manager";
+import { buildZodSchemaValidator } from "@/utils/helpers/zod-validation";
 import {
   TFilterPopulateFields,
   THydratedDocument,
-} from '@/utils/types/filter.types';
+} from "@/utils/types/filter.types";
 
-import { Category } from './category.schema';
-import { Label } from './label.schema';
-import { CaptureVar, captureVarSchema } from './types/capture-var';
-import { BlockMessage, blockMessageObjectSchema } from './types/message';
-import { BlockOptions } from './types/options';
-import { Pattern, patternSchema } from './types/pattern';
-import { Position, positionSchema } from './types/position';
+import { Category } from "./category.schema";
+import { Label } from "./label.schema";
+import { CaptureVar, captureVarSchema } from "./types/capture-var";
+import { BlockMessage, blockMessageObjectSchema } from "./types/message";
+import { BlockOptions } from "./types/options";
+import { Pattern, patternSchema } from "./types/pattern";
+import { Position, positionSchema } from "./types/position";
 
 @Schema({ timestamps: true })
 export class BlockStub extends BaseSchema {
@@ -52,7 +52,7 @@ export class BlockStub extends BaseSchema {
   @Prop([
     {
       type: MongooseSchema.Types.ObjectId,
-      ref: 'Label',
+      ref: "Label",
       default: [],
     },
   ])
@@ -61,7 +61,7 @@ export class BlockStub extends BaseSchema {
   @Prop([
     {
       type: MongooseSchema.Types.ObjectId,
-      ref: 'Label',
+      ref: "Label",
       default: [],
     },
   ])
@@ -88,7 +88,7 @@ export class BlockStub extends BaseSchema {
   @Prop([
     {
       type: MongooseSchema.Types.ObjectId,
-      ref: 'Block',
+      ref: "Block",
       default: [],
     },
   ])
@@ -96,13 +96,13 @@ export class BlockStub extends BaseSchema {
 
   @Prop({
     type: MongooseSchema.Types.ObjectId,
-    ref: 'Block',
+    ref: "Block",
   })
   attachedBlock: unknown;
 
   @Prop({
     type: MongooseSchema.Types.ObjectId,
-    ref: 'Category',
+    ref: "Category",
   })
   category: unknown;
 
@@ -185,7 +185,7 @@ export class BlockFull extends BlockStub {
 // Full block document with text search score attached
 export class SearchRankedBlock extends Block {
   @Expose()
-  @Transform(({ value }) => (typeof value === 'number' ? value : 0))
+  @Transform(({ value }) => (typeof value === "number" ? value : 0))
   score!: number;
 }
 
@@ -196,38 +196,38 @@ export const BlockModel: ModelDefinition = LifecycleHookManager.attach({
   schema: SchemaFactory.createForClass(BlockStub),
 });
 
-BlockModel.schema.virtual('previousBlocks', {
-  ref: 'Block',
-  localField: '_id',
-  foreignField: 'nextBlocks',
+BlockModel.schema.virtual("previousBlocks", {
+  ref: "Block",
+  localField: "_id",
+  foreignField: "nextBlocks",
   justOne: false,
 });
 
-BlockModel.schema.virtual('attachedToBlock', {
-  ref: 'Block',
-  localField: '_id',
-  foreignField: 'attachedBlock',
+BlockModel.schema.virtual("attachedToBlock", {
+  ref: "Block",
+  localField: "_id",
+  foreignField: "attachedBlock",
   justOne: true,
 });
 
 BlockModel.schema.index(
   {
-    name: 'text',
-    message: 'text',
-    'message.text': 'text',
-    'options.fallback.message': 'text',
-    'message.args': 'text',
+    name: "text",
+    message: "text",
+    "message.text": "text",
+    "options.fallback.message": "text",
+    "message.args": "text",
   },
   {
     weights: {
       name: 5,
       message: 2,
-      'message.text': 2,
-      'message.args': 2,
-      'options.fallback.message': 1,
+      "message.text": 2,
+      "message.args": 2,
+      "options.fallback.message": 1,
     },
-    name: 'block_search_index',
-    default_language: 'none',
+    name: "block_search_index",
+    default_language: "none",
   },
 );
 
@@ -236,11 +236,11 @@ export default BlockModel.schema;
 export type BlockPopulate = keyof TFilterPopulateFields<Block, BlockStub>;
 
 export const BLOCK_POPULATE: BlockPopulate[] = [
-  'trigger_labels',
-  'assign_labels',
-  'nextBlocks',
-  'attachedBlock',
-  'category',
-  'previousBlocks',
-  'attachedToBlock',
+  "trigger_labels",
+  "assign_labels",
+  "nextBlocks",
+  "attachedBlock",
+  "category",
+  "previousBlocks",
+  "attachedToBlock",
 ];

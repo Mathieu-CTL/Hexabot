@@ -6,29 +6,29 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import path from 'path';
-import { Readable } from 'stream';
+import path from "path";
+import { Readable } from "stream";
 
-import { StreamableFile } from '@nestjs/common';
-import { Resvg } from '@resvg/resvg-js';
+import { StreamableFile } from "@nestjs/common";
+import { Resvg } from "@resvg/resvg-js";
 
-import { isEmpty } from './misc';
-import { generateBotAvatarSvg, generateUIAvatarSvg } from './svg';
+import { isEmpty } from "./misc";
+import { generateBotAvatarSvg, generateUIAvatarSvg } from "./svg";
 
 export const generateAvatarSvg = async (svg: string) => {
   const resvg = new Resvg(svg, {
-    fitTo: { mode: 'height', value: 50 },
+    fitTo: { mode: "height", value: 50 },
     textRendering: 1,
 
     font: {
-      fontFiles: [path.join(process.cwd(), 'assets/Roboto-Regular.ttf')],
+      fontFiles: [path.join(process.cwd(), "assets/Roboto-Regular.ttf")],
     },
   });
   const renderedSvg = resvg.render();
   const renderedImage = renderedSvg.asPng();
   const readable = Readable.from(renderedImage);
 
-  return new StreamableFile(readable, { type: 'image/png' });
+  return new StreamableFile(readable, { type: "image/png" });
 };
 
 export const generateInitialsAvatar = async (name: {
@@ -37,7 +37,7 @@ export const generateInitialsAvatar = async (name: {
 }) => {
   const svg = generateUIAvatarSvg({
     text: getInitials(name),
-    bgColor: '#DBDBDB',
+    bgColor: "#DBDBDB",
   });
   return await generateAvatarSvg(svg);
 };

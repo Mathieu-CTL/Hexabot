@@ -6,18 +6,18 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-import { Migration, MigrationModel } from '@/migration/migration.schema';
-import { MigrationAction } from '@/migration/types';
+import { Migration, MigrationModel } from "@/migration/migration.schema";
+import { MigrationAction } from "@/migration/types";
 
 const migrationFixtures: Migration[] = [
   {
-    version: 'v2.1.2',
+    version: "v2.1.2",
     status: MigrationAction.UP,
   },
   {
-    version: 'v2.1.1',
+    version: "v2.1.1",
     status: MigrationAction.DOWN,
   },
 ];

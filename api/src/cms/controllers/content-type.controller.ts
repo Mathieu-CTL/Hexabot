@@ -17,22 +17,22 @@ import {
   Patch,
   Post,
   Query,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
-import { BaseController } from '@/utils/generics/base-controller';
-import { PageQueryDto } from '@/utils/pagination/pagination-query.dto';
-import { PageQueryPipe } from '@/utils/pagination/pagination-query.pipe';
-import { SearchFilterPipe } from '@/utils/pipes/search-filter.pipe';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { BaseController } from "@/utils/generics/base-controller";
+import { PageQueryDto } from "@/utils/pagination/pagination-query.dto";
+import { PageQueryPipe } from "@/utils/pagination/pagination-query.pipe";
+import { SearchFilterPipe } from "@/utils/pipes/search-filter.pipe";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
 import {
   ContentTypeCreateDto,
   ContentTypeUpdateDto,
-} from '../dto/contentType.dto';
-import { ContentType } from '../schemas/content-type.schema';
-import { ContentTypeService } from '../services/content-type.service';
+} from "../dto/contentType.dto";
+import { ContentType } from "../schemas/content-type.schema";
+import { ContentTypeService } from "../services/content-type.service";
 
-@Controller('contenttype')
+@Controller("contenttype")
 export class ContentTypeController extends BaseController<ContentType> {
   constructor(private readonly contentTypeService: ContentTypeService) {
     super(contentTypeService);
@@ -63,7 +63,7 @@ export class ContentTypeController extends BaseController<ContentType> {
   @Get()
   async findPage(
     @Query(PageQueryPipe) pageQuery: PageQueryDto<ContentType>,
-    @Query(new SearchFilterPipe<ContentType>({ allowedFields: ['name'] }))
+    @Query(new SearchFilterPipe<ContentType>({ allowedFields: ["name"] }))
     filters: TFilterQuery<ContentType>,
   ) {
     return await this.contentTypeService.find(filters, pageQuery);
@@ -76,9 +76,9 @@ export class ContentTypeController extends BaseController<ContentType> {
    *
    * @returns The number of content types matching the filters.
    */
-  @Get('count')
+  @Get("count")
   async filterCount(
-    @Query(new SearchFilterPipe<ContentType>({ allowedFields: ['name'] }))
+    @Query(new SearchFilterPipe<ContentType>({ allowedFields: ["name"] }))
     filters: TFilterQuery<ContentType>,
   ) {
     return await this.count(filters);
@@ -91,8 +91,8 @@ export class ContentTypeController extends BaseController<ContentType> {
    *
    * @returns The content type matching the provided ID.
    */
-  @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ContentType> {
+  @Get(":id")
+  async findOne(@Param("id") id: string): Promise<ContentType> {
     const foundContentType = await this.contentTypeService.findOne(id);
     if (!foundContentType) {
       this.logger.warn(
@@ -110,9 +110,9 @@ export class ContentTypeController extends BaseController<ContentType> {
    *
    * @returns The result of the delete operation.
    */
-  @Delete(':id')
+  @Delete(":id")
   @HttpCode(204)
-  async deleteOne(@Param('id') id: string) {
+  async deleteOne(@Param("id") id: string) {
     const removedType = await this.contentTypeService.deleteCascadeOne(id);
 
     if (removedType.deletedCount === 0) {
@@ -132,10 +132,10 @@ export class ContentTypeController extends BaseController<ContentType> {
    *
    * @returns The updated content type.
    */
-  @Patch(':id')
+  @Patch(":id")
   async updateOne(
     @Body() contentTypeDto: ContentTypeUpdateDto,
-    @Param('id') id: string,
+    @Param("id") id: string,
   ) {
     return await this.contentTypeService.updateOne(id, contentTypeDto);
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2026 Hexastack. All rights reserved.
  *
  * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
@@ -18,37 +18,37 @@ import {
   Patch,
   Post,
   Query,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
-import { BaseBlockPlugin } from '@/plugins/base-block-plugin';
-import { PluginService } from '@/plugins/plugins.service';
-import { PluginName, PluginType } from '@/plugins/types';
-import { UserService } from '@/user/services/user.service';
-import { BaseController } from '@/utils/generics/base-controller';
-import { DeleteResult } from '@/utils/generics/base-repository';
-import { PageQueryDto } from '@/utils/pagination/pagination-query.dto';
-import { PageQueryPipe } from '@/utils/pagination/pagination-query.pipe';
-import { PopulatePipe } from '@/utils/pipes/populate.pipe';
-import { SearchFilterPipe } from '@/utils/pipes/search-filter.pipe';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { BaseBlockPlugin } from "@/plugins/base-block-plugin";
+import { PluginService } from "@/plugins/plugins.service";
+import { PluginName, PluginType } from "@/plugins/types";
+import { UserService } from "@/user/services/user.service";
+import { BaseController } from "@/utils/generics/base-controller";
+import { DeleteResult } from "@/utils/generics/base-repository";
+import { PageQueryDto } from "@/utils/pagination/pagination-query.dto";
+import { PageQueryPipe } from "@/utils/pagination/pagination-query.pipe";
+import { PopulatePipe } from "@/utils/pipes/populate.pipe";
+import { SearchFilterPipe } from "@/utils/pipes/search-filter.pipe";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
 import {
   BlockCreateDto,
   BlockSearchQueryDto,
   BlockUpdateDto,
-} from '../dto/block.dto';
+} from "../dto/block.dto";
 import {
   Block,
   BlockFull,
   BlockPopulate,
   BlockStub,
   SearchRankedBlock,
-} from '../schemas/block.schema';
-import { BlockService } from '../services/block.service';
-import { CategoryService } from '../services/category.service';
-import { LabelService } from '../services/label.service';
+} from "../schemas/block.schema";
+import { BlockService } from "../services/block.service";
+import { CategoryService } from "../services/category.service";
+import { LabelService } from "../services/label.service";
 
-@Controller('Block')
+@Controller("Block")
 export class BlockController extends BaseController<
   Block,
   BlockStub,
@@ -75,7 +75,7 @@ export class BlockController extends BaseController<
    * @param {string} [category] - The category to filter the search results.
    * @returns {Promise<SearchRankedBlock[]>} A promise that resolves to an array of ranked block search results.
    */
-  @Get('search')
+  @Get("search")
   async search(
     @Query()
     { q, limit, category }: BlockSearchQueryDto,
@@ -95,7 +95,7 @@ export class BlockController extends BaseController<
   async find(
     @Query(PopulatePipe)
     populate: string[],
-    @Query(new SearchFilterPipe<Block>({ allowedFields: ['category'] }))
+    @Query(new SearchFilterPipe<Block>({ allowedFields: ["category"] }))
     filters: TFilterQuery<Block>,
     @Query(PageQueryPipe) pageQuery?: PageQueryDto<Block>,
   ): Promise<Block[] | BlockFull[]> {
@@ -111,12 +111,12 @@ export class BlockController extends BaseController<
    *
    * @returns An array containing the settings of the specified plugin.
    */
-  @Get('customBlocks/settings')
-  async findSettings(@Query('plugin') pluginName: PluginName) {
+  @Get("customBlocks/settings")
+  async findSettings(@Query("plugin") pluginName: PluginName) {
     try {
       if (!pluginName) {
         throw new BadRequestException(
-          'Plugin name must be supplied as a query param',
+          "Plugin name must be supplied as a query param",
         );
       }
 
@@ -126,12 +126,12 @@ export class BlockController extends BaseController<
       );
 
       if (!plugin) {
-        throw new NotFoundException('Plugin Not Found');
+        throw new NotFoundException("Plugin Not Found");
       }
 
       return await plugin.getDefaultSettings();
     } catch (e) {
-      this.logger.error('Unable to fetch plugin settings', e);
+      this.logger.error("Unable to fetch plugin settings", e);
       throw e;
     }
   }
@@ -141,7 +141,7 @@ export class BlockController extends BaseController<
    *
    * @returns An array containing available custom blocks.
    */
-  @Get('customBlocks')
+  @Get("customBlocks")
   async findAll() {
     try {
       const plugins = this.pluginsService
@@ -166,12 +166,12 @@ export class BlockController extends BaseController<
               },
             },
             effects:
-              typeof p.effects === 'object' ? Object.keys(p.effects) : [],
+              typeof p.effects === "object" ? Object.keys(p.effects) : [],
           };
         });
       return await Promise.all(plugins);
     } catch (e) {
-      this.logger.error(e);
+      this.logger.error("Unable to fetch plugin list", e);
       throw e;
     }
   }
@@ -182,7 +182,7 @@ export class BlockController extends BaseController<
    *
    * @returns An array containing objects representing the effects of plugins.
    */
-  @Get('effects')
+  @Get("effects")
   findEffects(): {
     name: string;
     title: any;
@@ -192,7 +192,7 @@ export class BlockController extends BaseController<
       const effects = Object.keys(plugins)
         .filter(
           (plugin) =>
-            typeof plugins[plugin].effects === 'object' &&
+            typeof plugins[plugin].effects === "object" &&
             Object.keys(plugins[plugin].effects).length > 0,
         )
         .map((plugin) => ({
@@ -202,7 +202,7 @@ export class BlockController extends BaseController<
 
       return effects;
     } catch (e) {
-      this.logger.error(e);
+      this.logger.error("Unable to fetch plugin effects", e);
       throw e;
     }
   }
@@ -214,9 +214,9 @@ export class BlockController extends BaseController<
    * @param populate - An array of fields to populate in the retrieved block.
    * @returns A Promise that resolves to the retrieved block.
    */
-  @Get(':id')
+  @Get(":id")
   async findOne(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Query(PopulatePipe)
     populate: string[],
   ): Promise<Block | BlockFull> {
@@ -289,10 +289,10 @@ export class BlockController extends BaseController<
    * @param payload - The data to update blocks with.
    * @returns A Promise that resolves to the updates if successful.
    */
-  @Patch('bulk')
+  @Patch("bulk")
   async updateMany(@Body() body: { ids: string[]; payload: BlockUpdateDto }) {
     if (!body.ids || body.ids.length === 0) {
-      throw new BadRequestException('No IDs provided  to perform the update');
+      throw new BadRequestException("No IDs provided  to perform the update");
     }
     const updates = await this.blockService.updateMany(
       {
@@ -311,9 +311,9 @@ export class BlockController extends BaseController<
    * @param blockUpdate - The data to update the block with.
    * @returns A Promise that resolves to the updated block if successful.
    */
-  @Patch(':id')
+  @Patch(":id")
   async updateOne(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body() blockUpdate: BlockUpdateDto,
   ): Promise<Block> {
     return await this.blockService.updateOne(id, blockUpdate);
@@ -325,9 +325,9 @@ export class BlockController extends BaseController<
    * @param id - The ID of the block to delete.
    * @returns A Promise that resolves to the deletion result.
    */
-  @Delete(':id')
+  @Delete(":id")
   @HttpCode(204)
-  async deleteOne(@Param('id') id: string): Promise<DeleteResult> {
+  async deleteOne(@Param("id") id: string): Promise<DeleteResult> {
     const result = await this.blockService.deleteOne(id);
     if (result.deletedCount === 0) {
       this.logger.warn(`Unable to delete Block by id ${id}`);
@@ -341,11 +341,11 @@ export class BlockController extends BaseController<
    * @param ids - IDs of blocks to be deleted.
    * @returns A Promise that resolves to the deletion result.
    */
-  @Delete('')
+  @Delete("")
   @HttpCode(204)
-  async deleteMany(@Body('ids') ids?: string[]): Promise<DeleteResult> {
+  async deleteMany(@Body("ids") ids?: string[]): Promise<DeleteResult> {
     if (!ids?.length) {
-      throw new BadRequestException('No IDs provided for deletion.');
+      throw new BadRequestException("No IDs provided for deletion.");
     }
     const deleteResult = await this.blockService.deleteMany({
       _id: { $in: ids },
@@ -353,10 +353,10 @@ export class BlockController extends BaseController<
 
     if (deleteResult.deletedCount === 0) {
       this.logger.warn(`Unable to delete blocks with provided IDs: ${ids}`);
-      throw new NotFoundException('Blocks with provided IDs not found');
+      throw new NotFoundException("Blocks with provided IDs not found");
     }
 
-    this.logger.log(`Successfully deleted blocks with IDs: ${ids}`);
+    this.logger.info(`Successfully deleted blocks with IDs: ${ids}`);
     return deleteResult;
   }
 }

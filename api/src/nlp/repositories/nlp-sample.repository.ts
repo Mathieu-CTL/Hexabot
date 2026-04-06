@@ -6,9 +6,9 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { plainToClass } from 'class-transformer';
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { plainToClass } from "class-transformer";
 import {
   Aggregate,
   Document,
@@ -16,22 +16,22 @@ import {
   PipelineStage,
   Query,
   Types,
-} from 'mongoose';
+} from "mongoose";
 
-import { BaseRepository, DeleteResult } from '@/utils/generics/base-repository';
-import { PageQueryDto } from '@/utils/pagination/pagination-query.dto';
-import { TFilterQuery, TProjectionType } from '@/utils/types/filter.types';
+import { BaseRepository, DeleteResult } from "@/utils/generics/base-repository";
+import { PageQueryDto } from "@/utils/pagination/pagination-query.dto";
+import { TFilterQuery, TProjectionType } from "@/utils/types/filter.types";
 
-import { TNlpSampleDto } from '../dto/nlp-sample.dto';
-import { NlpSampleEntity } from '../schemas/nlp-sample-entity.schema';
+import { TNlpSampleDto } from "../dto/nlp-sample.dto";
+import { NlpSampleEntity } from "../schemas/nlp-sample-entity.schema";
 import {
   NLP_SAMPLE_POPULATE,
   NlpSample,
   NlpSampleDocument,
   NlpSampleFull,
   NlpSamplePopulate,
-} from '../schemas/nlp-sample.schema';
-import { NlpValue } from '../schemas/nlp-value.schema';
+} from "../schemas/nlp-sample.schema";
+import { NlpValue } from "../schemas/nlp-value.schema";
 
 @Injectable()
 export class NlpSampleRepository extends BaseRepository<
@@ -64,7 +64,7 @@ export class NlpSampleRepository extends BaseRepository<
           // @todo: think of a better way to handle language to objectId conversion
           // This is a workaround for the fact that language is stored as an ObjectId
           // in the database, but we want to filter by its string representation.
-          if ('language' in condition && condition.language) {
+          if ("language" in condition && condition.language) {
             return {
               ...condition,
               language: new Types.ObjectId(condition.language as string),
@@ -114,10 +114,10 @@ export class NlpSampleRepository extends BaseRepository<
       // Fetch the entities for each sample
       {
         $lookup: {
-          from: 'nlpsampleentities',
-          localField: '_id', // nlpsamples._id
-          foreignField: 'sample', // nlpsampleentities.sample
-          as: 'sampleentities',
+          from: "nlpsampleentities",
+          localField: "_id", // nlpsamples._id
+          foreignField: "sample", // nlpsampleentities.sample
+          as: "sampleentities",
           pipeline: [
             {
               $match: {
@@ -132,7 +132,7 @@ export class NlpSampleRepository extends BaseRepository<
       {
         $match: {
           $expr: {
-            $gte: [{ $size: '$sampleentities' }, requiredPairs.length],
+            $gte: [{ $size: "$sampleentities" }, requiredPairs.length],
           },
         },
       },
@@ -144,9 +144,9 @@ export class NlpSampleRepository extends BaseRepository<
             $ifNull: [
               {
                 $map: {
-                  input: '$sampleentities',
-                  as: 's',
-                  in: { entity: '$$s.entity', value: '$$s.value' },
+                  input: "$sampleentities",
+                  as: "s",
+                  in: { entity: "$$s.entity", value: "$$s.value" },
                 },
               },
               [],
@@ -163,7 +163,7 @@ export class NlpSampleRepository extends BaseRepository<
               requiredPairs.length, // target size
               {
                 $size: {
-                  $setIntersection: ['$entities', requiredPairs],
+                  $setIntersection: ["$entities", requiredPairs],
                 },
               },
             ],
@@ -195,7 +195,7 @@ export class NlpSampleRepository extends BaseRepository<
         ? [
             {
               $project:
-                typeof projection === 'string'
+                typeof projection === "string"
                   ? { [projection]: 1 }
                   : projection,
             },
@@ -271,7 +271,7 @@ export class NlpSampleRepository extends BaseRepository<
       ...this.buildFindByEntitiesStages(criterias),
 
       //  Final count
-      { $count: 'count' },
+      { $count: "count" },
     ]);
   }
 
@@ -304,7 +304,7 @@ export class NlpSampleRepository extends BaseRepository<
       Document<NlpSample, any, any>,
       unknown,
       NlpSample,
-      'deleteOne' | 'deleteMany'
+      "deleteOne" | "deleteMany"
     >,
     criteria: TFilterQuery<NlpSample>,
   ) {
@@ -314,7 +314,7 @@ export class NlpSampleRepository extends BaseRepository<
       });
     } else {
       throw new Error(
-        'Attempted to delete a NLP sample using unknown criteria',
+        "Attempted to delete a NLP sample using unknown criteria",
       );
     }
   }

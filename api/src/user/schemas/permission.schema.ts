@@ -6,26 +6,26 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ModelDefinition, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Transform, Type } from 'class-transformer';
-import { Schema as MongooseSchema } from 'mongoose';
+import { ModelDefinition, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Transform, Type } from "class-transformer";
+import { Schema as MongooseSchema } from "mongoose";
 
-import { BaseSchema } from '@/utils/generics/base-schema';
-import { LifecycleHookManager } from '@/utils/generics/lifecycle-hook-manager';
+import { BaseSchema } from "@/utils/generics/base-schema";
+import { LifecycleHookManager } from "@/utils/generics/lifecycle-hook-manager";
 import {
   TFilterPopulateFields,
   THydratedDocument,
-} from '@/utils/types/filter.types';
+} from "@/utils/types/filter.types";
 
-import { Action } from '../types/action.type';
-import { TRelation } from '../types/index.type';
+import { Action } from "../types/action.type";
+import { TRelation } from "../types/index.type";
 
-import { Model } from './model.schema';
-import { Role } from './role.schema';
+import { Model } from "./model.schema";
+import { Role } from "./role.schema";
 
 @Schema({ timestamps: true })
 export class PermissionStub extends BaseSchema {
-  @Prop({ type: MongooseSchema.Types.ObjectId, required: true, ref: 'Model' })
+  @Prop({ type: MongooseSchema.Types.ObjectId, required: true, ref: "Model" })
   model: unknown;
 
   @Prop({
@@ -35,12 +35,12 @@ export class PermissionStub extends BaseSchema {
   })
   action: Action;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, required: true, ref: 'Role' })
+  @Prop({ type: MongooseSchema.Types.ObjectId, required: true, ref: "Role" })
   role: unknown;
 
   @Prop({
     type: String,
-    default: 'role',
+    default: "role",
   })
   relation: TRelation;
 }
@@ -80,4 +80,4 @@ export type PermissionPopulate = keyof TFilterPopulateFields<
   PermissionStub
 >;
 
-export const PERMISSION_POPULATE: PermissionPopulate[] = ['model', 'role'];
+export const PERMISSION_POPULATE: PermissionPopulate[] = ["model", "role"];

@@ -6,7 +6,7 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { SocketEventMetadataStorage } from '../storage/socket-event-metadata.storage';
+import { SocketEventMetadataStorage } from "../storage/socket-event-metadata.storage";
 
 export const SocketGet = (path: string): MethodDecorator => {
   return (
@@ -15,7 +15,7 @@ export const SocketGet = (path: string): MethodDecorator => {
     descriptor: PropertyDescriptor,
   ) => {
     SocketEventMetadataStorage.addEventMetadata(target, propertyKey, {
-      socketMethod: 'get',
+      socketMethod: "get",
       path,
       method: descriptor.value,
     });
@@ -29,7 +29,7 @@ export const SocketPost = (path: string): MethodDecorator => {
     descriptor: PropertyDescriptor,
   ) => {
     SocketEventMetadataStorage.addEventMetadata(target, propertyKey, {
-      socketMethod: 'post',
+      socketMethod: "post",
       path,
       method: descriptor.value,
     });
@@ -43,7 +43,7 @@ export const SocketPut = (path: string): MethodDecorator => {
     descriptor: PropertyDescriptor,
   ) => {
     SocketEventMetadataStorage.addEventMetadata(target, propertyKey, {
-      socketMethod: 'put',
+      socketMethod: "put",
       path,
       method: descriptor.value,
     });
@@ -57,7 +57,7 @@ export const SocketPatch = (path: string): MethodDecorator => {
     descriptor: PropertyDescriptor,
   ) => {
     SocketEventMetadataStorage.addEventMetadata(target, propertyKey, {
-      socketMethod: 'patch',
+      socketMethod: "patch",
       path,
       method: descriptor.value,
     });
@@ -71,7 +71,7 @@ export const SocketDelete = (path: string): MethodDecorator => {
     descriptor: PropertyDescriptor,
   ) => {
     SocketEventMetadataStorage.addEventMetadata(target, propertyKey, {
-      socketMethod: 'delete',
+      socketMethod: "delete",
       path,
       method: descriptor.value,
     });
@@ -85,7 +85,7 @@ export const SocketOptions = (path: string): MethodDecorator => {
     descriptor: PropertyDescriptor,
   ) => {
     SocketEventMetadataStorage.addEventMetadata(target, propertyKey, {
-      socketMethod: 'options',
+      socketMethod: "options",
       path,
       method: descriptor.value,
     });
@@ -99,7 +99,7 @@ export const SocketHead = (path: string): MethodDecorator => {
     descriptor: PropertyDescriptor,
   ) => {
     SocketEventMetadataStorage.addEventMetadata(target, propertyKey, {
-      socketMethod: 'head',
+      socketMethod: "head",
       path,
       method: descriptor.value,
     });

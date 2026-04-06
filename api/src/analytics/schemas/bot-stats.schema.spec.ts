@@ -6,23 +6,23 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { botstatsFixtures } from '@/utils/test/fixtures/botstats';
+import { botstatsFixtures } from "@/utils/test/fixtures/botstats";
 
-import { BotStats, BotStatsType } from './bot-stats.schema';
+import { BotStats, BotStatsType } from "./bot-stats.schema";
 
-describe('toLines', () => {
-  it('should transform the data based on the given types', () => {
+describe("toLines", () => {
+  it("should transform the data based on the given types", () => {
     const result = BotStats.toLines(
       [
         {
           ...botstatsFixtures[4],
-          id: '1',
+          id: "1",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
           ...botstatsFixtures[5],
-          id: '2',
+          id: "2",
           createdAt: new Date(),
           updatedAt: new Date(),
         },

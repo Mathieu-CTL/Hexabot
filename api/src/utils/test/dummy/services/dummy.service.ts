@@ -6,12 +6,12 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
-import { BaseService } from '@/utils/generics/base-service';
+import { BaseService } from "@/utils/generics/base-service";
 
-import { DummyRepository } from '../repositories/dummy.repository';
-import { Dummy } from '../schemas/dummy.schema';
+import { DummyRepository } from "../repositories/dummy.repository";
+import { Dummy } from "../schemas/dummy.schema";
 
 @Injectable()
 export class DummyService extends BaseService<Dummy> {

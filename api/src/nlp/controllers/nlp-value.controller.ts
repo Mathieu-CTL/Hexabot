@@ -1,5 +1,5 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2026 Hexastack. All rights reserved.
  *
  * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
@@ -18,28 +18,28 @@ import {
   Patch,
   Post,
   Query,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
-import { BaseController } from '@/utils/generics/base-controller';
-import { DeleteResult } from '@/utils/generics/base-repository';
-import { PageQueryDto } from '@/utils/pagination/pagination-query.dto';
-import { PageQueryPipe } from '@/utils/pagination/pagination-query.pipe';
-import { PopulatePipe } from '@/utils/pipes/populate.pipe';
-import { SearchFilterPipe } from '@/utils/pipes/search-filter.pipe';
-import { TFilterQuery } from '@/utils/types/filter.types';
-import { Format } from '@/utils/types/format.types';
+import { BaseController } from "@/utils/generics/base-controller";
+import { DeleteResult } from "@/utils/generics/base-repository";
+import { PageQueryDto } from "@/utils/pagination/pagination-query.dto";
+import { PageQueryPipe } from "@/utils/pagination/pagination-query.pipe";
+import { PopulatePipe } from "@/utils/pipes/populate.pipe";
+import { SearchFilterPipe } from "@/utils/pipes/search-filter.pipe";
+import { TFilterQuery } from "@/utils/types/filter.types";
+import { Format } from "@/utils/types/format.types";
 
-import { NlpValueCreateDto, NlpValueUpdateDto } from '../dto/nlp-value.dto';
+import { NlpValueCreateDto, NlpValueUpdateDto } from "../dto/nlp-value.dto";
 import {
   NlpValue,
   NlpValueFull,
   NlpValuePopulate,
   NlpValueStub,
-} from '../schemas/nlp-value.schema';
-import { NlpEntityService } from '../services/nlp-entity.service';
-import { NlpValueService } from '../services/nlp-value.service';
+} from "../schemas/nlp-value.schema";
+import { NlpEntityService } from "../services/nlp-entity.service";
+import { NlpValueService } from "../services/nlp-value.service";
 
-@Controller('nlpvalue')
+@Controller("nlpvalue")
 export class NlpValueController extends BaseController<
   NlpValue,
   NlpValueStub,
@@ -88,11 +88,11 @@ export class NlpValueController extends BaseController<
    *
    * @returns A promise resolving to an object representing the count of filtered NLP values.
    */
-  @Get('count')
+  @Get("count")
   async filterCount(
     @Query(
       new SearchFilterPipe<NlpValue>({
-        allowedFields: ['entity', 'value', 'doc'],
+        allowedFields: ["entity", "value", "doc"],
       }),
     )
     filters?: TFilterQuery<NlpValue>,
@@ -110,9 +110,9 @@ export class NlpValueController extends BaseController<
    *
    * @returns A promise resolving to the found NLP value.
    */
-  @Get(':id')
+  @Get(":id")
   async findOne(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Query(PopulatePipe) populate: string[],
   ) {
     const doc = this.canPopulate(populate)
@@ -142,7 +142,7 @@ export class NlpValueController extends BaseController<
     @Query(PopulatePipe) populate: string[],
     @Query(
       new SearchFilterPipe<NlpValue>({
-        allowedFields: ['entity', 'value', 'doc'],
+        allowedFields: ["entity", "value", "doc"],
       }),
     )
     filters: TFilterQuery<NlpValue>,
@@ -165,9 +165,9 @@ export class NlpValueController extends BaseController<
    * @returns A promise resolving to the updated NLP value.
    */
 
-  @Patch(':id')
+  @Patch(":id")
   async updateOne(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body() updateNlpValueDto: NlpValueUpdateDto,
   ): Promise<NlpValue> {
     const nlpEntity = updateNlpValueDto.entity
@@ -194,9 +194,9 @@ export class NlpValueController extends BaseController<
    * @returns A promise resolving to the result of the deletion operation.
    */
 
-  @Delete(':id')
+  @Delete(":id")
   @HttpCode(204)
-  async deleteOne(@Param('id') id: string) {
+  async deleteOne(@Param("id") id: string) {
     const result = await this.nlpValueService.deleteCascadeOne(id);
     if (result.deletedCount === 0) {
       this.logger.warn(`Unable to delete NLP Value by id ${id}`);
@@ -211,11 +211,11 @@ export class NlpValueController extends BaseController<
    * @returns A Promise that resolves to the deletion result.
    */
 
-  @Delete('')
+  @Delete("")
   @HttpCode(204)
-  async deleteMany(@Body('ids') ids?: string[]): Promise<DeleteResult> {
+  async deleteMany(@Body("ids") ids?: string[]): Promise<DeleteResult> {
     if (!ids?.length) {
-      throw new BadRequestException('No IDs provided for deletion.');
+      throw new BadRequestException("No IDs provided for deletion.");
     }
     const deleteResult = await this.nlpValueService.deleteMany({
       _id: { $in: ids },
@@ -223,10 +223,10 @@ export class NlpValueController extends BaseController<
 
     if (deleteResult.deletedCount === 0) {
       this.logger.warn(`Unable to delete NLP values with provided IDs: ${ids}`);
-      throw new NotFoundException('NLP values with provided IDs not found');
+      throw new NotFoundException("NLP values with provided IDs not found");
     }
 
-    this.logger.log(`Successfully deleted NLP values with IDs: ${ids}`);
+    this.logger.info(`Successfully deleted NLP values with IDs: ${ids}`);
     return deleteResult;
   }
 }

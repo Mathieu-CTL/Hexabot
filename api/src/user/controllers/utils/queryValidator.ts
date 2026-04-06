@@ -9,7 +9,7 @@
 // Query() will return true even if the query is not equal to "true"
 export function booleanQueryValidator(booleanQueryAsString: string): boolean {
   switch (booleanQueryAsString) {
-    case 'true':
+    case "true":
       return true;
     default:
       return false;

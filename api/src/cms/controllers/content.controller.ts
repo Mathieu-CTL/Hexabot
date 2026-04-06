@@ -19,28 +19,28 @@ import {
   Query,
   UploadedFile,
   UseInterceptors,
-} from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+} from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
 
-import { BaseController } from '@/utils/generics/base-controller';
-import { PageQueryDto } from '@/utils/pagination/pagination-query.dto';
-import { PageQueryPipe } from '@/utils/pagination/pagination-query.pipe';
-import { PopulatePipe } from '@/utils/pipes/populate.pipe';
-import { SearchFilterPipe } from '@/utils/pipes/search-filter.pipe';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { BaseController } from "@/utils/generics/base-controller";
+import { PageQueryDto } from "@/utils/pagination/pagination-query.dto";
+import { PageQueryPipe } from "@/utils/pagination/pagination-query.pipe";
+import { PopulatePipe } from "@/utils/pipes/populate.pipe";
+import { SearchFilterPipe } from "@/utils/pipes/search-filter.pipe";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
-import { ContentCreateDto, ContentUpdateDto } from '../dto/content.dto';
+import { ContentCreateDto, ContentUpdateDto } from "../dto/content.dto";
 import {
   Content,
   ContentFull,
   ContentPopulate,
   ContentStub,
-} from '../schemas/content.schema';
+} from "../schemas/content.schema";
 
-import { ContentTypeService } from './../services/content-type.service';
-import { ContentService } from './../services/content.service';
+import { ContentTypeService } from "./../services/content-type.service";
+import { ContentService } from "./../services/content.service";
 
-@Controller('content')
+@Controller("content")
 export class ContentController extends BaseController<
   Content,
   ContentStub,
@@ -83,14 +83,14 @@ export class ContentController extends BaseController<
    * @param idTargetContentType - The content type to match the CSV data against.   *
    * @returns A promise that resolves to the newly created content documents.
    */
-  @Post('import')
-  @UseInterceptors(FileInterceptor('file'))
+  @Post("import")
+  @UseInterceptors(FileInterceptor("file"))
   async import(
     @UploadedFile() file: Express.Multer.File,
-    @Query('idTargetContentType')
+    @Query("idTargetContentType")
     targetContentType: string,
   ) {
-    const datasetContent = file.buffer.toString('utf-8');
+    const datasetContent = file.buffer.toString("utf-8");
     if (!targetContentType) {
       this.logger.warn(`Parameter is missing`);
       throw new NotFoundException(`Missing parameter`);
@@ -125,7 +125,7 @@ export class ContentController extends BaseController<
     @Query(PageQueryPipe) pageQuery: PageQueryDto<Content>,
     @Query(PopulatePipe) populate: string[],
     @Query(
-      new SearchFilterPipe<Content>({ allowedFields: ['entity', 'title'] }),
+      new SearchFilterPipe<Content>({ allowedFields: ["entity", "title"] }),
     )
     filters: TFilterQuery<Content>,
   ) {
@@ -141,10 +141,10 @@ export class ContentController extends BaseController<
    *
    * @returns The count of content matching the filters.
    */
-  @Get('count')
+  @Get("count")
   async filterCount(
     @Query(
-      new SearchFilterPipe<Content>({ allowedFields: ['entity', 'title'] }),
+      new SearchFilterPipe<Content>({ allowedFields: ["entity", "title"] }),
     )
     filters?: TFilterQuery<Content>,
   ) {
@@ -159,9 +159,9 @@ export class ContentController extends BaseController<
    *
    * @returns The requested content document.
    */
-  @Get(':id')
+  @Get(":id")
   async findOne(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Query(PopulatePipe) populate: string[],
   ) {
     const doc = this.canPopulate(populate)
@@ -184,9 +184,9 @@ export class ContentController extends BaseController<
    *
    * @returns The result of the delete operation.
    */
-  @Delete(':id')
+  @Delete(":id")
   @HttpCode(204)
-  async deleteOne(@Param('id') id: string) {
+  async deleteOne(@Param("id") id: string) {
     const removedContent = await this.contentService.deleteOne(id);
     if (removedContent.deletedCount === 0) {
       this.logger.warn(
@@ -205,9 +205,9 @@ export class ContentController extends BaseController<
    *
    * @returns List of content documents matching the content type.
    */
-  @Get('/type/:id')
+  @Get("/type/:id")
   async findByType(
-    @Param('id') contentType: string,
+    @Param("id") contentType: string,
     @Query(PageQueryPipe) pageQuery: PageQueryDto<Content>,
   ): Promise<Content[]> {
     const type = await this.contentTypeService.findOne(contentType);
@@ -228,10 +228,10 @@ export class ContentController extends BaseController<
    *
    * @returns The updated content document.
    */
-  @Patch(':id')
+  @Patch(":id")
   async updateOne(
     @Body() contentDto: ContentUpdateDto,
-    @Param('id') id: string,
+    @Param("id") id: string,
   ): Promise<Content> {
     return await this.contentService.updateOne(id, contentDto);
   }

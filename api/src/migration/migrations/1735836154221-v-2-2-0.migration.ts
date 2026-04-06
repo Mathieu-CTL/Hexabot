@@ -6,33 +6,33 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { existsSync } from 'fs';
-import { join, resolve } from 'path';
+import { existsSync } from "fs";
+import { join, resolve } from "path";
 
-import mongoose, { HydratedDocument } from 'mongoose';
-import { v4 as uuidv4 } from 'uuid';
+import mongoose, { HydratedDocument } from "mongoose";
+import { v4 as uuidv4 } from "uuid";
 
 import attachmentSchema, {
   Attachment,
-} from '@/attachment/schemas/attachment.schema';
+} from "@/attachment/schemas/attachment.schema";
 import {
   AttachmentAccess,
   AttachmentCreatedByRef,
   AttachmentResourceRef,
-} from '@/attachment/types';
-import blockSchema, { Block } from '@/chat/schemas/block.schema';
-import messageSchema, { Message } from '@/chat/schemas/message.schema';
-import subscriberSchema, { Subscriber } from '@/chat/schemas/subscriber.schema';
-import { StdOutgoingAttachmentMessage } from '@/chat/schemas/types/message';
-import contentSchema, { Content } from '@/cms/schemas/content.schema';
-import { config } from '@/config';
-import settingSchema, { Setting } from '@/setting/schemas/setting.schema';
-import { SettingType } from '@/setting/schemas/types';
-import roleSchema, { Role } from '@/user/schemas/role.schema';
-import userSchema, { User } from '@/user/schemas/user.schema';
-import { moveFile, moveFiles } from '@/utils/helpers/fs';
+} from "@/attachment/types";
+import blockSchema, { Block } from "@/chat/schemas/block.schema";
+import messageSchema, { Message } from "@/chat/schemas/message.schema";
+import subscriberSchema, { Subscriber } from "@/chat/schemas/subscriber.schema";
+import { StdOutgoingAttachmentMessage } from "@/chat/schemas/types/message";
+import contentSchema, { Content } from "@/cms/schemas/content.schema";
+import { config } from "@/config";
+import settingSchema, { Setting } from "@/setting/schemas/setting.schema";
+import { SettingType } from "@/setting/schemas/types";
+import roleSchema, { Role } from "@/user/schemas/role.schema";
+import userSchema, { User } from "@/user/schemas/user.schema";
+import { moveFile, moveFiles } from "@/utils/helpers/fs";
 
-import { MigrationAction, MigrationServices } from '../types';
+import { MigrationAction, MigrationServices } from "../types";
 
 /**
  * @returns The admin user or null
@@ -41,9 +41,9 @@ const getAdminUser = async () => {
   const RoleModel = mongoose.model<Role>(Role.name, roleSchema);
   const UserModel = mongoose.model<User>(User.name, userSchema);
 
-  const adminRole = await RoleModel.findOne({ name: 'admin' });
+  const adminRole = await RoleModel.findOne({ name: "admin" });
   const user = await UserModel.findOne({ roles: [adminRole!._id] }).sort({
-    createdAt: 'asc',
+    createdAt: "asc",
   });
 
   return user!;
@@ -63,20 +63,20 @@ const populateBlockAttachments = async ({ logger }: MigrationServices) => {
   const user = await getAdminUser();
 
   if (!user) {
-    logger.warn('Unable to process block attachments, no admin user found');
+    logger.warn("Unable to process block attachments, no admin user found");
     return;
   }
 
   // Find blocks where "message.attachment" exists
   const cursor = BlockModel.find({
-    'message.attachment': { $exists: true },
+    "message.attachment": { $exists: true },
   }).cursor();
 
   for await (const block of cursor) {
     try {
       const msgPayload = (block.message as StdOutgoingAttachmentMessage)
         .attachment.payload;
-      if (msgPayload && 'id' in msgPayload && msgPayload.id) {
+      if (msgPayload && "id" in msgPayload && msgPayload.id) {
         const attachmentId = msgPayload.id;
         // Update the corresponding attachment document
         await AttachmentModel.updateOne(
@@ -84,7 +84,7 @@ const populateBlockAttachments = async ({ logger }: MigrationServices) => {
           {
             $set: {
               resourceRef: AttachmentResourceRef.BlockAttachment,
-              access: 'public',
+              access: "public",
               createdByRef: AttachmentCreatedByRef.User,
               createdBy: user._id,
             },
@@ -120,7 +120,7 @@ const populateSettingAttachments = async ({ logger }: MigrationServices) => {
   const user = await getAdminUser();
 
   if (!user) {
-    logger.warn('Unable to populate setting attachments, no admin user found');
+    logger.warn("Unable to populate setting attachments, no admin user found");
   }
 
   const cursor = SettingModel.find({
@@ -135,7 +135,7 @@ const populateSettingAttachments = async ({ logger }: MigrationServices) => {
           {
             $set: {
               resourceRef: AttachmentResourceRef.SettingAttachment,
-              access: 'public',
+              access: "public",
               createdByRef: AttachmentCreatedByRef.User,
               createdBy: user._id,
             },
@@ -174,7 +174,7 @@ const populateUserAvatars = async ({ logger }: MigrationServices) => {
         {
           $set: {
             resourceRef: AttachmentResourceRef.UserAvatar,
-            access: 'private',
+            access: "private",
             createdByRef: AttachmentCreatedByRef.User,
             createdBy: user._id,
           },
@@ -237,7 +237,7 @@ const populateSubscriberAvatars = async ({ logger }: MigrationServices) => {
           {
             $set: {
               resourceRef: AttachmentResourceRef.SubscriberAvatar,
-              access: 'private',
+              access: "private",
               createdByRef: AttachmentCreatedByRef.Subscriber,
               createdBy: subscriber._id,
             },
@@ -327,7 +327,7 @@ const unpopulateSubscriberAvatar = async ({ logger }: MigrationServices) => {
               );
             }
           } else {
-            logger.warn('Avatar attachment file was not found!');
+            logger.warn("Avatar attachment file was not found!");
           }
 
           // Reset avatar to null
@@ -380,10 +380,10 @@ const undoPopulateAttachments = async ({ logger }: MigrationServices) => {
       },
       {
         $unset: {
-          resourceRef: '',
-          access: '',
-          createdByRef: '',
-          createdBy: '',
+          resourceRef: "",
+          access: "",
+          createdByRef: "",
+          createdBy: "",
         },
       },
     );
@@ -405,14 +405,14 @@ const undoPopulateAttachments = async ({ logger }: MigrationServices) => {
  */
 const updateOldAvatarsPath = async ({ logger }: MigrationServices) => {
   // Make sure the old folder is moved
-  const oldPath = join(process.cwd(), process.env.AVATAR_DIR || '/avatars');
+  const oldPath = join(process.cwd(), process.env.AVATAR_DIR || "/avatars");
   if (existsSync(oldPath)) {
     logger.verbose(
       `Moving subscriber avatar files from ${oldPath} to ${config.parameters.avatarDir} ...`,
     );
     try {
       await moveFiles(oldPath, config.parameters.avatarDir);
-      logger.log('Avatars folder successfully moved to its new location ...');
+      logger.log("Avatars folder successfully moved to its new location ...");
     } catch (err) {
       logger.error(err);
       logger.error('Unable to move files from the old "avatars" folder');
@@ -447,7 +447,7 @@ const updateOldAvatarsPath = async ({ logger }: MigrationServices) => {
       }
     } catch (err) {
       logger.error(err);
-      logger.error('Unable to move user avatar to the new folder');
+      logger.error("Unable to move user avatar to the new folder");
     }
   }
 };
@@ -484,24 +484,24 @@ const restoreOldAvatarsPath = async ({ logger }: MigrationServices) => {
       }
     } catch (err) {
       logger.error(err);
-      logger.error('Unable to move user avatar to the new folder');
+      logger.error("Unable to move user avatar to the new folder");
     }
   }
 
   //
   const oldPath = resolve(
-    join(process.cwd(), process.env.AVATAR_DIR || '/avatars'),
+    join(process.cwd(), process.env.AVATAR_DIR || "/avatars"),
   );
   if (existsSync(config.parameters.avatarDir)) {
     try {
       await moveFiles(config.parameters.avatarDir, oldPath);
-      logger.log('Avatars folder successfully moved to the old location ...');
+      logger.log("Avatars folder successfully moved to the old location ...");
     } catch (err) {
       logger.error(err);
-      logger.log('Unable to move avatar files to the old folder ...');
+      logger.log("Unable to move avatar files to the old folder ...");
     }
   } else {
-    logger.log('No avatars folder found ...');
+    logger.log("No avatars folder found ...");
   }
 };
 
@@ -516,12 +516,12 @@ const migrateAttachmentBlocks = async (
   action: MigrationAction,
   { logger }: MigrationServices,
 ) => {
-  const updateField = action === MigrationAction.UP ? 'id' : 'attachment_id';
-  const unsetField = action === MigrationAction.UP ? 'attachment_id' : 'id';
+  const updateField = action === MigrationAction.UP ? "id" : "attachment_id";
+  const unsetField = action === MigrationAction.UP ? "attachment_id" : "id";
   const BlockModel = mongoose.model<Block>(Block.name, blockSchema);
 
   const cursor = BlockModel.find({
-    'message.attachment': { $exists: true },
+    "message.attachment": { $exists: true },
   }).cursor();
 
   for await (const block of cursor) {
@@ -540,7 +540,7 @@ const migrateAttachmentBlocks = async (
             [`message.attachment.payload.${updateField}`]: fieldValue,
           },
           $unset: {
-            [`message.attachment.payload.${unsetField}`]: '',
+            [`message.attachment.payload.${unsetField}`]: "",
           },
         },
       );
@@ -571,12 +571,12 @@ const buildRenameAttributeCallback =
  * @returns
  */
 const updateAttachmentPayload = (
-  obj: HydratedDocument<Content>['dynamicFields'],
+  obj: HydratedDocument<Content>["dynamicFields"],
   callback: ReturnType<typeof buildRenameAttributeCallback>,
 ) => {
-  if (obj && typeof obj === 'object') {
+  if (obj && typeof obj === "object") {
     for (const key in obj) {
-      if (obj[key] && typeof obj[key] === 'object' && 'payload' in obj[key]) {
+      if (obj[key] && typeof obj[key] === "object" && "payload" in obj[key]) {
         obj[key].payload = callback(obj[key].payload);
       }
     }
@@ -594,8 +594,8 @@ const migrateAttachmentContents = async (
   action: MigrationAction,
   { logger }: MigrationServices,
 ) => {
-  const updateField = action === MigrationAction.UP ? 'id' : 'attachment_id';
-  const unsetField = action === MigrationAction.UP ? 'attachment_id' : 'id';
+  const updateField = action === MigrationAction.UP ? "id" : "attachment_id";
+  const unsetField = action === MigrationAction.UP ? "attachment_id" : "id";
   const ContentModel = mongoose.model<Content>(Content.name, contentSchema);
   const AttachmentModel = mongoose.model<Attachment>(
     Attachment.name,
@@ -617,9 +617,9 @@ const migrateAttachmentContents = async (
       for (const key in content.dynamicFields) {
         if (
           content.dynamicFields[key] &&
-          typeof content.dynamicFields[key] === 'object' &&
-          'payload' in content.dynamicFields[key] &&
-          'id' in content.dynamicFields[key].payload &&
+          typeof content.dynamicFields[key] === "object" &&
+          "payload" in content.dynamicFields[key] &&
+          "id" in content.dynamicFields[key].payload &&
           content.dynamicFields[key].payload.id
         ) {
           await AttachmentModel.updateOne(
@@ -663,8 +663,8 @@ const migrateAndPopulateAttachmentMessages = async ({
 
   // Find blocks where "message.attachment" exists
   const cursor = MessageModel.find({
-    'message.attachment.payload': { $exists: true },
-    'message.attachment.payload.id': { $exists: false },
+    "message.attachment.payload": { $exists: true },
+    "message.attachment.payload.id": { $exists: false },
   }).cursor();
 
   // Helper function to update the attachment ID in the database
@@ -674,7 +674,7 @@ const migrateAndPopulateAttachmentMessages = async ({
   ) => {
     await MessageModel.updateOne(
       { _id: messageId },
-      { $set: { 'message.attachment.payload.id': attachmentId } },
+      { $set: { "message.attachment.payload.id": attachmentId } },
     );
   };
 
@@ -683,11 +683,11 @@ const migrateAndPopulateAttachmentMessages = async ({
   for await (const msg of cursor) {
     try {
       if (
-        'attachment' in msg.message &&
-        'payload' in msg.message.attachment &&
+        "attachment" in msg.message &&
+        "payload" in msg.message.attachment &&
         msg.message.attachment.payload
       ) {
-        if ('attachment_id' in msg.message.attachment.payload) {
+        if ("attachment_id" in msg.message.attachment.payload) {
           // Add extra attrs
           await attachmentService.updateOne(
             msg.message.attachment.payload.attachment_id as string,
@@ -705,7 +705,7 @@ const migrateAndPopulateAttachmentMessages = async ({
             msg._id,
             msg.message.attachment.payload.attachment_id as string,
           );
-        } else if ('url' in msg.message.attachment.payload) {
+        } else if ("url" in msg.message.attachment.payload) {
           const url = msg.message.attachment.payload.url;
           const regex =
             /^https?:\/\/[\w.-]+\/attachment\/download\/([a-f\d]{24})\/.+$/;
@@ -719,13 +719,13 @@ const migrateAndPopulateAttachmentMessages = async ({
               `Migrate message ${msg._id}: Handling an external url ...`,
             );
             const response = await http.axiosRef.get(url, {
-              responseType: 'arraybuffer', // Ensures the response is returned as a Buffer
+              responseType: "arraybuffer", // Ensures the response is returned as a Buffer
             });
             const fileBuffer = Buffer.from(response.data);
             const attachment = await attachmentService.store(fileBuffer, {
               name: uuidv4(),
               size: fileBuffer.length,
-              type: response.headers['content-type'],
+              type: response.headers["content-type"],
               channel: {},
               resourceRef: AttachmentResourceRef.MessageAttachment,
               access: msg.sender
@@ -749,12 +749,12 @@ const migrateAndPopulateAttachmentMessages = async ({
           );
 
           throw new Error(
-            'Unable to process message attachment: No ID or URL to be processed',
+            "Unable to process message attachment: No ID or URL to be processed",
           );
         }
       } else {
         throw new Error(
-          'Unable to process message attachment: Invalid Payload',
+          "Unable to process message attachment: Invalid Payload",
         );
       }
     } catch (error) {
@@ -777,20 +777,20 @@ const addDefaultStorageHelper = async ({ logger }: MigrationServices) => {
   try {
     await SettingModel.updateOne(
       {
-        group: 'chatbot_settings',
-        label: 'default_storage_helper',
+        group: "chatbot_settings",
+        label: "default_storage_helper",
       },
       {
-        group: 'chatbot_settings',
-        label: 'default_storage_helper',
-        value: 'local-storage-helper',
+        group: "chatbot_settings",
+        label: "default_storage_helper",
+        value: "local-storage-helper",
         type: SettingType.select,
         config: {
           multiple: false,
           allowCreate: false,
-          entity: 'Helper',
-          idKey: 'name',
-          labelKey: 'name',
+          entity: "Helper",
+          idKey: "name",
+          labelKey: "name",
         },
         weight: 2,
       },
@@ -798,9 +798,9 @@ const addDefaultStorageHelper = async ({ logger }: MigrationServices) => {
         upsert: true,
       },
     );
-    logger.log('Successfuly added the default local storage helper setting');
+    logger.log("Successfuly added the default local storage helper setting");
   } catch (err) {
-    logger.error('Unable to add the default local storage helper setting');
+    logger.error("Unable to add the default local storage helper setting");
   }
 };
 
@@ -808,12 +808,12 @@ const removeDefaultStorageHelper = async ({ logger }: MigrationServices) => {
   const SettingModel = mongoose.model<Setting>(Setting.name, settingSchema);
   try {
     await SettingModel.deleteOne({
-      group: 'chatbot_settings',
-      label: 'default_storage_helper',
+      group: "chatbot_settings",
+      label: "default_storage_helper",
     });
-    logger.log('Successfuly removed the default local storage helper setting');
+    logger.log("Successfuly removed the default local storage helper setting");
   } catch (err) {
-    logger.error('Unable to remove the default local storage helper setting');
+    logger.error("Unable to remove the default local storage helper setting");
   }
 };
 

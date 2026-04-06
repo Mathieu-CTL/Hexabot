@@ -6,39 +6,39 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { JwtService } from '@nestjs/jwt';
+import { EventEmitter2 } from "@nestjs/event-emitter";
+import { JwtService } from "@nestjs/jwt";
 
-import { webEventText } from '@/extensions/channels/web/__test__/events.mock';
-import WebChannelHandler from '@/extensions/channels/web/index.channel';
-import { WEB_CHANNEL_NAME } from '@/extensions/channels/web/settings';
-import WebEventWrapper from '@/extensions/channels/web/wrapper';
-import { I18nService } from '@/i18n/services/i18n.service';
-import { installBlockFixtures } from '@/utils/test/fixtures/block';
-import { installContentFixtures } from '@/utils/test/fixtures/content';
-import { installSubscriberFixtures } from '@/utils/test/fixtures/subscriber';
+import { webEventText } from "@/extensions/channels/web/__test__/events.mock";
+import WebChannelHandler from "@/extensions/channels/web/index.channel";
+import { WEB_CHANNEL_NAME } from "@/extensions/channels/web/settings";
+import WebEventWrapper from "@/extensions/channels/web/wrapper";
+import { I18nService } from "@/i18n/services/i18n.service";
+import { installBlockFixtures } from "@/utils/test/fixtures/block";
+import { installContentFixtures } from "@/utils/test/fixtures/content";
+import { installSubscriberFixtures } from "@/utils/test/fixtures/subscriber";
 import {
   buttonsBlock,
   mockWebChannelData,
   quickRepliesBlock,
   textBlock,
-} from '@/utils/test/mocks/block';
-import { conversationGetStarted } from '@/utils/test/mocks/conversation';
+} from "@/utils/test/mocks/block";
+import { conversationGetStarted } from "@/utils/test/mocks/conversation";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { BlockFull } from '../schemas/block.schema';
-import { Conversation, ConversationFull } from '../schemas/conversation.schema';
+import { BlockFull } from "../schemas/block.schema";
+import { Conversation, ConversationFull } from "../schemas/conversation.schema";
 
-import { BlockService } from './block.service';
-import { BotService } from './bot.service';
-import { ConversationService } from './conversation.service';
-import { SubscriberService } from './subscriber.service';
+import { BlockService } from "./block.service";
+import { BotService } from "./bot.service";
+import { ConversationService } from "./conversation.service";
+import { SubscriberService } from "./subscriber.service";
 
-describe('BotService', () => {
+describe("BotService", () => {
   let blockService: BlockService;
   let subscriberService: SubscriberService;
   let conversationService: ConversationService;
@@ -48,8 +48,8 @@ describe('BotService', () => {
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      models: ['LabelModel', 'CategoryModel'],
-      autoInjectFrom: ['providers'],
+      models: ["LabelModel", "CategoryModel"],
+      autoInjectFrom: ["providers"],
       imports: [
         rootMongooseTestModule(async () => {
           await installSubscriberFixtures();
@@ -88,15 +88,15 @@ describe('BotService', () => {
 
   afterEach(jest.resetAllMocks);
   afterAll(closeInMongodConnection);
-  describe('startConversation', () => {
+  describe("startConversation", () => {
     afterAll(() => {
       jest.restoreAllMocks();
     });
 
-    it('should start a conversation', async () => {
+    it("should start a conversation", async () => {
       const triggeredEvents: any[] = [];
 
-      eventEmitter.on('hook:stats:entry', (...args) => {
+      eventEmitter.on("hook:stats:entry", (...args) => {
         triggeredEvents.push(args);
       });
 
@@ -106,16 +106,16 @@ describe('BotService', () => {
         mockWebChannelData,
       );
 
-      const [block] = await blockService.findAndPopulate({ patterns: ['Hi'] });
+      const [block] = await blockService.findAndPopulate({ patterns: ["Hi"] });
       const webSubscriber = (await subscriberService.findOne({
-        foreign_id: 'foreign-id-web-1',
+        foreign_id: "foreign-id-web-1",
       }))!;
 
       event.setSender(webSubscriber);
 
       let hasBotSpoken = false;
       const clearMock = jest
-        .spyOn(botService, 'triggerBlock')
+        .spyOn(botService, "triggerBlock")
         .mockImplementation(
           (
             actualEvent: WebEventWrapper<typeof WEB_CHANNEL_NAME>,
@@ -131,7 +131,7 @@ describe('BotService', () => {
                 user: {
                   first_name: webSubscriber.first_name,
                   last_name: webSubscriber.last_name,
-                  language: 'en',
+                  language: "en",
                   id: webSubscriber.id,
                 },
                 user_location: {
@@ -143,7 +143,7 @@ describe('BotService', () => {
                 nlp: null,
                 payload: null,
                 attempt: 0,
-                channel: 'web-channel',
+                channel: "web-channel",
                 text: webEventText.data.text,
               },
             });
@@ -157,21 +157,21 @@ describe('BotService', () => {
       await botService.startConversation(event, block);
       expect(hasBotSpoken).toEqual(true);
       expect(triggeredEvents).toEqual([
-        ['popular', 'hasNextBlocks'],
-        ['new_conversations', 'New conversations'],
+        ["popular", "hasNextBlocks"],
+        ["new_conversations", "New conversations"],
       ]);
       clearMock.mockClear();
     });
   });
 
-  describe('processConversationMessage', () => {
+  describe("processConversationMessage", () => {
     afterAll(() => {
       jest.restoreAllMocks();
     });
 
-    it('has no active conversation', async () => {
+    it("has no active conversation", async () => {
       const triggeredEvents: any[] = [];
-      eventEmitter.on('hook:stats:entry', (...args) => {
+      eventEmitter.on("hook:stats:entry", (...args) => {
         triggeredEvents.push(args);
       });
       const event = new WebEventWrapper(
@@ -180,7 +180,7 @@ describe('BotService', () => {
         mockWebChannelData,
       );
       const webSubscriber = (await subscriberService.findOne({
-        foreign_id: 'foreign-id-web-2',
+        foreign_id: "foreign-id-web-2",
       }))!;
       event.setSender(webSubscriber);
       const captured = await botService.processConversationMessage(event);
@@ -189,10 +189,10 @@ describe('BotService', () => {
       expect(triggeredEvents).toEqual([]);
     });
 
-    it('should capture a conversation', async () => {
+    it("should capture a conversation", async () => {
       const triggeredEvents: any[] = [];
 
-      eventEmitter.on('hook:stats:entry', (...args) => {
+      eventEmitter.on("hook:stats:entry", (...args) => {
         triggeredEvents.push(args);
       });
 
@@ -202,22 +202,22 @@ describe('BotService', () => {
         mockWebChannelData,
       );
       const webSubscriber = (await subscriberService.findOne({
-        foreign_id: 'foreign-id-web-1',
+        foreign_id: "foreign-id-web-1",
       }))!;
       event.setSender(webSubscriber);
 
       jest
-        .spyOn(botService, 'handleOngoingConversationMessage')
+        .spyOn(botService, "handleOngoingConversationMessage")
         .mockImplementation(() => Promise.resolve(true));
       const captured = await botService.processConversationMessage(event);
       expect(captured).toBe(true);
       expect(triggeredEvents).toEqual([
-        ['existing_conversations', 'Existing conversations'],
+        ["existing_conversations", "Existing conversations"],
       ]);
     });
   });
 
-  describe('proceedToNextBlock', () => {
+  describe("proceedToNextBlock", () => {
     const mockEvent = new WebEventWrapper(
       handler,
       webEventText,
@@ -228,26 +228,26 @@ describe('BotService', () => {
       jest.restoreAllMocks();
     });
 
-    it('should emit stats and call triggerBlock, returning true on success and reset attempt if not fallback', async () => {
+    it("should emit stats and call triggerBlock, returning true on success and reset attempt if not fallback", async () => {
       const mockConvo = {
         ...conversationGetStarted,
-        id: 'convo1',
+        id: "convo1",
         context: { attempt: 2 },
         next: [],
-        sender: 'user1',
+        sender: "user1",
         active: true,
       } as unknown as ConversationFull;
-      const next = { id: 'block1', name: 'Block 1' } as BlockFull;
+      const next = { id: "block1", name: "Block 1" } as BlockFull;
       const fallback = false;
 
       jest
-        .spyOn(conversationService, 'storeContextData')
+        .spyOn(conversationService, "storeContextData")
         .mockImplementation(() => {
           return Promise.resolve(mockConvo as unknown as Conversation);
         });
 
-      jest.spyOn(botService, 'triggerBlock').mockResolvedValue(undefined);
-      const emitSpy = jest.spyOn(eventEmitter, 'emit');
+      jest.spyOn(botService, "triggerBlock").mockResolvedValue(undefined);
+      const emitSpy = jest.spyOn(eventEmitter, "emit");
       const result = await botService.proceedToNextBlock(
         mockConvo,
         next,
@@ -256,14 +256,14 @@ describe('BotService', () => {
       );
 
       expect(emitSpy).toHaveBeenCalledWith(
-        'hook:stats:entry',
-        'popular',
+        "hook:stats:entry",
+        "popular",
         next.name,
       );
 
       expect(botService.triggerBlock).toHaveBeenCalledWith(
         mockEvent,
-        expect.objectContaining({ id: 'convo1' }),
+        expect.objectContaining({ id: "convo1" }),
         next,
         fallback,
       );
@@ -271,16 +271,16 @@ describe('BotService', () => {
       expect(mockConvo.context.attempt).toBe(0);
     });
 
-    it('should increment attempt if fallback is true', async () => {
+    it("should increment attempt if fallback is true", async () => {
       const mockConvo = {
         ...conversationGetStarted,
-        id: 'convo2',
+        id: "convo2",
         context: { attempt: 1 },
         next: [],
-        sender: 'user2',
+        sender: "user2",
         active: true,
       } as unknown as ConversationFull;
-      const next = { id: 'block2', name: 'Block 2' } as any;
+      const next = { id: "block2", name: "Block 2" } as any;
       const fallback = true;
 
       const result = await botService.proceedToNextBlock(
@@ -294,23 +294,23 @@ describe('BotService', () => {
       expect(result).toBe(true);
     });
 
-    it('should handle errors and emit conversation:end, returning false', async () => {
+    it("should handle errors and emit conversation:end, returning false", async () => {
       const mockConvo = {
         ...conversationGetStarted,
-        id: 'convo3',
+        id: "convo3",
         context: { attempt: 1 },
         next: [],
-        sender: 'user3',
+        sender: "user3",
         active: true,
       } as unknown as ConversationFull;
-      const next = { id: 'block3', name: 'Block 3' } as any;
+      const next = { id: "block3", name: "Block 3" } as any;
       const fallback = false;
 
       jest
-        .spyOn(conversationService, 'storeContextData')
-        .mockRejectedValue(new Error('fail'));
+        .spyOn(conversationService, "storeContextData")
+        .mockRejectedValue(new Error("fail"));
 
-      const emitSpy = jest.spyOn(eventEmitter, 'emit');
+      const emitSpy = jest.spyOn(eventEmitter, "emit");
       const result = await botService.proceedToNextBlock(
         mockConvo,
         next,
@@ -318,20 +318,20 @@ describe('BotService', () => {
         fallback,
       );
 
-      expect(emitSpy).toHaveBeenCalledWith('hook:conversation:end', mockConvo);
+      expect(emitSpy).toHaveBeenCalledWith("hook:conversation:end", mockConvo);
       expect(result).toBe(false);
     });
   });
 
-  describe('handleOngoingConversationMessage', () => {
+  describe("handleOngoingConversationMessage", () => {
     const mockConvo = {
       ...conversationGetStarted,
-      id: 'convo1',
+      id: "convo1",
       context: { ...conversationGetStarted.context, attempt: 0 },
-      next: [{ id: 'block1' }],
+      next: [{ id: "block1" }],
       current: {
         ...conversationGetStarted.current,
-        id: 'block0',
+        id: "block0",
         options: {
           ...conversationGetStarted.current.options,
           fallback: {
@@ -357,17 +357,17 @@ describe('BotService', () => {
       jest.clearAllMocks();
     });
 
-    it('should proceed to the matched next block', async () => {
+    it("should proceed to the matched next block", async () => {
       const matchedBlock = {
         ...textBlock,
-        id: 'block1',
-        name: 'Block 1',
+        id: "block1",
+        name: "Block 1",
       } as BlockFull;
       jest
-        .spyOn(blockService, 'findAndPopulate')
+        .spyOn(blockService, "findAndPopulate")
         .mockResolvedValue([matchedBlock]);
-      jest.spyOn(blockService, 'match').mockResolvedValue(matchedBlock);
-      jest.spyOn(botService, 'proceedToNextBlock').mockResolvedValue(true);
+      jest.spyOn(blockService, "match").mockResolvedValue(matchedBlock);
+      jest.spyOn(botService, "proceedToNextBlock").mockResolvedValue(true);
 
       const result = await botService.handleOngoingConversationMessage(
         mockConvo,
@@ -380,11 +380,11 @@ describe('BotService', () => {
       expect(result).toBe(true);
     });
 
-    it('should proceed to fallback block if no match and fallback is allowed', async () => {
-      jest.spyOn(blockService, 'findAndPopulate').mockResolvedValue([]);
-      jest.spyOn(blockService, 'match').mockResolvedValue(undefined);
+    it("should proceed to fallback block if no match and fallback is allowed", async () => {
+      jest.spyOn(blockService, "findAndPopulate").mockResolvedValue([]);
+      jest.spyOn(blockService, "match").mockResolvedValue(undefined);
       const proceedSpy = jest
-        .spyOn(botService, 'proceedToNextBlock')
+        .spyOn(botService, "proceedToNextBlock")
         .mockResolvedValue(true);
 
       const result = await botService.handleOngoingConversationMessage(
@@ -394,14 +394,14 @@ describe('BotService', () => {
 
       expect(proceedSpy).toHaveBeenCalledWith(
         mockConvo,
-        expect.objectContaining({ id: 'block0', nextBlocks: mockConvo.next }),
+        expect.objectContaining({ id: "block0", nextBlocks: mockConvo.next }),
         mockEvent,
         true,
       );
       expect(result).toBe(true);
     });
 
-    it('should end conversation and return false if no match and fallback not allowed', async () => {
+    it("should end conversation and return false if no match and fallback not allowed", async () => {
       const mockConvoWithoutFallback = {
         ...mockConvo,
         current: {
@@ -416,9 +416,9 @@ describe('BotService', () => {
           },
         },
       } as unknown as ConversationFull;
-      jest.spyOn(blockService, 'findAndPopulate').mockResolvedValue([]);
-      jest.spyOn(blockService, 'match').mockResolvedValue(undefined);
-      const emitSpy = jest.spyOn(eventEmitter, 'emit');
+      jest.spyOn(blockService, "findAndPopulate").mockResolvedValue([]);
+      jest.spyOn(blockService, "match").mockResolvedValue(undefined);
+      const emitSpy = jest.spyOn(eventEmitter, "emit");
 
       const result = await botService.handleOngoingConversationMessage(
         mockConvoWithoutFallback,
@@ -426,26 +426,26 @@ describe('BotService', () => {
       );
 
       expect(emitSpy).toHaveBeenCalledWith(
-        'hook:conversation:end',
+        "hook:conversation:end",
         mockConvoWithoutFallback,
       );
       expect(result).toBe(false);
     });
 
-    it('should end conversation and throw if an error occurs', async () => {
+    it("should end conversation and throw if an error occurs", async () => {
       jest
-        .spyOn(blockService, 'findAndPopulate')
-        .mockRejectedValue(new Error('fail'));
-      const emitSpy = jest.spyOn(eventEmitter, 'emit');
+        .spyOn(blockService, "findAndPopulate")
+        .mockRejectedValue(new Error("fail"));
+      const emitSpy = jest.spyOn(eventEmitter, "emit");
 
       await expect(
         botService.handleOngoingConversationMessage(mockConvo, mockEvent),
-      ).rejects.toThrow('fail');
-      expect(emitSpy).toHaveBeenCalledWith('hook:conversation:end', mockConvo);
+      ).rejects.toThrow("fail");
+      expect(emitSpy).toHaveBeenCalledWith("hook:conversation:end", mockConvo);
     });
   });
 
-  describe('shouldAttemptLocalFallback', () => {
+  describe("shouldAttemptLocalFallback", () => {
     const mockEvent = new WebEventWrapper(
       handler,
       webEventText,
@@ -460,7 +460,7 @@ describe('BotService', () => {
       jest.resetAllMocks();
     });
 
-    it('should return true when fallback is active and max attempts not exceeded', () => {
+    it("should return true when fallback is active and max attempts not exceeded", () => {
       const result = botService.shouldAttemptLocalFallback(
         {
           ...conversationGetStarted,
@@ -471,7 +471,7 @@ describe('BotService', () => {
               fallback: {
                 active: true,
                 max_attempts: 1,
-                message: ['Please pick an option.'],
+                message: ["Please pick an option."],
               },
             },
           },
@@ -481,7 +481,7 @@ describe('BotService', () => {
       expect(result).toBe(true);
     });
 
-    it('should return true when fallback is active and max attempts not reached', () => {
+    it("should return true when fallback is active and max attempts not reached", () => {
       const result = botService.shouldAttemptLocalFallback(
         {
           ...conversationGetStarted,
@@ -492,7 +492,7 @@ describe('BotService', () => {
               fallback: {
                 active: true,
                 max_attempts: 3,
-                message: ['Please pick an option.'],
+                message: ["Please pick an option."],
               },
             },
           },
@@ -502,7 +502,7 @@ describe('BotService', () => {
       expect(result).toBe(true);
     });
 
-    it('should return false when fallback is not active', () => {
+    it("should return false when fallback is not active", () => {
       const result = botService.shouldAttemptLocalFallback(
         {
           ...conversationGetStarted,
@@ -523,7 +523,7 @@ describe('BotService', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when max attempts reached', () => {
+    it("should return false when max attempts reached", () => {
       const result = botService.shouldAttemptLocalFallback(
         {
           ...conversationGetStarted,
@@ -534,7 +534,7 @@ describe('BotService', () => {
               fallback: {
                 active: true,
                 max_attempts: 3,
-                message: ['Please pick an option.'],
+                message: ["Please pick an option."],
               },
             },
           },
@@ -544,7 +544,7 @@ describe('BotService', () => {
       expect(result).toBe(false);
     });
 
-    it('should return false when fallback options are missing', () => {
+    it("should return false when fallback options are missing", () => {
       const result = botService.shouldAttemptLocalFallback(
         {
           ...conversationGetStarted,
@@ -560,7 +560,7 @@ describe('BotService', () => {
     });
   });
 
-  describe('findNextMatchingBlock', () => {
+  describe("findNextMatchingBlock", () => {
     const mockEvent = new WebEventWrapper(
       handler,
       webEventText,
@@ -575,8 +575,8 @@ describe('BotService', () => {
       jest.resetAllMocks();
     });
 
-    it('should return a matching block if one is found and fallback is not active', async () => {
-      jest.spyOn(blockService, 'match').mockResolvedValue(buttonsBlock);
+    it("should return a matching block if one is found and fallback is not active", async () => {
+      jest.spyOn(blockService, "match").mockResolvedValue(buttonsBlock);
 
       const result = await botService.findNextMatchingBlock(
         {
@@ -607,8 +607,8 @@ describe('BotService', () => {
       expect(result).toBe(buttonsBlock);
     });
 
-    it('should return undefined if no matching block is found', async () => {
-      jest.spyOn(blockService, 'match').mockResolvedValue(undefined);
+    it("should return undefined if no matching block is found", async () => {
+      jest.spyOn(blockService, "match").mockResolvedValue(undefined);
 
       const result = await botService.findNextMatchingBlock(
         {
@@ -618,7 +618,7 @@ describe('BotService', () => {
             options: {
               fallback: {
                 active: true,
-                message: ['Please pick an option.'],
+                message: ["Please pick an option."],
                 max_attempts: 1,
               },
             },

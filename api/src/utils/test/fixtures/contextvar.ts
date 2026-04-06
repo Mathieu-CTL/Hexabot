@@ -6,43 +6,43 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-import { ContextVarCreateDto } from '@/chat/dto/context-var.dto';
-import { ContextVar, ContextVarModel } from '@/chat/schemas/context-var.schema';
+import { ContextVarCreateDto } from "@/chat/dto/context-var.dto";
+import { ContextVar, ContextVarModel } from "@/chat/schemas/context-var.schema";
 
-import { getFixturesWithDefaultValues } from '../defaultValues';
-import { FixturesTypeBuilder } from '../types';
+import { getFixturesWithDefaultValues } from "../defaultValues";
+import { FixturesTypeBuilder } from "../types";
 
 type TContentVarFixtures = FixturesTypeBuilder<ContextVar, ContextVarCreateDto>;
 
-export const contentVarDefaultValues: TContentVarFixtures['defaultValues'] = {
+export const contentVarDefaultValues: TContentVarFixtures["defaultValues"] = {
   permanent: false,
 };
 
-const contextVars: TContentVarFixtures['values'][] = [
+const contextVars: TContentVarFixtures["values"][] = [
   {
-    label: 'Phone',
-    name: 'phone',
+    label: "Phone",
+    name: "phone",
     permanent: true,
   },
   {
-    label: 'Country',
-    name: 'country',
+    label: "Country",
+    name: "country",
     permanent: false,
   },
   {
-    label: 'test context var 1',
-    name: 'test1',
+    label: "test context var 1",
+    name: "test1",
   },
   {
-    label: 'test context var 2',
-    name: 'test2',
+    label: "test context var 2",
+    name: "test2",
   },
 ];
 
 export const contextVarFixtures = getFixturesWithDefaultValues<
-  TContentVarFixtures['values']
+  TContentVarFixtures["values"]
 >({
   fixtures: contextVars,
   defaultValues: contentVarDefaultValues,

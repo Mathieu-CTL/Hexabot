@@ -6,7 +6,7 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { IOOutgoingMessage } from '../pipes/io-message.pipe';
+import { IOOutgoingMessage } from "../pipes/io-message.pipe";
 
 export class SocketResponse {
   private statusCode: number = 200;
@@ -71,7 +71,7 @@ export class SocketResponse {
   }
 
   json<T = Partial<IOOutgoingMessage>>(data: T): T {
-    this.set('Content-Type', 'application/json');
+    this.set("Content-Type", "application/json");
     return this.send(data) as T;
   }
 

@@ -6,32 +6,32 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { JwtService } from '@nestjs/jwt';
+import { JwtService } from "@nestjs/jwt";
 
-import { Attachment } from '@/attachment/schemas/attachment.schema';
+import { Attachment } from "@/attachment/schemas/attachment.schema";
 import {
   IncomingMessageType,
   StdEventType,
-} from '@/chat/schemas/types/message';
-import { I18nService } from '@/i18n/services/i18n.service';
-import { installSubscriberFixtures } from '@/utils/test/fixtures/subscriber';
+} from "@/chat/schemas/types/message";
+import { I18nService } from "@/i18n/services/i18n.service";
+import { installSubscriberFixtures } from "@/utils/test/fixtures/subscriber";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import WebChannelHandler from '../index.channel';
-import { WEB_CHANNEL_NAME } from '../settings';
-import WebEventWrapper from '../wrapper';
+import WebChannelHandler from "../index.channel";
+import { WEB_CHANNEL_NAME } from "../settings";
+import WebEventWrapper from "../wrapper";
 
-import { webEvents } from './events.mock';
+import { webEvents } from "./events.mock";
 
 describe(`Web event wrapper`, () => {
   let handler: WebChannelHandler;
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['providers'],
+      autoInjectFrom: ["providers"],
       imports: [rootMongooseTestModule(installSubscriberFixtures)],
       providers: [
         JwtService,
@@ -52,7 +52,7 @@ describe(`Web event wrapper`, () => {
     await closeInMongodConnection();
   });
 
-  test.each(webEvents)('should wrap event : %s', (_testCase, e, expected) => {
+  test.each(webEvents)("should wrap event : %s", (_testCase, e, expected) => {
     const event = new WebEventWrapper(
       handler as unknown as WebChannelHandler,
       e,
@@ -64,9 +64,9 @@ describe(`Web event wrapper`, () => {
       event._adapter.messageType === IncomingMessageType.attachments
     ) {
       event._adapter.attachment = {
-        id: '9'.repeat(24),
-        type: 'image/png',
-        name: 'filename.extension',
+        id: "9".repeat(24),
+        type: "image/png",
+        name: "filename.extension",
       } as Attachment;
     }
 

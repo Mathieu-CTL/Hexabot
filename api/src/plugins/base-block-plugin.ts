@@ -6,23 +6,23 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import path from 'path';
+import path from "path";
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
-import { Block, BlockFull } from '@/chat/schemas/block.schema';
-import { Context } from '@/chat/schemas/types/context';
-import { StdOutgoingEnvelope } from '@/chat/schemas/types/message';
+import { Block, BlockFull } from "@/chat/schemas/block.schema";
+import { Context } from "@/chat/schemas/types/context";
+import { StdOutgoingEnvelope } from "@/chat/schemas/types/message";
 
-import { BasePlugin } from './base-plugin.service';
-import { PluginService } from './plugins.service';
+import { BasePlugin } from "./base-plugin.service";
+import { PluginService } from "./plugins.service";
 import {
   PluginBlockTemplate,
   PluginEffects,
   PluginName,
   PluginSetting,
   PluginType,
-} from './types';
+} from "./types";
 
 @Injectable()
 export abstract class BaseBlockPlugin<
@@ -35,7 +35,7 @@ export abstract class BaseBlockPlugin<
   constructor(name: PluginName, pluginService: PluginService<BasePlugin>) {
     super(name, pluginService);
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    this.settings = require(path.join(this.getPath(), 'settings')).default;
+    this.settings = require(path.join(this.getPath(), "settings")).default;
   }
 
   getDefaultSettings(): Promise<T> | T {
@@ -53,7 +53,7 @@ export abstract class BaseBlockPlugin<
   ): Promise<StdOutgoingEnvelope>;
 
   protected getArguments(block: Block) {
-    if ('args' in block.message) {
+    if ("args" in block.message) {
       return (
         Object.entries(block.message.args)
           // Filter out old settings

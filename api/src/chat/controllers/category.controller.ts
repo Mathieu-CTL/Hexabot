@@ -1,5 +1,5 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2026 Hexastack. All rights reserved.
  *
  * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
@@ -18,20 +18,20 @@ import {
   Patch,
   Post,
   Query,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
-import { BaseController } from '@/utils/generics/base-controller';
-import { DeleteResult } from '@/utils/generics/base-repository';
-import { PageQueryDto } from '@/utils/pagination/pagination-query.dto';
-import { PageQueryPipe } from '@/utils/pagination/pagination-query.pipe';
-import { SearchFilterPipe } from '@/utils/pipes/search-filter.pipe';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { BaseController } from "@/utils/generics/base-controller";
+import { DeleteResult } from "@/utils/generics/base-repository";
+import { PageQueryDto } from "@/utils/pagination/pagination-query.dto";
+import { PageQueryPipe } from "@/utils/pagination/pagination-query.pipe";
+import { SearchFilterPipe } from "@/utils/pipes/search-filter.pipe";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
-import { CategoryCreateDto, CategoryUpdateDto } from '../dto/category.dto';
-import { Category } from '../schemas/category.schema';
-import { CategoryService } from '../services/category.service';
+import { CategoryCreateDto, CategoryUpdateDto } from "../dto/category.dto";
+import { Category } from "../schemas/category.schema";
+import { CategoryService } from "../services/category.service";
 
-@Controller('category')
+@Controller("category")
 export class CategoryController extends BaseController<Category> {
   constructor(private readonly categoryService: CategoryService) {
     super(categoryService);
@@ -46,7 +46,7 @@ export class CategoryController extends BaseController<Category> {
   @Get()
   async findPage(
     @Query(PageQueryPipe) pageQuery: PageQueryDto<Category>,
-    @Query(new SearchFilterPipe<Category>({ allowedFields: ['label'] }))
+    @Query(new SearchFilterPipe<Category>({ allowedFields: ["label"] }))
     filters: TFilterQuery<Category>,
   ) {
     return await this.categoryService.find(filters, pageQuery);
@@ -56,11 +56,11 @@ export class CategoryController extends BaseController<Category> {
    * Counts the filtered number of categories.
    * @returns A promise that resolves to an object representing the filtered number of categories.
    */
-  @Get('count')
+  @Get("count")
   async filterCount(
     @Query(
       new SearchFilterPipe<Category>({
-        allowedFields: ['label'],
+        allowedFields: ["label"],
       }),
     )
     filters?: TFilterQuery<Category>,
@@ -73,8 +73,8 @@ export class CategoryController extends BaseController<Category> {
    * @param id - The ID of the category to find.
    * @returns A Promise that resolves to the found category.
    */
-  @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Category> {
+  @Get(":id")
+  async findOne(@Param("id") id: string): Promise<Category> {
     const doc = await this.categoryService.findOne(id);
     if (!doc) {
       this.logger.warn(`Unable to find Category by id ${id}`);
@@ -99,9 +99,9 @@ export class CategoryController extends BaseController<Category> {
    * @param categoryUpdate - The updated data for the category.
    * @returns A Promise that resolves to the updated category.
    */
-  @Patch(':id')
+  @Patch(":id")
   async updateOne(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body() categoryUpdate: CategoryUpdateDto,
   ): Promise<Category> {
     return await this.categoryService.updateOne(id, categoryUpdate);
@@ -112,9 +112,9 @@ export class CategoryController extends BaseController<Category> {
    * @param id - The ID of the category to be deleted.
    * @returns A Promise that resolves to the deletion result.
    */
-  @Delete(':id')
+  @Delete(":id")
   @HttpCode(204)
-  async deleteOne(@Param('id') id: string): Promise<DeleteResult> {
+  async deleteOne(@Param("id") id: string): Promise<DeleteResult> {
     const result = await this.categoryService.deleteOne(id);
     if (result.deletedCount === 0) {
       this.logger.warn(`Unable to delete Category by id ${id}`);
@@ -128,11 +128,11 @@ export class CategoryController extends BaseController<Category> {
    * @param ids - IDs of categories to be deleted.
    * @returns A Promise that resolves to the deletion result.
    */
-  @Delete('')
+  @Delete("")
   @HttpCode(204)
-  async deleteMany(@Body('ids') ids?: string[]): Promise<DeleteResult> {
+  async deleteMany(@Body("ids") ids?: string[]): Promise<DeleteResult> {
     if (!ids?.length) {
-      throw new BadRequestException('No IDs provided for deletion.');
+      throw new BadRequestException("No IDs provided for deletion.");
     }
     const deleteResult = await this.categoryService.deleteMany({
       _id: { $in: ids },
@@ -140,10 +140,10 @@ export class CategoryController extends BaseController<Category> {
 
     if (deleteResult.deletedCount === 0) {
       this.logger.warn(`Unable to delete categories with provided IDs: ${ids}`);
-      throw new NotFoundException('Categories with provided IDs not found');
+      throw new NotFoundException("Categories with provided IDs not found");
     }
 
-    this.logger.log(`Successfully deleted categories with IDs: ${ids}`);
+    this.logger.info(`Successfully deleted categories with IDs: ${ids}`);
     return deleteResult;
   }
 }

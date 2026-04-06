@@ -6,19 +6,19 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { InternalServerErrorException } from '@nestjs/common';
-import { IoAdapter } from '@nestjs/platform-socket.io';
-import { createAdapter } from '@socket.io/redis-adapter';
-import { createClient } from 'redis';
-import { ServerOptions } from 'socket.io';
+import { InternalServerErrorException } from "@nestjs/common";
+import { IoAdapter } from "@nestjs/platform-socket.io";
+import { createAdapter } from "@socket.io/redis-adapter";
+import { createClient } from "redis";
+import { ServerOptions } from "socket.io";
 
-import { config } from '@/config';
+import { config } from "@/config";
 
 export class RedisIoAdapter extends IoAdapter {
   private adapter: ReturnType<typeof createAdapter>;
 
   async connectToRedis(): Promise<void> {
-    if (config.cache.host !== 'redis') {
+    if (config.cache.host !== "redis") {
       throw new InternalServerErrorException(
         `Unable to run connect to redis host is ${config.cache.host} instead of 'redis'`,
       );
@@ -32,10 +32,10 @@ export class RedisIoAdapter extends IoAdapter {
     };
     const pubClient = createClient(redisConfig);
     const subClient = pubClient.duplicate();
-    pubClient.on('error', (error) => {
+    pubClient.on("error", (error) => {
       throw error;
     });
-    subClient.on('error', (error) => {
+    subClient.on("error", (error) => {
       throw error;
     });
     await Promise.all([pubClient.connect(), subClient.connect()]);

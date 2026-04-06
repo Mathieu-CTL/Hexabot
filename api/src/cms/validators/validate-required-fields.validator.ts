@@ -6,27 +6,27 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException } from "@nestjs/common";
 import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
-} from 'class-validator';
+} from "class-validator";
 
-import { FieldType } from '@/setting/schemas/types';
+import { FieldType } from "@/setting/schemas/types";
 
-import { ContentField } from '../dto/contentType.dto';
+import { ContentField } from "../dto/contentType.dto";
 
-@ValidatorConstraint({ name: 'validateRequiredFields', async: false })
+@ValidatorConstraint({ name: "validateRequiredFields", async: false })
 export class ValidateRequiredFields implements ValidatorConstraintInterface {
   private readonly REQUIRED_FIELDS: ContentField[] = [
     {
-      name: 'title',
-      label: 'Title',
+      name: "title",
+      label: "Title",
       type: FieldType.text,
     },
     {
-      name: 'status',
-      label: 'Status',
+      name: "status",
+      label: "Status",
       type: FieldType.checkbox,
     },
   ];
@@ -59,6 +59,6 @@ export class ValidateRequiredFields implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'The fields must match the required structure.';
+    return "The fields must match the required structure.";
   }
 }

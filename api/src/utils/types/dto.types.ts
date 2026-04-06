@@ -7,10 +7,10 @@
  */
 
 export enum DtoAction {
-  Create = 'create',
-  Read = 'read',
-  Update = 'update',
-  Delete = 'delete',
+  Create = "create",
+  Read = "read",
+  Update = "update",
+  Delete = "delete",
 }
 
 export type DtoConfig<

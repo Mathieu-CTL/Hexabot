@@ -6,25 +6,25 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Inject, Injectable } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
-import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
+import { Inject, Injectable } from "@nestjs/common";
+import { OnEvent } from "@nestjs/event-emitter";
+import { Cache } from "cache-manager";
 
-import { config } from '@/config';
-import { Config } from '@/config/types';
+import { config } from "@/config";
+import { Config } from "@/config/types";
 import {
   ALLOWED_ORIGINS_CACHE_KEY,
   SETTING_CACHE_KEY,
-} from '@/utils/constants/cache';
-import { Cacheable } from '@/utils/decorators/cacheable.decorator';
-import { BaseService } from '@/utils/generics/base-service';
+} from "@/utils/constants/cache";
+import { Cacheable } from "@/utils/decorators/cacheable.decorator";
+import { BaseService } from "@/utils/generics/base-service";
 
-import { SettingCreateDto } from '../dto/setting.dto';
-import { SettingRepository } from '../repositories/setting.repository';
-import { Setting } from '../schemas/setting.schema';
-import { TextSetting } from '../schemas/types';
-import { SettingSeeder } from '../seeds/setting.seed';
+import { SettingCreateDto } from "../dto/setting.dto";
+import { SettingRepository } from "../repositories/setting.repository";
+import { Setting } from "../schemas/setting.schema";
+import { TextSetting } from "../schemas/types";
+import { SettingSeeder } from "../seeds/setting.seed";
 
 @Injectable()
 export class SettingService extends BaseService<Setting> {
@@ -55,7 +55,7 @@ export class SettingService extends BaseService<Setting> {
    * @returns A grouped object of settings.
    */
   async load() {
-    const settings = await this.findAll(['weight', 'asc']);
+    const settings = await this.findAll(["weight", "asc"]);
     return this.group(settings);
   }
 
@@ -70,7 +70,7 @@ export class SettingService extends BaseService<Setting> {
    */
   public buildTree(settings: Setting[]): Settings {
     return settings.reduce((acc: Settings, s: Setting) => {
-      const groupKey = s.group || 'undefinedGroup';
+      const groupKey = s.group || "undefinedGroup";
 
       acc[groupKey] = acc[groupKey] || {};
       acc[groupKey][s.label] = s.value;
@@ -119,7 +119,7 @@ export class SettingService extends BaseService<Setting> {
    * Event handler for setting updates. Listens to 'hook:setting:*' events
    * and invalidates the cache for settings when triggered.
    */
-  @OnEvent('hook:setting:*')
+  @OnEvent("hook:setting:*")
   async handleSettingUpdateEvent() {
     this.clearCache();
   }
@@ -137,11 +137,11 @@ export class SettingService extends BaseService<Setting> {
   @Cacheable(ALLOWED_ORIGINS_CACHE_KEY)
   async getAllowedOrigins(): Promise<string[]> {
     const settings = (await this.find({
-      label: 'allowed_domains',
+      label: "allowed_domains",
     })) as TextSetting[];
 
     const allowedDomains = settings.flatMap((setting) =>
-      setting.value.split(',').filter((o) => !!o),
+      setting.value.split(",").filter((o) => !!o),
     );
 
     const uniqueOrigins = new Set([

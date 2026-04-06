@@ -6,23 +6,23 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Inject, Injectable } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
-import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
+import { Inject, Injectable } from "@nestjs/common";
+import { OnEvent } from "@nestjs/event-emitter";
+import { Cache } from "cache-manager";
 
-import { PERMISSION_CACHE_KEY } from '@/utils/constants/cache';
-import { Cacheable } from '@/utils/decorators/cacheable.decorator';
-import { BaseService } from '@/utils/generics/base-service';
+import { PERMISSION_CACHE_KEY } from "@/utils/constants/cache";
+import { Cacheable } from "@/utils/decorators/cacheable.decorator";
+import { BaseService } from "@/utils/generics/base-service";
 
-import { PermissionDto } from '../dto/permission.dto';
-import { PermissionRepository } from '../repositories/permission.repository';
+import { PermissionDto } from "../dto/permission.dto";
+import { PermissionRepository } from "../repositories/permission.repository";
 import {
   Permission,
   PermissionFull,
   PermissionPopulate,
-} from '../schemas/permission.schema';
-import { PermissionsTree } from '../types/permission.type';
+} from "../schemas/permission.schema";
+import { PermissionsTree } from "../types/permission.type";
 
 @Injectable()
 export class PermissionService extends BaseService<
@@ -44,8 +44,8 @@ export class PermissionService extends BaseService<
    * This method listens to events matching the pattern 'hook:access:*:*' and clears
    * the permissions cache to ensure fresh data is used for subsequent requests.
    */
-  @OnEvent('hook:role:*')
-  @OnEvent('hook:permission:*')
+  @OnEvent("hook:role:*")
+  @OnEvent("hook:permission:*")
   async handlePermissionUpdateEvent() {
     await this.cacheManager.del(PERMISSION_CACHE_KEY);
   }

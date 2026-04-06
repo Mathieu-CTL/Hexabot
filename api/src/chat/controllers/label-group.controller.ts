@@ -1,5 +1,5 @@
 /*
- * Copyright © 2025 Hexastack. All rights reserved.
+ * Copyright © 2026 Hexastack. All rights reserved.
  *
  * Licensed under the GNU Affero General Public License v3.0 (AGPLv3) with the following additional terms:
  * 1. The name "Hexabot" is a trademark of Hexastack. You may not use this name in derivative works without express written permission.
@@ -18,23 +18,23 @@ import {
   Patch,
   Post,
   Query,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
-import { BaseController } from '@/utils/generics/base-controller';
-import { DeleteResult } from '@/utils/generics/base-repository';
-import { PageQueryDto } from '@/utils/pagination/pagination-query.dto';
-import { PageQueryPipe } from '@/utils/pagination/pagination-query.pipe';
-import { SearchFilterPipe } from '@/utils/pipes/search-filter.pipe';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { BaseController } from "@/utils/generics/base-controller";
+import { DeleteResult } from "@/utils/generics/base-repository";
+import { PageQueryDto } from "@/utils/pagination/pagination-query.dto";
+import { PageQueryPipe } from "@/utils/pagination/pagination-query.pipe";
+import { SearchFilterPipe } from "@/utils/pipes/search-filter.pipe";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
 import {
   LabelGroupCreateDto,
   LabelGroupUpdateDto,
-} from '../dto/label-group.dto';
-import { LabelGroup } from '../schemas/label-group.schema';
-import { LabelGroupService } from '../services/label-group.service';
+} from "../dto/label-group.dto";
+import { LabelGroup } from "../schemas/label-group.schema";
+import { LabelGroupService } from "../services/label-group.service";
 
-@Controller('labelgroup')
+@Controller("labelgroup")
 export class LabelGroupController extends BaseController<
   LabelGroup,
   LabelGroup,
@@ -52,7 +52,7 @@ export class LabelGroupController extends BaseController<
   @Get()
   async findPage(
     @Query(PageQueryPipe) pageQuery: PageQueryDto<LabelGroup>,
-    @Query(new SearchFilterPipe<LabelGroup>({ allowedFields: ['name'] }))
+    @Query(new SearchFilterPipe<LabelGroup>({ allowedFields: ["name"] }))
     filters: TFilterQuery<LabelGroup>,
   ) {
     return await this.labelGroupService.find(filters, pageQuery);
@@ -62,11 +62,11 @@ export class LabelGroupController extends BaseController<
    * Counts the filtered number of label groups.
    * @returns A promise that resolves to an object representing the filtered number of labels.
    */
-  @Get('count')
+  @Get("count")
   async filterCount(
     @Query(
       new SearchFilterPipe<LabelGroup>({
-        allowedFields: ['name'],
+        allowedFields: ["name"],
       }),
     )
     filters?: TFilterQuery<LabelGroup>,
@@ -78,8 +78,8 @@ export class LabelGroupController extends BaseController<
    * Returns the label group by ID
    * @returns A promise that resolves to a label group.
    */
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
+  @Get(":id")
+  async findOne(@Param("id") id: string) {
     const doc = await this.labelGroupService.findOne(id);
     if (!doc) {
       this.logger.warn(`Unable to find Label Group by id ${id}`);
@@ -101,9 +101,9 @@ export class LabelGroupController extends BaseController<
    * Updates a label group by ID
    * @returns A promise that resolves to the created label group.
    */
-  @Patch(':id')
+  @Patch(":id")
   async updateOne(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body() labelGroupUpdate: LabelGroupUpdateDto,
   ) {
     return await this.labelGroupService.updateOne(id, labelGroupUpdate);
@@ -113,9 +113,9 @@ export class LabelGroupController extends BaseController<
    * Deletes a label group by ID
    * @returns A promise that resolves to the label group deletion result.
    */
-  @Delete(':id')
+  @Delete(":id")
   @HttpCode(204)
-  async deleteOne(@Param('id') id: string) {
+  async deleteOne(@Param("id") id: string) {
     const result = await this.labelGroupService.deleteOne(id);
     if (result.deletedCount === 0) {
       this.logger.warn(`Unable to delete Label Group by id ${id}`);
@@ -129,11 +129,11 @@ export class LabelGroupController extends BaseController<
    * @param ids - IDs of label groups to be deleted.
    * @returns A Promise that resolves to the deletion result.
    */
-  @Delete('')
+  @Delete("")
   @HttpCode(204)
-  async deleteMany(@Body('ids') ids?: string[]): Promise<DeleteResult> {
+  async deleteMany(@Body("ids") ids?: string[]): Promise<DeleteResult> {
     if (!ids?.length) {
-      throw new BadRequestException('No IDs provided for deletion.');
+      throw new BadRequestException("No IDs provided for deletion.");
     }
     const deleteResult = await this.labelGroupService.deleteMany({
       _id: { $in: ids },
@@ -143,10 +143,10 @@ export class LabelGroupController extends BaseController<
       this.logger.warn(
         `Unable to delete Label Groups with provided IDs: ${ids}`,
       );
-      throw new NotFoundException('Label Groups with provided IDs not found');
+      throw new NotFoundException("Label Groups with provided IDs not found");
     }
 
-    this.logger.log(`Successfully deleted Label Groups with IDs: ${ids}`);
+    this.logger.info(`Successfully deleted Label Groups with IDs: ${ids}`);
     return deleteResult;
   }
 }

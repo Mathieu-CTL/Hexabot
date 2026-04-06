@@ -6,14 +6,14 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Module } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { MongooseModule } from '@nestjs/mongoose';
+import { Module } from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
+import { MongooseModule } from "@nestjs/mongoose";
 
-import { BotStatsController } from './controllers/bot-stats.controller';
-import { BotStatsRepository } from './repositories/bot-stats.repository';
-import { BotStatsModel } from './schemas/bot-stats.schema';
-import { BotStatsService } from './services/bot-stats.service';
+import { BotStatsController } from "./controllers/bot-stats.controller";
+import { BotStatsRepository } from "./repositories/bot-stats.repository";
+import { BotStatsModel } from "./schemas/bot-stats.schema";
+import { BotStatsService } from "./services/bot-stats.service";
 
 @Module({
   imports: [MongooseModule.forFeature([BotStatsModel]), EventEmitter2],

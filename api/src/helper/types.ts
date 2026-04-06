@@ -6,14 +6,14 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ExtensionSetting } from '@/setting/schemas/types';
-import { HyphenToUnderscore } from '@/utils/types/extension';
+import { ExtensionSetting } from "@/setting/schemas/types";
+import { HyphenToUnderscore } from "@/utils/types/extension";
 
-import BaseFlowEscapeHelper from './lib/base-flow-escape-helper';
-import BaseHelper from './lib/base-helper';
-import BaseLlmHelper from './lib/base-llm-helper';
-import BaseNlpHelper from './lib/base-nlp-helper';
-import BaseStorageHelper from './lib/base-storage-helper';
+import BaseFlowEscapeHelper from "./lib/base-flow-escape-helper";
+import BaseHelper from "./lib/base-helper";
+import BaseLlmHelper from "./lib/base-llm-helper";
+import BaseNlpHelper from "./lib/base-nlp-helper";
+import BaseStorageHelper from "./lib/base-storage-helper";
 
 export namespace NLU {
   export interface ParseEntity {
@@ -80,25 +80,25 @@ export namespace LLM {
    */
   export enum ResponseSchemaType {
     /** String type. */
-    STRING = 'string',
+    STRING = "string",
     /** Number type. */
-    NUMBER = 'number',
+    NUMBER = "number",
     /** Integer type. */
-    INTEGER = 'integer',
+    INTEGER = "integer",
     /** Boolean type. */
-    BOOLEAN = 'boolean',
+    BOOLEAN = "boolean",
     /** Array type. */
-    ARRAY = 'array',
+    ARRAY = "array",
     /** Object type. */
-    OBJECT = 'object',
+    OBJECT = "object",
   }
 }
 
 export namespace FlowEscape {
   export enum Action {
-    REPROMPT = 're_prompt',
-    COERCE = 'coerce_to_option',
-    NEW_CTX = 'new_context',
+    REPROMPT = "re_prompt",
+    COERCE = "coerce_to_option",
+    NEW_CTX = "new_context",
   }
 
   export type AdjudicationResult =
@@ -116,11 +116,11 @@ export namespace FlowEscape {
 }
 
 export enum HelperType {
-  NLU = 'nlu',
-  LLM = 'llm',
-  FLOW_ESCAPE = 'flow_escape',
-  STORAGE = 'storage',
-  UTIL = 'util',
+  NLU = "nlu",
+  LLM = "llm",
+  FLOW_ESCAPE = "flow_escape",
+  STORAGE = "storage",
+  UTIL = "util",
 }
 
 export type HelperName = `${string}-helper`;

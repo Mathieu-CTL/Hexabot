@@ -6,9 +6,9 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { registerDecorator, ValidationOptions } from 'class-validator';
+import { registerDecorator, ValidationOptions } from "class-validator";
 
-import { UniqueFieldNamesConstraint } from '../validators/validate-unique-names.validator';
+import { UniqueFieldNamesConstraint } from "../validators/validate-unique-names.validator";
 
 export function UniqueFieldNames(validationOptions?: ValidationOptions) {
   return function (object: Record<string, any>, propertyName: string) {

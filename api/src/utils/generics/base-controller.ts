@@ -6,16 +6,16 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Inject, NotFoundException } from '@nestjs/common';
+import { Inject, NotFoundException } from "@nestjs/common";
 
-import { LoggerService } from '@/logger/logger.service';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { LoggerService } from "@/logger/logger.service";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
-import { DtoConfig } from '../types/dto.types';
-import { TValidateProps } from '../types/filter.types';
+import { DtoConfig } from "../types/dto.types";
+import { TValidateProps } from "../types/filter.types";
 
-import { BaseSchema } from './base-schema';
-import { BaseService } from './base-service';
+import { BaseSchema } from "./base-schema";
+import { BaseService } from "./base-service";
 
 export abstract class BaseController<
   T extends BaseSchema,
@@ -67,13 +67,13 @@ export abstract class BaseController<
         if (invalidIds.length) {
           exceptions.push(
             `${field} with ID${
-              invalidIds.length > 1 ? 's' : ''
+              invalidIds.length > 1 ? "s" : ""
             } '${invalidIds}' not found`,
           );
         }
       });
 
-    if (exceptions.length) throw new NotFoundException(exceptions.join('; '));
+    if (exceptions.length) throw new NotFoundException(exceptions.join("; "));
   }
 
   /**

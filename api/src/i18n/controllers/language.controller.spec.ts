@@ -6,35 +6,35 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException } from "@nestjs/common";
 
-import { NOT_FOUND_ID } from '@/utils/constants/mock';
-import { getUpdateOneError } from '@/utils/test/errors/messages';
+import { NOT_FOUND_ID } from "@/utils/constants/mock";
+import { getUpdateOneError } from "@/utils/test/errors/messages";
 import {
   installLanguageFixtures,
   languageFixtures,
-} from '@/utils/test/fixtures/language';
-import { getPageQuery } from '@/utils/test/pagination';
+} from "@/utils/test/fixtures/language";
+import { getPageQuery } from "@/utils/test/pagination";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { LanguageUpdateDto } from '../dto/language.dto';
-import { Language } from '../schemas/language.schema';
-import { LanguageService } from '../services/language.service';
+import { LanguageUpdateDto } from "../dto/language.dto";
+import { Language } from "../schemas/language.schema";
+import { LanguageService } from "../services/language.service";
 
-import { LanguageController } from './language.controller';
+import { LanguageController } from "./language.controller";
 
-describe('LanguageController', () => {
+describe("LanguageController", () => {
   let languageController: LanguageController;
   let languageService: LanguageService;
   let language: Language;
 
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      autoInjectFrom: ['controllers'],
+      autoInjectFrom: ["controllers"],
       imports: [rootMongooseTestModule(installLanguageFixtures)],
       controllers: [LanguageController],
     });
@@ -42,15 +42,15 @@ describe('LanguageController', () => {
       LanguageService,
       LanguageController,
     ]);
-    language = (await languageService.findOne({ code: 'en' })) as Language;
+    language = (await languageService.findOne({ code: "en" })) as Language;
   });
 
   afterEach(jest.clearAllMocks);
   afterAll(closeInMongodConnection);
 
-  describe('count', () => {
-    it('should count languages', async () => {
-      jest.spyOn(languageService, 'count');
+  describe("count", () => {
+    it("should count languages", async () => {
+      jest.spyOn(languageService, "count");
       const result = await languageController.filterCount();
 
       expect(languageService.count).toHaveBeenCalled();
@@ -58,9 +58,9 @@ describe('LanguageController', () => {
     });
   });
 
-  describe('findOne', () => {
-    it('should find one translation by id', async () => {
-      jest.spyOn(languageService, 'findOne');
+  describe("findOne", () => {
+    it("should find one translation by id", async () => {
+      jest.spyOn(languageService, "findOne");
       const result = await languageController.findOne(language.id);
 
       expect(languageService.findOne).toHaveBeenCalledWith(language.id);
@@ -70,10 +70,10 @@ describe('LanguageController', () => {
     });
   });
 
-  describe('find', () => {
-    const pageQuery = getPageQuery<Language>({ sort: ['code', 'asc'] });
-    it('should find languages', async () => {
-      jest.spyOn(languageService, 'find');
+  describe("find", () => {
+    const pageQuery = getPageQuery<Language>({ sort: ["code", "asc"] });
+    it("should find languages", async () => {
+      jest.spyOn(languageService, "find");
       const result = await languageController.findPage(pageQuery, {});
 
       expect(languageService.find).toHaveBeenCalledWith({}, pageQuery);
@@ -91,12 +91,12 @@ describe('LanguageController', () => {
     });
   });
 
-  describe('updateOne', () => {
+  describe("updateOne", () => {
     const translationUpdateDto: LanguageUpdateDto = {
-      title: 'English (US)',
+      title: "English (US)",
     };
-    it('should update one language by id', async () => {
-      jest.spyOn(languageService, 'updateOne');
+    it("should update one language by id", async () => {
+      jest.spyOn(languageService, "updateOne");
       const result = await languageController.updateOne(
         language.id,
         translationUpdateDto,
@@ -112,11 +112,11 @@ describe('LanguageController', () => {
       });
     });
 
-    it('should mark a language as default', async () => {
-      jest.spyOn(languageService, 'updateOne');
+    it("should mark a language as default", async () => {
+      jest.spyOn(languageService, "updateOne");
       const translationUpdateDto = { isDefault: true };
       const frLang = (await languageService.findOne({
-        code: 'fr',
+        code: "fr",
       })) as Language;
       const result = await languageController.updateOne(
         frLang.id,
@@ -133,21 +133,21 @@ describe('LanguageController', () => {
       });
 
       const enLang = (await languageService.findOne({
-        code: 'en',
+        code: "en",
       })) as Language;
       expect(enLang.isDefault).toBe(false);
     });
 
-    it('should throw a NotFoundException when attempting to update a translation by id', async () => {
-      jest.spyOn(languageService, 'updateOne');
+    it("should throw a NotFoundException when attempting to update a translation by id", async () => {
+      jest.spyOn(languageService, "updateOne");
       await expect(
         languageController.updateOne(NOT_FOUND_ID, translationUpdateDto),
       ).rejects.toThrow(getUpdateOneError(Language.name, NOT_FOUND_ID));
     });
   });
 
-  describe('deleteOne', () => {
-    it('should throw when attempting to delete the default language', async () => {
+  describe("deleteOne", () => {
+    it("should throw when attempting to delete the default language", async () => {
       const defaultLang = (await languageService.findOne({
         isDefault: true,
       })) as Language;

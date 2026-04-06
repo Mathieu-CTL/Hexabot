@@ -6,17 +6,17 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { RequestHandler } from 'express';
-import session from 'express-session';
+import { RequestHandler } from "express";
+import session from "express-session";
 
-import { config } from '@/config';
+import { config } from "@/config";
 
-import { getSessionStore } from './session-store';
+import { getSessionStore } from "./session-store";
 
 let sessionMiddleware: RequestHandler | null = null;
 
 export const getSessionMiddleware = () => {
-  const isProduction = config.env.toLowerCase().includes('prod');
+  const isProduction = config.env.toLowerCase().includes("prod");
 
   if (!sessionMiddleware) {
     sessionMiddleware = session({
@@ -29,7 +29,7 @@ export const getSessionMiddleware = () => {
       cookie: {
         httpOnly: true,
         secure: config.security.httpsEnabled,
-        path: '/',
+        path: "/",
         maxAge: isProduction
           ? 1000 * 60 * 60 * 24 //prod 24h
           : 1000 * 60 * 60, //dev 1h

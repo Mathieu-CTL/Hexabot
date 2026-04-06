@@ -6,34 +6,34 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { getModelToken } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { getModelToken } from "@nestjs/mongoose";
+import { Model } from "mongoose";
 
-import { PageQueryDto } from '@/utils/pagination/pagination-query.dto';
+import { PageQueryDto } from "@/utils/pagination/pagination-query.dto";
 import {
   installInvitationFixtures,
   invitationsFixtures,
-} from '@/utils/test/fixtures/invitation';
-import { getPageQuery } from '@/utils/test/pagination';
+} from "@/utils/test/fixtures/invitation";
+import { getPageQuery } from "@/utils/test/pagination";
 import {
   closeInMongodConnection,
   rootMongooseTestModule,
-} from '@/utils/test/test';
-import { buildTestingMocks } from '@/utils/test/utils';
+} from "@/utils/test/test";
+import { buildTestingMocks } from "@/utils/test/utils";
 
-import { Invitation, InvitationFull } from '../schemas/invitation.schema';
+import { Invitation, InvitationFull } from "../schemas/invitation.schema";
 
-import { InvitationRepository } from './invitation.repository';
-import { RoleRepository } from './role.repository';
+import { InvitationRepository } from "./invitation.repository";
+import { RoleRepository } from "./role.repository";
 
-describe('InvitationRepository', () => {
+describe("InvitationRepository", () => {
   let roleRepository: RoleRepository;
   let invitationRepository: InvitationRepository;
   let invitationModel: Model<Invitation>;
   beforeAll(async () => {
     const { getMocks } = await buildTestingMocks({
-      models: ['PermissionModel'],
-      autoInjectFrom: ['providers'],
+      models: ["PermissionModel"],
+      autoInjectFrom: ["providers"],
       imports: [rootMongooseTestModule(installInvitationFixtures)],
       providers: [RoleRepository, InvitationRepository],
     });
@@ -48,9 +48,9 @@ describe('InvitationRepository', () => {
 
   afterEach(jest.clearAllMocks);
 
-  describe('findOneAndPopulate', () => {
-    it('should find one invitation and populate its roles', async () => {
-      jest.spyOn(invitationModel, 'findById');
+  describe("findOneAndPopulate", () => {
+    it("should find one invitation and populate its roles", async () => {
+      jest.spyOn(invitationModel, "findById");
       const toTestAgainst = invitationsFixtures[0];
       const invitation = await invitationRepository.findOne({
         email: toTestAgainst.email,
@@ -73,9 +73,9 @@ describe('InvitationRepository', () => {
       });
     });
   });
-  describe('findAndPopulate', () => {
-    it('should find users, and for each user populate the corresponding roles', async () => {
-      jest.spyOn(invitationModel, 'find');
+  describe("findAndPopulate", () => {
+    it("should find users, and for each user populate the corresponding roles", async () => {
+      jest.spyOn(invitationModel, "find");
       const pageQuery: PageQueryDto<Invitation> = getPageQuery<Invitation>();
       const allInvitations = await invitationRepository.findAll();
       const allRoles = await roleRepository.findAll();
@@ -83,7 +83,7 @@ describe('InvitationRepository', () => {
         {},
         {
           ...pageQuery,
-          sort: ['email', 'asc'],
+          sort: ["email", "asc"],
         },
       );
       const invitationsWithRoles = allInvitations.reduce((acc, currInv) => {

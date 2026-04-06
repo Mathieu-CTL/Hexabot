@@ -1,0 +1,57 @@
+name: "Chore / Technical improvement"
+description: Refactoring, tooling, CI/CD, dependency updates, documentation.
+title: "[CHORE] - <title>"
+labels: ["type/chore", "status/triage"]
+body:
+  - type: textarea
+    id: motivation
+    attributes:
+      label: "Motivation"
+      description: Why is this change needed?
+      placeholder: Describe the problem or limitation this chore addresses.
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: "Scope"
+      description: What files, modules, or areas will be affected?
+      placeholder: List the components or files involved.
+    validations:
+      required: true
+
+  - type: textarea
+    id: dod
+    attributes:
+      label: "Definition of Done"
+      description: When is this task considered complete?
+      value: |
+        - [ ] CI pipeline passes
+        - [ ] Documentation updated if needed
+        - [ ] Code review approved
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: "Affected component"
+      multiple: true
+      options:
+        - api
+        - frontend
+        - widget
+        - docker / infra
+        - ci/cd
+        - docs
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: "Related issues"
+      placeholder: "#123, #456"
+    validations:
+      required: false

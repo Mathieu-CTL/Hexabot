@@ -6,7 +6,7 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Type } from 'class-transformer';
+import { Type } from "class-transformer";
 import {
   IsDate,
   IsEnum,
@@ -14,10 +14,10 @@ import {
   IsNumber,
   IsOptional,
   IsString,
-} from 'class-validator';
+} from "class-validator";
 
-import { BotStatsType } from '../schemas/bot-stats.schema';
-import { IsLessThanDate } from '../validation-rules/is-less-than-date';
+import { BotStatsType } from "../schemas/bot-stats.schema";
+import { IsLessThanDate } from "../validation-rules/is-less-than-date";
 
 export class BotStatsCreateDto {
   @IsNotEmpty()
@@ -44,8 +44,8 @@ export class BotStatsFindDto {
   @IsDate()
   @Type(() => Date)
   @IsOptional()
-  @IsLessThanDate('to', {
-    message: 'From date must be less than or equal to To date',
+  @IsLessThanDate("to", {
+    message: "From date must be less than or equal to To date",
   })
   from?: Date;
 

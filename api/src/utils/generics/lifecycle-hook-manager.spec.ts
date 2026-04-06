@@ -6,19 +6,19 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ModelDefinition } from '@nestjs/mongoose';
+import { ModelDefinition } from "@nestjs/mongoose";
 
-import { LifecycleHookManager } from './lifecycle-hook-manager';
+import { LifecycleHookManager } from "./lifecycle-hook-manager";
 
 afterEach(jest.clearAllMocks);
 
-describe('LifecycleHookManager', () => {
+describe("LifecycleHookManager", () => {
   let modelMock: ModelDefinition;
 
   beforeEach(() => {
     // Mock ModelDefinition
     modelMock = {
-      name: 'TestModel',
+      name: "TestModel",
       schema: {
         pre: jest.fn(),
         post: jest.fn(),
@@ -26,31 +26,31 @@ describe('LifecycleHookManager', () => {
     } as unknown as ModelDefinition;
   });
 
-  it('should attach pre and post hooks to the schema', () => {
+  it("should attach pre and post hooks to the schema", () => {
     // Attach hooks
     const result = LifecycleHookManager.attach(modelMock);
 
     // Check if the hooks were attached
     expect(result).toEqual(modelMock);
     expect(modelMock.schema.pre).toHaveBeenCalledWith(
-      'save',
+      "save",
       expect.any(Function),
     );
     expect(modelMock.schema.post).toHaveBeenCalledWith(
-      'save',
+      "save",
       expect.any(Function),
     );
     // Similarly, you can check for other hooks
   });
 
-  it('should return hooks attached to a specific model', () => {
+  it("should return hooks attached to a specific model", () => {
     if (!LifecycleHookManager.getModel(modelMock.name)) {
       // Attach hooks to mock model
       LifecycleHookManager.attach(modelMock);
     }
 
     // Retrieve hooks
-    const hooks = LifecycleHookManager.getHooks('TestModel');
+    const hooks = LifecycleHookManager.getHooks("TestModel");
 
     // Validate the hooks
     expect(hooks).toBeDefined();
@@ -58,9 +58,9 @@ describe('LifecycleHookManager', () => {
     expect(hooks!.deleteOne).toBeDefined();
   });
 
-  it('should return undefined for unknown models', () => {
+  it("should return undefined for unknown models", () => {
     // Ensure undefined is returned for models without attached hooks
-    const hooks = LifecycleHookManager.getHooks('UnknownModel');
+    const hooks = LifecycleHookManager.getHooks("UnknownModel");
     expect(hooks).toBeUndefined();
   });
 });

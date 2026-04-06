@@ -11,8 +11,8 @@ import {
   BadRequestException,
   Injectable,
   PipeTransform,
-} from '@nestjs/common';
-import { ZodError, ZodTypeAny } from 'zod';
+} from "@nestjs/common";
+import { ZodError, ZodTypeAny } from "zod";
 
 /**
  * Validates a single query-parameter with a given Zod schema.
@@ -36,7 +36,7 @@ export class ZodQueryParamPipe implements PipeTransform {
   async transform(query: any, metadata: ArgumentMetadata) {
     const payload = this.accessor ? this.accessor(query) : query;
     // We care only about query params
-    if (typeof payload === 'undefined' || metadata.type !== 'query') {
+    if (typeof payload === "undefined" || metadata.type !== "query") {
       return payload;
     }
 
@@ -47,7 +47,7 @@ export class ZodQueryParamPipe implements PipeTransform {
       const error = parsed.error as ZodError;
       throw new BadRequestException({
         statusCode: 400,
-        error: 'Bad Request',
+        error: "Bad Request",
         message: `Validation failed for query param`,
         details: error.flatten(),
       });

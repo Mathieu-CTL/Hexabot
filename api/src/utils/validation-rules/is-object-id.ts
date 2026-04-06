@@ -6,8 +6,8 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { registerDecorator, ValidationOptions } from 'class-validator';
-import { Types } from 'mongoose';
+import { registerDecorator, ValidationOptions } from "class-validator";
+import { Types } from "mongoose";
 
 export const IsObjectId =
   (validationOptions?: ValidationOptions) =>
@@ -18,7 +18,7 @@ export const IsObjectId =
       options: validationOptions,
       validator: {
         validate(value: any) {
-          return Types.ObjectId.isValid(value) ? value : '';
+          return Types.ObjectId.isValid(value) ? value : "";
         },
       },
     });

@@ -6,9 +6,9 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { ConflictException, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { plainToInstance } from 'class-transformer';
+import { ConflictException, Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { plainToInstance } from "class-transformer";
 import {
   Document,
   Model,
@@ -16,22 +16,22 @@ import {
   Types,
   UpdateQuery,
   UpdateWithAggregationPipeline,
-} from 'mongoose';
+} from "mongoose";
 
-import { SettingService } from '@/setting/services/setting.service';
-import { BaseRepository, DeleteResult } from '@/utils/generics/base-repository';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { SettingService } from "@/setting/services/setting.service";
+import { BaseRepository, DeleteResult } from "@/utils/generics/base-repository";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
-import { DEFAULT_BLOCK_SEARCH_LIMIT } from '../constants/block';
-import { BlockCreateDto, BlockDto, BlockUpdateDto } from '../dto/block.dto';
-import { ConversationRepository } from '../repositories/conversation.repository';
+import { DEFAULT_BLOCK_SEARCH_LIMIT } from "../constants/block";
+import { BlockCreateDto, BlockDto, BlockUpdateDto } from "../dto/block.dto";
+import { ConversationRepository } from "../repositories/conversation.repository";
 import {
   Block,
   BLOCK_POPULATE,
   BlockFull,
   BlockPopulate,
   SearchRankedBlock,
-} from '../schemas/block.schema';
+} from "../schemas/block.schema";
 
 @Injectable()
 export class BlockRepository extends BaseRepository<
@@ -85,17 +85,17 @@ export class BlockRepository extends BaseRepository<
               ? { category }
               : {}),
           },
-          { score: { $meta: 'textScore' } },
+          { score: { $meta: "textScore" } },
         )
-        .sort({ score: { $meta: 'textScore' }, createdAt: -1 })
+        .sort({ score: { $meta: "textScore" }, createdAt: -1 })
         .limit(limit)
         .lean<SearchRankedBlock[]>()
         .exec();
       return plainToInstance(SearchRankedBlock, docs, {
-        excludePrefixes: ['_'],
+        excludePrefixes: ["_"],
       }) as SearchRankedBlock[];
     } catch (error) {
-      this.logger?.error('Block search failed:', error);
+      this.logger?.error("Block search failed:", error);
       throw error;
     }
   }
@@ -108,12 +108,12 @@ export class BlockRepository extends BaseRepository<
   checkDeprecatedAttachmentUrl(block: BlockCreateDto | BlockUpdateDto) {
     if (
       block.message &&
-      'attachment' in block.message &&
+      "attachment" in block.message &&
       block.message.attachment.payload &&
-      'url' in block.message.attachment.payload
+      "url" in block.message.attachment.payload
     ) {
       this.logger?.error(
-        'NOTE: `url` payload has been deprecated in favor of `id`',
+        "NOTE: `url` payload has been deprecated in favor of `id`",
         block.name,
       );
     }
@@ -143,14 +143,14 @@ export class BlockRepository extends BaseRepository<
       Document<Block, any, any>,
       unknown,
       Block,
-      'findOneAndUpdate'
+      "findOneAndUpdate"
     >,
     criteria: TFilterQuery<Block>,
     updates:
       | UpdateWithAggregationPipeline
       | UpdateQuery<Document<Block, any, any>>,
   ): Promise<void> {
-    const update: BlockUpdateDto = updates?.['$set'];
+    const update: BlockUpdateDto = updates?.["$set"];
 
     if (update?.category) {
       const movedBlock = await this.findOne(criteria);
@@ -186,7 +186,7 @@ export class BlockRepository extends BaseRepository<
       Document<Block, any, any>,
       unknown,
       Block,
-      'updateMany',
+      "updateMany",
       Record<string, never>
     >,
     criteria: TFilterQuery<Block>,
@@ -252,7 +252,7 @@ export class BlockRepository extends BaseRepository<
           ids.includes(nextBlock),
         );
 
-        const updatedAttachedBlock = ids.includes(attachedBlock || '')
+        const updatedAttachedBlock = ids.includes(attachedBlock || "")
           ? attachedBlock
           : null;
 
@@ -326,7 +326,7 @@ export class BlockRepository extends BaseRepository<
       Document<Block, any, any>,
       unknown,
       Block,
-      'deleteOne' | 'deleteMany'
+      "deleteOne" | "deleteMany"
     >,
     result: DeleteResult,
   ) {
@@ -347,7 +347,7 @@ export class BlockRepository extends BaseRepository<
       Document<Block, any, any>,
       unknown,
       Block,
-      'deleteOne' | 'deleteMany'
+      "deleteOne" | "deleteMany"
     >,
     criteria: TFilterQuery<Block>,
   ) {
@@ -364,7 +364,7 @@ export class BlockRepository extends BaseRepository<
       });
       if (inUse) {
         throw new ConflictException(
-          'Cannot delete block: it is currently used by an active conversation.',
+          "Cannot delete block: it is currently used by an active conversation.",
         );
       }
 
@@ -379,7 +379,7 @@ export class BlockRepository extends BaseRepository<
         idsToDelete.includes(fallbackBlockId)
       ) {
         throw new ConflictException(
-          'Cannot delete block: it is configured as the global fallback block in settings.',
+          "Cannot delete block: it is configured as the global fallback block in settings.",
         );
       }
 

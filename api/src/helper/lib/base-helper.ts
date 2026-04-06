@@ -6,17 +6,17 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import path from 'path';
+import path from "path";
 
-import { OnModuleInit } from '@nestjs/common';
+import { OnModuleInit } from "@nestjs/common";
 
-import { LoggerService } from '@/logger/logger.service';
-import { SettingService } from '@/setting/services/setting.service';
-import { Extension } from '@/utils/generics/extension';
-import { HyphenToUnderscore } from '@/utils/types/extension';
+import { LoggerService } from "@/logger/logger.service";
+import { SettingService } from "@/setting/services/setting.service";
+import { Extension } from "@/utils/generics/extension";
+import { HyphenToUnderscore } from "@/utils/types/extension";
 
-import { HelperService } from '../helper.service';
-import { HelperName, HelperSetting, HelperType } from '../types';
+import { HelperService } from "../helper.service";
+import { HelperName, HelperSetting, HelperType } from "../types";
 
 export default abstract class BaseHelper<N extends HelperName = HelperName>
   extends Extension
@@ -34,7 +34,7 @@ export default abstract class BaseHelper<N extends HelperName = HelperName>
   ) {
     super(name);
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    this.settings = require(path.join(this.getPath(), 'settings')).default;
+    this.settings = require(path.join(this.getPath(), "settings")).default;
   }
 
   async onModuleInit() {

@@ -1,0 +1,28 @@
+diff --git a/node_modules/mongodb-memory-server-core/lib/util/getport/index.js b/node_modules/mongodb-memory-server-core/lib/util/getport/index.js
+index b8f8410..155baba 100644
+--- a/node_modules/mongodb-memory-server-core/lib/util/getport/index.js
++++ b/node_modules/mongodb-memory-server-core/lib/util/getport/index.js
+@@ -25,7 +25,7 @@ const PORTS_CACHE = {
+     lastNumber: exports.MIN_PORT,
+ };
+ /** Max default tries before giving up */
+-const MAX_DEFAULT_TRIES = 10;
++const MAX_DEFAULT_TRIES = 100;
+ /**
+  * Try to get a free port
+  * @param firstPort The first port to try or empty for semi-random port
+@@ -102,12 +102,12 @@ function tryPort(port) {
+             server.unref(); // dont keep this server from exiting the application
+         }
+         server.on('error', (err) => {
+-            if (err?.code !== 'EADDRINUSE') {
++            if (err?.code !== 'EADDRINUSE' && err?.code !== 'EACCES') {
+                 rej(err);
+             }
+             res(-1);
+         });
+-        server.listen(port, () => {
++        server.listen(port, '127.0.0.1', () => {
+             const address = server.address();
+             const port = address.port;
+             server.close();

@@ -6,24 +6,24 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-import { ModelCreateDto } from '@/user/dto/model.dto';
-import { ModelModel } from '@/user/schemas/model.schema';
+import { ModelCreateDto } from "@/user/dto/model.dto";
+import { ModelModel } from "@/user/schemas/model.schema";
 
 export const modelFixtures: ModelCreateDto[] = [
   {
-    name: 'ContentType',
-    identity: 'contenttype',
-    attributes: { att: 'att' },
-    relation: 'role',
+    name: "ContentType",
+    identity: "contenttype",
+    attributes: { att: "att" },
+    relation: "role",
   },
 
   {
-    name: 'Content',
-    identity: 'content',
-    attributes: { att: 'att' },
-    relation: 'role',
+    name: "Content",
+    identity: "content",
+    attributes: { att: "att" },
+    relation: "role",
   },
 ];
 

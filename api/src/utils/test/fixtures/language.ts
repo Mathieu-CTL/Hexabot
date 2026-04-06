@@ -6,21 +6,21 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-import { LanguageCreateDto } from '@/i18n/dto/language.dto';
-import { LanguageModel } from '@/i18n/schemas/language.schema';
+import { LanguageCreateDto } from "@/i18n/dto/language.dto";
+import { LanguageModel } from "@/i18n/schemas/language.schema";
 
 export const languageFixtures: LanguageCreateDto[] = [
   {
-    title: 'English',
-    code: 'en',
+    title: "English",
+    code: "en",
     isDefault: true,
     isRTL: false,
   },
   {
-    title: 'Français',
-    code: 'fr',
+    title: "Français",
+    code: "fr",
     isDefault: false,
     isRTL: false,
   },

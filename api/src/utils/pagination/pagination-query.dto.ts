@@ -6,12 +6,12 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { SortOrder } from 'mongoose';
+import { SortOrder } from "mongoose";
 
-import { BaseSchema } from '../generics/base-schema';
+import { BaseSchema } from "../generics/base-schema";
 
 export type QuerySortDto<T> = [
-  Exclude<keyof T | keyof BaseSchema | '_id', 'id'>,
+  Exclude<keyof T | keyof BaseSchema | "_id", "id">,
   SortOrder,
 ];
 

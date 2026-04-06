@@ -10,38 +10,38 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
-import { Document, Query } from 'mongoose';
-import Papa from 'papaparse';
+} from "@nestjs/common";
+import { OnEvent } from "@nestjs/event-emitter";
+import { Document, Query } from "mongoose";
+import Papa from "papaparse";
 
-import { Message } from '@/chat/schemas/message.schema';
-import { NlpValueMatchPattern } from '@/chat/schemas/types/pattern';
-import { Language } from '@/i18n/schemas/language.schema';
-import { LanguageService } from '@/i18n/services/language.service';
-import { DeleteResult } from '@/utils/generics/base-repository';
-import { BaseService } from '@/utils/generics/base-service';
-import { PageQueryDto } from '@/utils/pagination/pagination-query.dto';
+import { Message } from "@/chat/schemas/message.schema";
+import { NlpValueMatchPattern } from "@/chat/schemas/types/pattern";
+import { Language } from "@/i18n/schemas/language.schema";
+import { LanguageService } from "@/i18n/services/language.service";
+import { DeleteResult } from "@/utils/generics/base-repository";
+import { BaseService } from "@/utils/generics/base-service";
+import { PageQueryDto } from "@/utils/pagination/pagination-query.dto";
 import {
   TFilterQuery,
   THydratedDocument,
   TProjectionType,
-} from '@/utils/types/filter.types';
+} from "@/utils/types/filter.types";
 
-import { NlpSampleEntityCreateDto } from '../dto/nlp-sample-entity.dto';
-import { NlpSampleCreateDto, TNlpSampleDto } from '../dto/nlp-sample.dto';
-import { NlpSampleRepository } from '../repositories/nlp-sample.repository';
-import { NlpEntityFull } from '../schemas/nlp-entity.schema';
+import { NlpSampleEntityCreateDto } from "../dto/nlp-sample-entity.dto";
+import { NlpSampleCreateDto, TNlpSampleDto } from "../dto/nlp-sample.dto";
+import { NlpSampleRepository } from "../repositories/nlp-sample.repository";
+import { NlpEntityFull } from "../schemas/nlp-entity.schema";
 import {
   NlpSample,
   NlpSampleFull,
   NlpSamplePopulate,
-} from '../schemas/nlp-sample.schema';
-import { NlpSampleEntityValue, NlpSampleState } from '../schemas/types';
+} from "../schemas/nlp-sample.schema";
+import { NlpSampleEntityValue, NlpSampleState } from "../schemas/types";
 
-import { NlpEntityService } from './nlp-entity.service';
-import { NlpSampleEntityService } from './nlp-sample-entity.service';
-import { NlpValueService } from './nlp-value.service';
+import { NlpEntityService } from "./nlp-entity.service";
+import { NlpSampleEntityService } from "./nlp-sample-entity.service";
+import { NlpValueService } from "./nlp-value.service";
 
 @Injectable()
 export class NlpSampleService extends BaseService<
@@ -180,7 +180,7 @@ export class NlpSampleService extends BaseService<
    * @param type - The sample type (e.g., 'train', 'test').
    * @returns An object containing the samples and entities.
    */
-  public async getAllSamplesAndEntitiesByType(type: NlpSample['type']) {
+  public async getAllSamplesAndEntitiesByType(type: NlpSample["type"]) {
     const samples = await this.findAndPopulate({
       type,
     });
@@ -214,7 +214,7 @@ export class NlpSampleService extends BaseService<
     // Check if file location is present
     if (allEntities.length === 0) {
       throw new NotFoundException(
-        'No entities found, please create them first.',
+        "No entities found, please create them first.",
       );
     }
 
@@ -233,11 +233,11 @@ export class NlpSampleService extends BaseService<
       );
       throw new BadRequestException(result.errors, {
         cause: result.errors,
-        description: 'Error while parsing CSV',
+        description: "Error while parsing CSV",
       });
     }
     // Remove data with no intent
-    const filteredData = result.data.filter((d) => d.intent !== 'none');
+    const filteredData = result.data.filter((d) => d.intent !== "none");
     const languages = await this.languageService.getLanguages();
     const defaultLanguage = await this.languageService.getDefaultLanguage();
     const nlpSamples: NlpSample[] = [];
@@ -283,7 +283,7 @@ export class NlpSampleService extends BaseService<
         const storedEntities = await this.nlpEntityService.storeNewEntities(
           sample.text,
           entities,
-          ['trait'],
+          ["trait"],
         );
 
         // Store sample
@@ -298,7 +298,7 @@ export class NlpSampleService extends BaseService<
         // Store sample entities
         await this.nlpSampleEntityService.createMany(sampleEntities);
       } catch (err) {
-        this.logger.error('Error occurred when extracting data. ', err);
+        this.logger.error("Error occurred when extracting data. ", err);
       }
     }
 
@@ -317,8 +317,8 @@ export class NlpSampleService extends BaseService<
       // For each value, get any sample that may contain the keyword or any of it's synonyms
       const keywords = [value.value, ...value.expressions];
       const samples = await this.find({
-        text: { $regex: `\\b(${keywords.join('|')})\\b`, $options: 'i' },
-        type: ['train', 'test'],
+        text: { $regex: `\\b(${keywords.join("|")})\\b`, $options: "i" },
+        type: ["train", "test"],
       });
 
       if (samples.length > 0) {
@@ -332,7 +332,7 @@ export class NlpSampleService extends BaseService<
               this.nlpSampleEntityService.extractKeywordEntities(sample, value);
 
             if (!matches.length) {
-              throw new Error('Something went wrong, unable to match keywords');
+              throw new Error("Something went wrong, unable to match keywords");
             }
 
             const updates = matches.map((dto) =>
@@ -357,14 +357,14 @@ export class NlpSampleService extends BaseService<
    *
    * @param language The language that has been deleted.
    */
-  @OnEvent('hook:language:preDelete')
+  @OnEvent("hook:language:preDelete")
   async handleLanguageDelete(
     _query: Query<
       DeleteResult,
       Document<Language, any, any>,
       unknown,
       Language,
-      'deleteOne' | 'deleteMany'
+      "deleteOne" | "deleteMany"
     >,
     criteria: TFilterQuery<Language>,
   ) {
@@ -401,14 +401,14 @@ export class NlpSampleService extends BaseService<
     }
   }
 
-  @OnEvent('hook:message:preCreate')
+  @OnEvent("hook:message:preCreate")
   async handleNewMessage(doc: THydratedDocument<Message>) {
     // If message is sent by the user then add it as an inbox sample
     if (
-      'sender' in doc &&
+      "sender" in doc &&
       doc.sender &&
-      'message' in doc &&
-      'text' in doc.message
+      "message" in doc &&
+      "text" in doc.message
     ) {
       const defaultLang = await this.languageService.getDefaultLanguage();
       const record: NlpSampleCreateDto = {
@@ -420,9 +420,9 @@ export class NlpSampleService extends BaseService<
       };
       try {
         await this.findOneOrCreate(record, record);
-        this.logger.debug('User message saved as a inbox sample !');
+        this.logger.debug("User message saved as a inbox sample !");
       } catch (err) {
-        this.logger.warn('Unable to add message as a new inbox sample!', err);
+        this.logger.warn("Unable to add message as a new inbox sample!", err);
       }
     }
   }

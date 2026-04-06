@@ -6,11 +6,11 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
 
-import { BaseRepository } from '@/utils/generics/base-repository';
-import { TFilterQuery } from '@/utils/types/filter.types';
+import { BaseRepository } from "@/utils/generics/base-repository";
+import { TFilterQuery } from "@/utils/types/filter.types";
 
 import {
   Invitation,
@@ -18,8 +18,8 @@ import {
   InvitationDocument,
   InvitationFull,
   InvitationPopulate,
-} from '../schemas/invitation.schema';
-import { hash } from '../utilities/hash';
+} from "../schemas/invitation.schema";
+import { hash } from "../utilities/hash";
 
 export class InvitationRepository extends BaseRepository<
   Invitation,
@@ -39,7 +39,7 @@ export class InvitationRepository extends BaseRepository<
     if (_doc?.token) {
       _doc.token = hash(_doc.token);
     } else {
-      throw new Error('No token provided');
+      throw new Error("No token provided");
     }
   }
 

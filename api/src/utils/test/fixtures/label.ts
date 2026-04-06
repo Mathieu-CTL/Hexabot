@@ -6,58 +6,58 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-import { LabelCreateDto } from '@/chat/dto/label.dto';
-import { Label, LabelModel } from '@/chat/schemas/label.schema';
+import { LabelCreateDto } from "@/chat/dto/label.dto";
+import { Label, LabelModel } from "@/chat/schemas/label.schema";
 
-import { getFixturesWithDefaultValues } from '../defaultValues';
-import { FixturesTypeBuilder } from '../types';
+import { getFixturesWithDefaultValues } from "../defaultValues";
+import { FixturesTypeBuilder } from "../types";
 
 export type TLabelFixtures = FixturesTypeBuilder<Label, LabelCreateDto>;
 
-export const contentLabelDefaultValues: TLabelFixtures['defaultValues'] = {
+export const contentLabelDefaultValues: TLabelFixtures["defaultValues"] = {
   builtin: false,
 };
 
-export const labels: TLabelFixtures['values'][] = [
+export const labels: TLabelFixtures["values"][] = [
   {
-    description: 'test description 1',
+    description: "test description 1",
     label_id: {
-      messenger: 'messenger',
-      web: 'web',
-      twitter: 'twitter',
-      dimelo: 'dimelo',
+      messenger: "messenger",
+      web: "web",
+      twitter: "twitter",
+      dimelo: "dimelo",
     },
-    name: 'TEST_TITLE_1',
-    title: 'test title 1',
+    name: "TEST_TITLE_1",
+    title: "test title 1",
   },
   {
-    description: 'test description 2',
+    description: "test description 2",
     label_id: {
-      messenger: 'messenger',
-      web: 'web',
-      twitter: 'twitter',
-      dimelo: 'dimelo',
+      messenger: "messenger",
+      web: "web",
+      twitter: "twitter",
+      dimelo: "dimelo",
     },
-    name: 'TEST_TITLE_2',
-    title: 'test title 2',
+    name: "TEST_TITLE_2",
+    title: "test title 2",
   },
   {
-    description: 'test description 3',
+    description: "test description 3",
     label_id: {
-      messenger: 'messenger',
-      web: 'web',
-      twitter: 'twitter',
-      dimelo: 'dimelo',
+      messenger: "messenger",
+      web: "web",
+      twitter: "twitter",
+      dimelo: "dimelo",
     },
-    name: 'TEST_TITLE_3',
-    title: 'test title 3',
+    name: "TEST_TITLE_3",
+    title: "test title 3",
   },
 ];
 
 export const labelFixtures = getFixturesWithDefaultValues<
-  TLabelFixtures['values']
+  TLabelFixtures["values"]
 >({
   fixtures: labels,
   defaultValues: contentLabelDefaultValues,

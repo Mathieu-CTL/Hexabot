@@ -6,18 +6,18 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { Block, BlockStub } from '@/chat/schemas/block.schema';
-import { ConversationFull } from '@/chat/schemas/conversation.schema';
-import { Context } from '@/chat/schemas/types/context';
-import { SubscriberContext } from '@/chat/schemas/types/subscriberContext';
+import { Block, BlockStub } from "@/chat/schemas/block.schema";
+import { ConversationFull } from "@/chat/schemas/conversation.schema";
+import { Context } from "@/chat/schemas/types/context";
+import { SubscriberContext } from "@/chat/schemas/types/subscriberContext";
 
-import { quickRepliesBlock, textBlock } from './block';
-import { modelInstance } from './misc';
-import { subscriberInstance } from './subscriber';
+import { quickRepliesBlock, textBlock } from "./block";
+import { modelInstance } from "./misc";
+import { subscriberInstance } from "./subscriber";
 
 export const contextBlankInstance: Context = {
-  channel: 'web-channel',
-  text: '',
+  channel: "web-channel",
+  text: "",
   payload: undefined,
   nlp: { entities: [] },
   vars: {},
@@ -37,17 +37,17 @@ export const subscriberContextBlankInstance: SubscriberContext = {
 export const contextEmailVarInstance: Context = {
   ...contextBlankInstance,
   vars: {
-    email: 'email@example.com',
+    email: "email@example.com",
   },
 };
 
 export const contextGetStartedInstance: Context = {
-  channel: 'web-channel',
-  text: 'Get Started',
-  payload: 'GET_STARTED',
+  channel: "web-channel",
+  text: "Get Started",
+  payload: "GET_STARTED",
   nlp: { entities: [] },
   vars: {
-    email: 'email@example.com',
+    email: "email@example.com",
   },
   user_location: {
     lat: 0,

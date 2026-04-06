@@ -6,15 +6,15 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { config } from '@/config';
+import { config } from "@/config";
 
-import { PageQueryDto } from '../pagination/pagination-query.dto';
+import { PageQueryDto } from "../pagination/pagination-query.dto";
 
 export const getPageQuery = <T>(
   props?: Partial<PageQueryDto<T>>,
 ): PageQueryDto<T> => ({
   skip: 0,
   limit: config.pagination.limit,
-  sort: ['createdAt', 'desc'],
+  sort: ["createdAt", "desc"],
   ...props,
 });

@@ -6,23 +6,23 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import { getRandomElement } from './safeRandom';
+import { getRandomElement } from "./safeRandom";
 
-describe('safeRandom', () => {
-  describe('getRandomElement', () => {
-    it('should get a random message', () => {
+describe("safeRandom", () => {
+  describe("getRandomElement", () => {
+    it("should get a random message", () => {
       const messages = [
-        'Hello, this is Nour',
-        'Oh ! How are you ?',
+        "Hello, this is Nour",
+        "Oh ! How are you ?",
         "Hmmm that's cool !",
-        'Corona virus',
-        'God bless you',
+        "Corona virus",
+        "God bless you",
       ];
       const result = getRandomElement(messages);
       expect(messages).toContain(result);
     });
 
-    it('should return undefined when trying to get a random message from an empty array', () => {
+    it("should return undefined when trying to get a random message from an empty array", () => {
       const result = getRandomElement([]);
       expect(result).toBe(undefined);
     });

@@ -6,69 +6,69 @@
  * 2. All derivative works must include clear attribution to the original creator and software, Hexastack and Hexabot, in a prominent location (e.g., in the software's "About" section, documentation, and README file).
  */
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-import { NlpValueCreateDto } from '@/nlp/dto/nlp-value.dto';
-import { NlpValueModel } from '@/nlp/schemas/nlp-value.schema';
+import { NlpValueCreateDto } from "@/nlp/dto/nlp-value.dto";
+import { NlpValueModel } from "@/nlp/schemas/nlp-value.schema";
 
-import { installNlpEntityFixtures, nlpEntityFixtures } from './nlpentity';
+import { installNlpEntityFixtures, nlpEntityFixtures } from "./nlpentity";
 
 export const nlpValueFixtures: NlpValueCreateDto[] = [
   {
-    entity: '0',
-    value: 'positive',
+    entity: "0",
+    value: "positive",
     expressions: [],
     builtin: false,
-    doc: '',
+    doc: "",
   },
   {
-    entity: '0',
-    value: 'negative',
+    entity: "0",
+    value: "negative",
     expressions: [],
     builtin: false,
-    doc: '',
+    doc: "",
   },
   {
-    entity: '1',
-    value: 'jhon',
-    expressions: ['john', 'joohn', 'jhonny'],
+    entity: "1",
+    value: "jhon",
+    expressions: ["john", "joohn", "jhonny"],
     builtin: false,
-    doc: '',
+    doc: "",
   },
   {
-    entity: '0',
-    value: 'greeting',
-    expressions: ['heello', 'Hello', 'hi', 'heyy'],
+    entity: "0",
+    value: "greeting",
+    expressions: ["heello", "Hello", "hi", "heyy"],
     builtin: false,
-    doc: '',
+    doc: "",
   },
   {
-    entity: '0',
-    value: 'goodbye',
-    expressions: ['bye', 'bye bye'],
+    entity: "0",
+    value: "goodbye",
+    expressions: ["bye", "bye bye"],
     builtin: false,
-    doc: '',
+    doc: "",
   },
   {
-    entity: '0',
-    value: 'affirmation',
-    expressions: ['yes', 'oui', 'yeah'],
+    entity: "0",
+    value: "affirmation",
+    expressions: ["yes", "oui", "yeah"],
     builtin: false,
-    doc: '',
+    doc: "",
   },
   {
-    entity: '3',
-    value: 'product',
+    entity: "3",
+    value: "product",
     expressions: [],
     builtin: false,
-    doc: '',
+    doc: "",
   },
   {
-    entity: '3',
-    value: 'claim',
+    entity: "3",
+    value: "claim",
     expressions: [],
     builtin: false,
-    doc: '',
+    doc: "",
   },
 ];
 
